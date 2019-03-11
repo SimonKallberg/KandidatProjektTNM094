@@ -2,6 +2,8 @@
 #include <iostream>
 
 #include "sgct/include/sgct/Engine.h"
+//s#include "./sgct.h"
+
 
 
 sgct::Engine * gEngine;
@@ -13,7 +15,7 @@ int main( int argc, char* argv[] ){
     std::cout<<"Hello world"<< std::endl;
     
     // Allocate
-    /*
+    
     gEngine = new sgct::Engine( argc, argv );
     
     
@@ -34,7 +36,7 @@ int main( int argc, char* argv[] ){
     delete gEngine;
     
     // Exit program
-    exit( EXIT_SUCCESS );*/
+    exit( EXIT_SUCCESS );
 }
 
 void myDrawFun()

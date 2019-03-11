@@ -1,10 +1,6 @@
 
 #include <iostream>
-
-#include "sgct/include/sgct/Engine.h"
-//s#include "./sgct.h"
-
-
+#include "sgct.h"
 
 sgct::Engine * gEngine;
 
@@ -15,9 +11,7 @@ int main( int argc, char* argv[] ){
     std::cout<<"Hello world"<< std::endl;
     
     // Allocate
-    
     gEngine = new sgct::Engine( argc, argv );
-    
     
     // Bind your functions
     gEngine->setDrawFunction( myDrawFun );

@@ -1,9 +1,11 @@
+const float RADIUS = 7.4f;
+
 #include "./sgct.h"
 #include "./sgct/include/sgct/Engine.h"
 #include <iostream>
 #include <math.h>
 #include "sgct.h"
-#include "player.hpp"
+#include "Player.hpp"
 
 sgct::Engine * gEngine;
 
@@ -12,12 +14,11 @@ void myPreSyncFun();
 void myEncodeFun();
 void myDecodeFun();
 void keyCallback(int key, int action);
-void renderPlayer();
 
 sgct::SharedDouble curr_time(0.0);
 
 float speed = 0.0f;
-const float RADIUS = 7.4f;
+
 float STEPLENGTH = 0.9f;
 Player test = Player();
 
@@ -55,7 +56,7 @@ void myDrawFun()
 {
     glRotatef(static_cast<float>(curr_time.getVal()) * speed, 0.0f, 1.0f, 0.0f);
 
-    renderPlayer();
+    test.render();
     
 }
 
@@ -86,7 +87,6 @@ void keyCallback(int key, int action)
         switch( key )
         {
             case 'A':
-                Buttons[UP] = ((action == SGCT_REPEAT || action == SGCT_PRESS) ? true : false);
                     test.setPosition(STEPLENGTH, 0.0f);
                 std::cout << STEPLENGTH << std::endl;
                 break;
@@ -104,24 +104,4 @@ void keyCallback(int key, int action)
                 break;
         }
     }
-}
-
-void renderPlayer(){
-    
-    //Converting spherical coordinates to cartesian coordinates
-    float x = RADIUS*sin(test.theta)*cos(test.phi);
-    float y = RADIUS*sin(test.theta)*sin(test.phi);
-    float z = RADIUS*cos(test.theta);
-
-    //render a single triangle
-    glBegin(GL_TRIANGLES);
-    glColor3f(1.0f, 0.0f, 0.0f); //Red
-    glVertex3f(x-0.5f, y-0.5f, z+0.0f);
-    
-    glColor3f(0.0f, 1.0f, 0.0f); //Green
-    glVertex3f(x+0.0f, y+0.5f, z+1.0f);
-    
-    glColor3f(0.0f, 0.0f, 1.0f); //Blue
-    glVertex3f(x+0.5f, y-0.5f, z+0.0f);
-    glEnd();
 }

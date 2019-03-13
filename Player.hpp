@@ -18,7 +18,7 @@ public:
     ~Player(){
     }
     
-    void setPosition(int x, int y){
+    void setPosition(float x, float y){
         theta += y; //Placeholders for changing position
         phi += x;
         //direction = tan(y/x);
@@ -30,6 +30,26 @@ public:
     
     float getPhi(){
         return phi;
+    }
+    
+    void render(){
+        
+        //Converting spherical coordinates to cartesian coordinates
+        float x = RADIUS*sin(theta)*cos(phi);
+        float y = RADIUS*sin(theta)*sin(phi);
+        float z = RADIUS*cos(theta);
+        
+        //render a single triangle
+        glBegin(GL_TRIANGLES);
+        glColor3f(1.0f, 0.0f, 0.0f); //Red
+        glVertex3f(x-0.5f, y-0.5f, z+0.0f);
+        
+        glColor3f(0.0f, 1.0f, 0.0f); //Green
+        glVertex3f(x+0.0f, y+0.5f, z+1.0f);
+        
+        glColor3f(0.0f, 0.0f, 1.0f); //Blue
+        glVertex3f(x+0.5f, y-0.5f, z+0.0f);
+        glEnd();
     }
 };
 

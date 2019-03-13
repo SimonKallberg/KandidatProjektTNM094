@@ -18,7 +18,7 @@ sgct::SharedDouble curr_time(0.0);
 
 float speed = 0.0f;
 const float RADIUS = 7.4f;
-float STEPLENGTH = 1.0f;
+float STEPLENGTH = 0.9f;
 Player test = Player();
 
 int main(int argc, char* argv[])
@@ -85,9 +85,10 @@ void keyCallback(int key, int action)
     {
         switch( key )
         {
-            case SGCT_KEY_A:
-                if(action == SGCT_PRESS)
+            case 'A':
+                Buttons[UP] = ((action == SGCT_REPEAT || action == SGCT_PRESS) ? true : false);
                     test.setPosition(STEPLENGTH, 0.0f);
+                std::cout << STEPLENGTH << std::endl;
                 break;
             case SGCT_KEY_S:
                 if(action == SGCT_PRESS)

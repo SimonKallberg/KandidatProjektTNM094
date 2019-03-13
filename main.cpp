@@ -19,7 +19,8 @@ void keyCallback(int key, int action);
 sgct::SharedDouble curr_time(0.0);
 
 float speed = 0.0f;
-float STEPLENGTH = 0.1f;
+
+float STEPLENGTH = 0.9f;
 Player test = Player();
 
 int main(int argc, char* argv[])
@@ -86,20 +87,16 @@ void keyCallback(int key, int action)
     {
         switch( key )
         {
-            case SGCT_KEY_A:
-                if(action == SGCT_PRESS)
+            case 'A':
                     test.setPosition(STEPLENGTH, 0.0f);
+
                 break;
-            case SGCT_KEY_S:
-                if(action == SGCT_PRESS)
+            case 'S':
                     test.setPosition(-STEPLENGTH, 0.0f);
                 break;
-            case SGCT_KEY_W:
-                if(action == SGCT_PRESS)
+            case 'W':
                     test.setPosition(0.0f, STEPLENGTH);
-                break;
-            case SGCT_KEY_Z:
-                if(action == SGCT_PRESS)
+            case 'Z':
                     test.setPosition(0.0f, -STEPLENGTH);
                 break;
         }

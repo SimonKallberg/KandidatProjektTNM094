@@ -15,6 +15,7 @@ void myEncodeFun();
 void myDecodeFun();
 void keyCallback(int key, int action);
 
+
 sgct::SharedDouble curr_time(0.0);
 
 float speed = 0.0f;

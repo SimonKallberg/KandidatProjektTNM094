@@ -21,7 +21,7 @@ public:
     void setPosition(float x, float y){
         theta += y; //Placeholders for changing position
         phi += x;
-        //direction = tan(y/x);
+        direction += x+y;
     }
     
     float getTheta(){

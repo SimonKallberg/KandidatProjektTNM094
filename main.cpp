@@ -14,7 +14,6 @@ void myPreSyncFun();
 void myEncodeFun();
 void myDecodeFun();
 void keyCallback(int key, int action);
-void renderPlayer();
 
 sgct::SharedDouble curr_time(0.0);
 

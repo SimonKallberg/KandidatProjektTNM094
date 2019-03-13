@@ -88,18 +88,14 @@ void keyCallback(int key, int action)
         {
             case 'A':
                     test.setPosition(STEPLENGTH, 0.0f);
-                std::cout << STEPLENGTH << std::endl;
+
                 break;
-            case SGCT_KEY_S:
-                if(action == SGCT_PRESS)
+            case 'S':
                     test.setPosition(-STEPLENGTH, 0.0f);
                 break;
-            case SGCT_KEY_W:
-                if(action == SGCT_PRESS)
+            case 'W':
                     test.setPosition(0.0f, STEPLENGTH);
-                break;
-            case SGCT_KEY_Z:
-                if(action == SGCT_PRESS)
+            case 'Z':
                     test.setPosition(0.0f, -STEPLENGTH);
                 break;
         }

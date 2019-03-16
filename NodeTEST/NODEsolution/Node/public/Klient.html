@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+
+<html lang="sv">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Awario- a game for the dome in Visualiseringscentrumet Norröping">
+    <meta name="author" content="Group H">
+    <meta charset="utf-8" />
+    <title>AWario</title>
+
+    <link rel="stylesheet" href="StyleSheet.css">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div id="socketState">
+        
+     
+    </div>
+    <script>
+        
+        var name;
+        var socket = io();
+        socket.emit('connection');
+        socket.on('getName', function () {
+            person = prompt("Please enter your name", "Harry Potter");
+            if (person == null || person == "") {
+                socket.emit('userName', 'Petra');
+            }
+            else {
+                socket.emit('userName', person);
+            }
+        });
+        
+        function message(arg) {
+            socket.emit('message', arg);
+        }
+
+    </script>
+
+    <button class="button" id="right" ontouchstart="message('right_start')" ontouchend="message('right_end')">
+        Right
+    </button>
+    <button class="button" id="left" ontouchstart="message('left_start')" ontouchend="message('left_end')">
+        Left
+    </button>
+
+</body>
+</html>

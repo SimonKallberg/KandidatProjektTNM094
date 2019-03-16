@@ -1,0 +1,39 @@
+﻿body {
+    width: auto;
+    height: auto;
+    background-image: url("Images/avatar1.png");
+    background-color: #FFE71C;
+    background-position: top; 
+    background-repeat: no-repeat;
+    background-size:50%;
+}
+.button {
+    background-color: #14B2CC;
+    border-color: #189DB2;
+    border-width:10px;
+    border-radius: 100%;
+
+    color: #FF0076;
+    font-size: 40px;
+    font-weight: bold;
+    text-shadow: 3px -3px #189DB2;
+
+    width: 30%;
+    min-width: 100px;
+    max-width: 600px;
+    height: 50%;
+    min-height: 50px;
+    max-height: 500px;
+}
+
+#left{
+    position: absolute;
+    top: 35%;
+    left:15%;
+}
+
+#right {
+    position: absolute;
+    top:35%;
+    right: 15%;
+}

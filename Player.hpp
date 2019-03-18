@@ -1,5 +1,7 @@
+
+
 class Player {
-    
+
 public:
     
     //Spawns new players at origin
@@ -51,6 +53,8 @@ public:
         glVertex3f(x+0.5f, y-0.5f, z+0.0f);
         glEnd();
     }
+    
+    
 };
 
 

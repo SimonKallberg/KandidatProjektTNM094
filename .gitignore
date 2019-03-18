@@ -3,3 +3,8 @@
 /sgct/
 
 libwebsockets/
+<<<<<<< HEAD
+=======
+
+libwebsockets_build/
+>>>>>>> Libwebsockets

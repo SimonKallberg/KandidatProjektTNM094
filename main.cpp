@@ -4,8 +4,10 @@ const float RADIUS = 7.4f;
 #include "./sgct/include/sgct/Engine.h"
 #include <iostream>
 #include <math.h>
-#include "sgct.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "Player.hpp"
+#include <libwebsockets.h>
 
 sgct::Engine * gEngine;
 

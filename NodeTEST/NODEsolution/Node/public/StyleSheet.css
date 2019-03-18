@@ -10,20 +10,25 @@
 .button {
     background-color: #14B2CC;
     border-color: #189DB2;
-    border-width:10px;
+    border-width: 10px;
     border-radius: 100%;
-
     color: #FF0076;
     font-size: 40px;
     font-weight: bold;
     text-shadow: 3px -3px #189DB2;
-
     width: 30%;
     min-width: 100px;
     max-width: 600px;
     height: 50%;
     min-height: 50px;
     max-height: 500px;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #left{

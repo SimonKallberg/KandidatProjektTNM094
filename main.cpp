@@ -8,6 +8,8 @@ const float RADIUS = 7.4f;
 #include <glm/gtc/type_ptr.hpp>
 #include "Player.hpp"
 #include <libwebsockets.h>
+#include "Quad.hpp"
+#include "Scene.hpp"
 
 sgct::Engine * gEngine;
 
@@ -16,6 +18,8 @@ void myPreSyncFun();
 void myEncodeFun();
 void myDecodeFun();
 void keyCallback(int key, int action);
+
+Scene *testScene;
 
 
 sgct::SharedDouble curr_time(0.0);
@@ -60,6 +64,7 @@ void myDrawFun()
     glRotatef(static_cast<float>(curr_time.getVal()) * speed, 0.0f, 1.0f, 0.0f);
 
     test.render();
+    testScene->draw();
     
 }
 

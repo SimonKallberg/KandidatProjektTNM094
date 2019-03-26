@@ -8,8 +8,10 @@ const float RADIUS = 7.4f;
 #include <glm/gtc/type_ptr.hpp>
 #include "Player.hpp"
 #include <libwebsockets.h>
+#include "domegame.cpp"
 
 sgct::Engine * gEngine;
+DomeGame * domeGame;
 
 void myDrawFun();
 void myPreSyncFun();
@@ -30,6 +32,7 @@ int main(int argc, char* argv[])
     
     // Allocate
     gEngine = new sgct::Engine(argc, argv);
+	domeGame = new DomeGame(gEngine);
     
     // Bind your functions
     gEngine->setDrawFunction(myDrawFun);

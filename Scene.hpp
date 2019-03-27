@@ -1,26 +1,17 @@
-#ifndef SCENE_H
-#define SCENE_H
-
-#include <stdlib.h>
-#include <stdio.h>
 #include <iostream>
-#include <string>
-#include <cassert>
-#include <map>
-
-#include "sgct.h"
 #include "Quad.hpp"
 
-class Player;
+#ifndef SCENE
+#define SCENE
 
-class Scene {
+class Scene{
 public:
     // Constructor
     Scene();
 
     void draw();
 private:
-    Quad *background;
+   // Quad *background;
     
 };
 

@@ -1,5 +1,3 @@
-
-
 #ifndef Quad_hpp
 #define Quad_hpp
 

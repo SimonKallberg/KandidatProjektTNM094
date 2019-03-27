@@ -1,9 +1,7 @@
 //#include "Player.hpp"
-//#include "scene.h"
 
 #ifndef DOMEGAME
 #define DOMEGAME
-
 
 class DomeGame{
 public:
@@ -12,6 +10,8 @@ public:
 
 	void init();
 	void draw();
+
+	Scene * myScene;
 private:
 	
 };
@@ -19,7 +19,7 @@ private:
 #endif // DOMEGAME
 
 DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
-	myScene = new Scene();
+//	myScene = new Scene();
 	std::cout << "DomeGame gjord" << std::endl;
 };
 

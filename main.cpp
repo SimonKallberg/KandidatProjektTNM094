@@ -8,9 +8,9 @@ const float RADIUS = 7.4f;
 #include <glm/gtc/type_ptr.hpp>
 #include "Player.hpp"
 #include <libwebsockets.h>
-#include "Quad.hpp"
-#include "Scene.hpp"
-#include "domegame.cpp"
+#include "./Quad.hpp"
+#include "./Scene.cpp"
+#include "./domegame.cpp"
 
 sgct::Engine * gEngine;
 DomeGame * domeGame;
@@ -21,7 +21,7 @@ void myEncodeFun();
 void myDecodeFun();
 void keyCallback(int key, int action);
 
-Scene *testScene;
+Scene * testScene;
 
 
 sgct::SharedDouble curr_time(0.0);
@@ -37,7 +37,8 @@ int main(int argc, char* argv[])
     // Allocate
     gEngine = new sgct::Engine(argc, argv);
 	domeGame = new DomeGame(gEngine);
-    
+	testScene = new Scene();
+
     // Bind your functions
     gEngine->setDrawFunction(myDrawFun);
     gEngine->setPreSyncFunction(myPreSyncFun);
@@ -65,10 +66,9 @@ int main(int argc, char* argv[])
 void myDrawFun()
 {
     glRotatef(static_cast<float>(curr_time.getVal()) * speed, 0.0f, 1.0f, 0.0f);
-
     test.render();
+
     testScene->draw();
-    
 }
 
 void myPreSyncFun()

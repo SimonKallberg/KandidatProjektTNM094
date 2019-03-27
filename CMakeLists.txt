@@ -2,7 +2,13 @@ cmake_minimum_required(VERSION "3.13.0")
 
 project("dome_game")
 
-add_executable("${PROJECT_NAME}" "main.cpp")
+add_executable("${PROJECT_NAME}" 
+"main.cpp"
+"Quad.cpp"
+"Scene.cpp"
+"Quad.hpp"
+"Scene.hpp"
+)
 
 target_compile_features("${PROJECT_NAME}" PUBLIC cxx_std_11)
 
@@ -77,4 +83,3 @@ elseif( APPLE )
 			${LIBWEBSOCKETS_LIBRARY}
 		)
 	endif()
-		

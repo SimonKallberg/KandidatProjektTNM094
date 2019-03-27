@@ -11,7 +11,7 @@ public:
 
     void draw();
 private:
-   // Quad *background;
+    Quad *background;
     
 };
 

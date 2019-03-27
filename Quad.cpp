@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-#include "sgct.h"
+#include "./sgct.h"
 
 class Quad {
 public:
@@ -60,7 +60,7 @@ void Quad::draw(float x, float y, float z) const {
     glActiveTexture(GL_TEXTURE0);
     
     // Bind the texture by its set handle
-    glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureByName(textureName));
+    //glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureByName(textureName));
     
     glPushMatrix();
     glTranslatef(x,y,z);

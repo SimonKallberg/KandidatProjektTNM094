@@ -1,27 +1,4 @@
-//#include "Player.hpp"
-#include "./Scene.hpp"
-#include <stdlib.h>
-#include <stdio.h>
-#include <cstdlib>
-#include <ctime>
-#ifndef DOMEGAME
-#define DOMEGAME
-
-class DomeGame{
-public:
-	// Constructor
-	DomeGame(sgct::Engine * gEngine);
-
-	void init();
-	void draw() const;
-	size_t textureHandle;
-	Scene * myScene;
-private:
-	
-};
-
-#endif // DOMEGAME
-
+#include "domegame.hpp"
 DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
 	myScene = new Scene();
 	std::cout << "DomeGame gjord" << std::endl;
@@ -34,7 +11,7 @@ void DomeGame::draw() const{
 void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
-	sgct::TextureManager::instance()->loadTexture("avatar3", "./avatar3.png", true);
+	sgct::TextureManager::instance()->loadTexture("background", "background.png", true);
 
 	// Enable some openGL stuff
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

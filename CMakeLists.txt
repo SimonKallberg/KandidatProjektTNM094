@@ -8,6 +8,7 @@ add_executable("${PROJECT_NAME}"
 "Scene.cpp"
 "Quad.hpp"
 "Scene.hpp"
+"domegame.cpp"
 )
 
 target_compile_features("${PROJECT_NAME}" PUBLIC cxx_std_11)

@@ -5,11 +5,17 @@ const float RADIUS = 7.4f;
 #include <math.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <stdlib.h>
+#include <stdio.h>
+
+
 #include "Player.hpp"
 #include <libwebsockets.h>
 #include "./Quad.hpp"
 #include "./Scene.hpp"
 #include "./domegame.cpp"
+
 
 sgct::Engine * gEngine;
 DomeGame * domeGame;
@@ -19,6 +25,7 @@ void myPreSyncFun();
 void myEncodeFun();
 void myDecodeFun();
 void keyCallback(int key, int action);
+void myInitOGLFun();
 
 
 sgct::SharedDouble curr_time(0.0);
@@ -36,6 +43,7 @@ int main(int argc, char* argv[])
 	domeGame = new DomeGame(gEngine);
 
     // Bind your functions
+	gEngine->setInitOGLFunction(myInitOGLFun);
     gEngine->setDrawFunction(myDrawFun);
     gEngine->setPreSyncFunction(myPreSyncFun);
     gEngine->setKeyboardCallbackFunction(keyCallback);
@@ -62,7 +70,7 @@ int main(int argc, char* argv[])
 void myDrawFun()
 {
     glRotatef(static_cast<float>(curr_time.getVal()) * speed, 0.0f, 1.0f, 0.0f);
-    test.render();
+	domeGame->draw();
 }
 
 void myPreSyncFun()
@@ -105,4 +113,11 @@ void keyCallback(int key, int action)
                 break;
         }
     }
+}
+
+
+void myInitOGLFun() {
+	std::cout << "Init started.." << std::endl;
+	domeGame->init();
+	std::cout << "Init DONE!" << std::endl;
 }

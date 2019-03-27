@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "Quad.hpp"
 
 #ifndef SCENE
@@ -9,7 +10,7 @@ public:
     // Constructor
     Scene();
 
-    void draw();
+    void draw() const;
 private:
     Quad *background;
     

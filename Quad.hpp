@@ -2,7 +2,8 @@
 #define Quad_hpp
 
 #include <stdio.h>
-
+#include <cstdlib>
+#include <ctime>
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>

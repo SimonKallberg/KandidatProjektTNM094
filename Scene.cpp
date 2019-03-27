@@ -4,12 +4,13 @@
 // Constructor
 Scene::Scene(){
 	std::cout << "scene gjord" << std::endl;
-    //background = new Quad("test", 4.0f, 3.0f);
+    background = new Quad("avatar3.png", 1.0f, 1.0f);
 }
 
 
 // Draws the scene in dome or normal desktop mode
-void Scene::draw() {
+void Scene::draw() const {
+	//background->display();
 	std::cout << "drawing scene..." << std::endl;
-   //     background->draw(0.0f, 0.0f, -0.01f);
+    background->draw(0.0f, 0.0f, -0.01f);
 }

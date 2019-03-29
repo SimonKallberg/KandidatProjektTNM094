@@ -1,6 +1,6 @@
 const float RADIUS = 7.4f;
 #include "./sgct.h"
-#include "./sgct/include/sgct/Engine.h"
+#include "../sgct/include/sgct/Engine.h"
 #include <iostream>
 #include <math.h>
 #include <glm/glm.hpp>
@@ -13,7 +13,7 @@ const float RADIUS = 7.4f;
 #include <libwebsockets.h>
 #include "./Quad.hpp"
 #include "./Scene.hpp"
-#include "./DomeGame.hpp"
+#include "./domegame.hpp"
 
 
 sgct::Engine * gEngine;

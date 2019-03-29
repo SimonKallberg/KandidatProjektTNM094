@@ -3,13 +3,13 @@ cmake_minimum_required(VERSION "3.13.0")
 project("dome_game")
 
 add_executable("${PROJECT_NAME}" 
-"main.cpp"
-"Quad.cpp"
-"Scene.cpp"
-"Quad.hpp"
-"Scene.hpp"
-"DomeGame.hpp"
-"DomeGame.cpp"
+"src/main.cpp"
+"src/Quad.cpp"
+"src/Scene.cpp"
+"src/Quad.hpp"
+"src/Scene.hpp"
+"src/DomeGame.hpp"
+"src/DomeGame.cpp"
 )
 
 target_compile_features("${PROJECT_NAME}" PUBLIC cxx_std_11)

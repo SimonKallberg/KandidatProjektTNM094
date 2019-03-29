@@ -21,7 +21,7 @@ void Quad::draw(float x, float y, float z) const {
     glActiveTexture(GL_TEXTURE0);
     
     // Bind the texture by its set handle
-    glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(textureName));
+    glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId("avatar3"));
     
     glPushMatrix();
     glTranslatef(x,y,z);

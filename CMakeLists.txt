@@ -8,6 +8,8 @@ add_executable("${PROJECT_NAME}"
 "Scene.cpp"
 "Quad.hpp"
 "Scene.hpp"
+"DomeGame.hpp"
+"DomeGame.cpp"
 )
 
 target_compile_features("${PROJECT_NAME}" PUBLIC cxx_std_11)
@@ -37,6 +39,7 @@ target_link_libraries(
     sgct_light glew glfw png16_static quat tinyxml2static turbojpeg-static zlibstatic miniziplibstatic
     vrpn
     ${GLFW_LIBRARIES}
+	${LIBWEBSOCKETS_LIBRARY}
 )
 
 if( MSVC )

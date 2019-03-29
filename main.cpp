@@ -9,12 +9,11 @@ const float RADIUS = 7.4f;
 #include <stdlib.h>
 #include <stdio.h>
 
-
 #include "Player.hpp"
 #include <libwebsockets.h>
 #include "./Quad.hpp"
 #include "./Scene.hpp"
-#include "./domegame.cpp"
+#include "./DomeGame.hpp"
 
 
 sgct::Engine * gEngine;
@@ -35,9 +34,9 @@ float speed = 0.0f;
 float STEPLENGTH = 0.9f;
 Player test = Player();
 
+
 int main(int argc, char* argv[])
 {
-    
     // Allocate
     gEngine = new sgct::Engine(argc, argv);
 	domeGame = new DomeGame(gEngine);

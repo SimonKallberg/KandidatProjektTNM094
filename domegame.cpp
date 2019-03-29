@@ -12,8 +12,7 @@ void DomeGame::draw() const{
 void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
-	sgct::TextureManager::instance()->loadTexture("avatar3", "../avatar3.png", true);
-	// = new sgct_utils::SGCTBox(2.0f, sgct_utils::SGCTBox::CubeMap);
+	sgct::TextureManager::instance()->loadTexture("background", "background.png", true);
 
 	// Enable some openGL stuff
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

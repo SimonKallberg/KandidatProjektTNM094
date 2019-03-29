@@ -12,5 +12,5 @@ Scene::Scene(){
 void Scene::draw() const {
 	//background->display();
 	std::cout << "drawing scene..." << std::endl;
-    background->draw(0.0f, 0.0f, -0.01f);
+    background->draw(0.0f, 0.0f, -0.4f);
 }

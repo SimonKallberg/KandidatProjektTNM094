@@ -4,6 +4,7 @@ project("dome_game")
 
 add_executable("${PROJECT_NAME}" 
 "src/main.cpp"
+"src/ServerHandler.hpp"
 "src/Quad.hpp"
 "src/Quad.cpp"
 "src/Scene.hpp"

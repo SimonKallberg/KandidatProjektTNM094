@@ -10,7 +10,7 @@ const float RADIUS = 7.4f;
 #include <stdio.h>
 
 #include "Player.hpp"
-#include <libwebsockets.h>
+#include "./ServerHandler.hpp"
 #include "./Quad.hpp"
 #include "./Scene.hpp"
 #include "./DomeGame.hpp"
@@ -107,6 +107,7 @@ void keyCallback(int key, int action)
                 break;
             case 'W':
                     test.setPosition(0.0f, STEPLENGTH);
+				break;
             case 'Z':
                     test.setPosition(0.0f, -STEPLENGTH);
                 break;

@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 #include <libwebsockets.h>
+#include "./ServerHandler.hpp"
 #include "./Quad.hpp"
 #include "./Scene.hpp"
 #include "./Player.hpp"
@@ -33,9 +34,39 @@ float speed = 0.0f;
 
 float STEPLENGTH = 0.9f;
 
+void getServerMsg(const char * msg, size_t len)
+{
+	std::istringstream strm(msg);
+	char msgType;
+	strm >> msgType;
+	if (msgType == 'P') // player added
+	{
+		std::cout << "PLAYER ADDED\n";
+	}
+	else if (msgType == 'C') // controls were sent  (currently setup for player_amount x controls_size, as in one C message sends all players controls)
+	{
+		std::cout << "controls received:\n";
+		int playerIndex = 0;
+		while (true) {
+			float controls[4];
+			for (int i = 0; i < 4; i++) {
+				strm >> controls[i];
+			}
+			if (!strm)
+				break;
+
+			std::cout << controls[0] << ", " << controls[1] << ", " << controls[2] << ", " << controls[3] << "\n";
+			// handle controls in controls[];
+		}
+	}
+}
+
 
 int main(int argc, char* argv[])
 {
+	ServerHandler::setMessageCallback(getServerMsg);
+	ServerHandler::connect();
+
     // Allocate
     gEngine = new sgct::Engine(argc, argv);
 	domeGame = new DomeGame(gEngine);
@@ -87,6 +118,8 @@ void myPreSyncFun()
     {
         //get the time in seconds
         curr_time.setVal(sgct::Engine::getTime());
+
+		ServerHandler::service();
     }
 }
 
@@ -114,7 +147,8 @@ void keyCallback(int key, int action)
                     test->setPosition(-STEPLENGTH, 0.0f);
                 break;
             case 'W':
-                    test->setPosition(0.0f, STEPLENGTH);
+                    test.setPosition(0.0f, STEPLENGTH);
+				break;
             case 'Z':
                     test->setPosition(0.0f, -STEPLENGTH);
                 break;

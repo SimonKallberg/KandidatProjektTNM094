@@ -147,7 +147,7 @@ void keyCallback(int key, int action)
                     test->setPosition(-STEPLENGTH, 0.0f);
                 break;
             case 'W':
-                    test.setPosition(0.0f, STEPLENGTH);
+                    test->setPosition(0.0f, STEPLENGTH);
 				break;
             case 'Z':
                     test->setPosition(0.0f, -STEPLENGTH);

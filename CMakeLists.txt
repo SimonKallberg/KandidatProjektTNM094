@@ -11,7 +11,7 @@ add_executable("${PROJECT_NAME}"
 "src/DomeGame.hpp"
 "src/DomeGame.cpp"
 "src/Player.hpp"
-"src/Shooter.cpp"
+"src/Player.cpp"
 )
 
 target_compile_features("${PROJECT_NAME}" PUBLIC cxx_std_11)

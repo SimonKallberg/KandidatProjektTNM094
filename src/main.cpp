@@ -1,4 +1,3 @@
-const float RADIUS = 7.4f;
 #include "./sgct.h"
 #include "../sgct/include/sgct/Engine.h"
 #include <iostream>
@@ -9,15 +8,16 @@ const float RADIUS = 7.4f;
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "Player.hpp"
 #include <libwebsockets.h>
 #include "./Quad.hpp"
 #include "./Scene.hpp"
+#include "./Player.hpp"
 #include "./DomeGame.hpp"
 
 
 sgct::Engine * gEngine;
 DomeGame * domeGame;
+Player * test;
 
 void myDrawFun();
 void myPreSyncFun();
@@ -32,7 +32,6 @@ sgct::SharedDouble curr_time(0.0);
 float speed = 0.0f;
 
 float STEPLENGTH = 0.9f;
-Player test = Player();
 
 
 int main(int argc, char* argv[])
@@ -40,6 +39,7 @@ int main(int argc, char* argv[])
     // Allocate
     gEngine = new sgct::Engine(argc, argv);
 	domeGame = new DomeGame(gEngine);
+    test = new Player();
 
     // Bind your functions
 	gEngine->setInitOGLFunction(myInitOGLFun);
@@ -66,10 +66,18 @@ int main(int argc, char* argv[])
     exit(EXIT_SUCCESS);
 }
 
+void myInitOGLFun() {
+    std::cout << "Init started.." << std::endl;
+    domeGame->init();
+    sgct::TextureManager::instance()->loadTexture("player", "player.png", true);
+    std::cout << "Init DONE!" << std::endl;
+}
+
 void myDrawFun()
 {
     glRotatef(static_cast<float>(curr_time.getVal()) * speed, 0.0f, 1.0f, 0.0f);
 	domeGame->draw();
+    test->render();
 }
 
 void myPreSyncFun()
@@ -99,24 +107,20 @@ void keyCallback(int key, int action)
         switch( key )
         {
             case 'A':
-                    test.setPosition(STEPLENGTH, 0.0f);
+                    test->setPosition(STEPLENGTH, 0.0f);
 
                 break;
             case 'S':
-                    test.setPosition(-STEPLENGTH, 0.0f);
+                    test->setPosition(-STEPLENGTH, 0.0f);
                 break;
             case 'W':
-                    test.setPosition(0.0f, STEPLENGTH);
+                    test->setPosition(0.0f, STEPLENGTH);
             case 'Z':
-                    test.setPosition(0.0f, -STEPLENGTH);
+                    test->setPosition(0.0f, -STEPLENGTH);
                 break;
         }
     }
 }
 
 
-void myInitOGLFun() {
-	std::cout << "Init started.." << std::endl;
-	domeGame->init();
-	std::cout << "Init DONE!" << std::endl;
-}
+

@@ -13,7 +13,7 @@ const float RADIUS = 7.4f;
 #include <libwebsockets.h>
 #include "./Quad.hpp"
 #include "./Scene.hpp"
-#include "./domegame.hpp"
+#include "./DomeGame.hpp"
 
 
 sgct::Engine * gEngine;

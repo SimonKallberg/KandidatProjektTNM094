@@ -4,7 +4,7 @@
 // Constructor
 Scene::Scene(){
 	std::cout << "scene gjord" << std::endl;
-    background = new Quad("background", 2.25f, 1.5f);
+    background = new Quad("background", 2.5f, 1.5f);
 }
 
 

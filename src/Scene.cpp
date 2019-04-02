@@ -13,7 +13,6 @@ Scene::Scene(){
 // Draws the scene in dome or normal desktop mode
 void Scene::draw() const {
 	//background->display();
-	std::cout << "drawing scene..." << std::endl;
 	test_bg->draw();
     //background->draw(0.0f, 0.0f, -0.4f);
 

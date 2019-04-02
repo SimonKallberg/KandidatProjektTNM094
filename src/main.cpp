@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
 void myInitOGLFun() {
     std::cout << "Init started.." << std::endl;
     domeGame->init();
-    sgct::TextureManager::instance()->loadTexture("player", "player.png", true);
+    sgct::TextureManager::instance()->loadTexture("player", "../player.png", true);
     std::cout << "Init DONE!" << std::endl;
 }
 

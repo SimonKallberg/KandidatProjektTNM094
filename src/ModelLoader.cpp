@@ -45,16 +45,11 @@ glm::vec3 ModelLoader::getMinVertexValues() {
 }
 
 void ModelLoader::draw() const {
-
-	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);
-	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
-	sgct::TextureManager::instance()->loadTexture("background", "../background.png", true);
-
 	// Set the active texture unit
 	glActiveTexture(GL_TEXTURE0);
 
 	// Bind the texture by its set handle
-	glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId("background"));
+	glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(textureName));
 
 
 	// Bind the texture by its set handle
@@ -89,7 +84,7 @@ bool ModelLoader::loadOBJ(const std::string &meshName, float sx, float sy, float
 	printf("Loading mesh %s... ", meshName.c_str());
 
 	std::string builder = "";
-	builder += "obj/";
+	//builder += "obj/";
 	builder += meshName;
 	builder += ".obj";
 	const char* path = builder.c_str();

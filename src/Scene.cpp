@@ -6,7 +6,7 @@
 Scene::Scene(){
 	std::cout << "scene gjord" << std::endl;
     //background = new Quad("background", 2.5f, 1.5f);
-	test_bg = new ModelLoader("sphere", "ipsum");
+	test_bg = new ModelLoader("sphere", "background");
 }
 
 
@@ -14,6 +14,7 @@ Scene::Scene(){
 void Scene::draw() const {
 	//background->display();
 	std::cout << "drawing scene..." << std::endl;
+	test_bg->draw();
     //background->draw(0.0f, 0.0f, -0.4f);
 
 	//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);

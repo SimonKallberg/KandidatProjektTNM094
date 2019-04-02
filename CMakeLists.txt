@@ -92,10 +92,3 @@ elseif( APPLE )
 			${LIBWEBSOCKETS_LIBRARY}
 		)
 	endif()
-
-
-include_directories ("${PROJECT_SOURCE_DIR}/obj")
-add_subdirectory (obj)
-# --- The project executables ---
-project (dome_game)
-target_link_libraries(dome_game ${CMAKE_CURRENT_SOURCE_DIR}/obj/sphere.obj)

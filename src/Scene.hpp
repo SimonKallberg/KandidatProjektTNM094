@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include "Quad.hpp"
 #include "./ModelLoader.hpp"
 

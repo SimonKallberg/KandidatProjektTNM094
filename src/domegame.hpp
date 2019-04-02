@@ -16,6 +16,7 @@ public:
     void draw() const;
     size_t textureHandle;
     Scene * myScene;
+
 private:
     
 };

@@ -1,5 +1,6 @@
 #include "./DomeGame.hpp"
 
+
 DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
 	myScene = new Scene();
 	std::cout << "DomeGame gjord" << std::endl;

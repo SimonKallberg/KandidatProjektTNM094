@@ -4,6 +4,7 @@ project("dome_game")
 
 add_executable("${PROJECT_NAME}" 
 "src/main.cpp"
+"src/ServerHandler.hpp"
 "src/Quad.hpp"
 "src/Quad.cpp"
 "src/Scene.hpp"
@@ -13,6 +14,7 @@ add_executable("${PROJECT_NAME}"
 "src/Player.hpp"
 "src/ModelLoader.hpp"
 "src/ModelLoader.cpp"
+"src/Player.cpp"
 )
 
 target_compile_features("${PROJECT_NAME}" PUBLIC cxx_std_11)

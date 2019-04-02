@@ -14,6 +14,7 @@
 #include "./Scene.hpp"
 #include "./Player.hpp"
 #include "./DomeGame.hpp"
+#include "./ModelLoader.hpp"
 
 
 sgct::Engine * gEngine;

@@ -24,6 +24,7 @@ namespace ServerHandler
 			break;
 
 		case LWS_CALLBACK_CLIENT_RECEIVE:
+			std::cout << reinterpret_cast<const char *>(in);
 			if (msgCallFun)
 				msgCallFun(reinterpret_cast<const char *>(in),len);
 

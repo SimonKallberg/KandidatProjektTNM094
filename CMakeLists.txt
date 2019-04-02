@@ -11,7 +11,8 @@ add_executable("${PROJECT_NAME}"
 "src/DomeGame.hpp"
 "src/DomeGame.cpp"
 "src/Player.hpp"
-"src/Shooter.cpp"
+"src/ModelLoader.hpp"
+"src/ModelLoader.cpp"
 )
 
 target_compile_features("${PROJECT_NAME}" PUBLIC cxx_std_11)
@@ -43,6 +44,7 @@ target_link_libraries(
     ${GLFW_LIBRARIES}
 	${LIBWEBSOCKETS_LIBRARY}
 )
+
 
 if( MSVC )
 	set(LIBS
@@ -88,3 +90,10 @@ elseif( APPLE )
 			${LIBWEBSOCKETS_LIBRARY}
 		)
 	endif()
+
+
+include_directories ("${PROJECT_SOURCE_DIR}/obj")
+add_subdirectory (obj)
+# --- The project executables ---
+project (dome_game)
+target_link_libraries(dome_game ${CMAKE_CURRENT_SOURCE_DIR}/obj/sphere.obj)

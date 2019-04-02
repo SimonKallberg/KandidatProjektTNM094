@@ -14,6 +14,7 @@ const float RADIUS = 7.4f;
 #include "./Quad.hpp"
 #include "./Scene.hpp"
 #include "./DomeGame.hpp"
+#include "./ModelLoader.hpp"
 
 
 sgct::Engine * gEngine;

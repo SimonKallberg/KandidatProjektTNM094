@@ -27,7 +27,7 @@ float Player::getPhi(){
     return phi;
 }
 
-void Player::render(){
+void Player::render() const{
     
     //Converting spherical coordinates to cartesian coordinates
     float x = RADIUS*sin(theta)*cos(phi);

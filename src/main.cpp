@@ -18,7 +18,6 @@
 
 sgct::Engine * gEngine;
 DomeGame * domeGame;
-Player * test;
 
 void myDrawFun();
 void myPreSyncFun();
@@ -32,7 +31,7 @@ sgct::SharedDouble curr_time(0.0);
 
 float speed = 0.0f;
 
-float STEPLENGTH = 0.9f;
+float STEPLENGTH = 0.1f;
 
 void getServerMsg(const char * msg, size_t len)
 {
@@ -70,7 +69,12 @@ int main(int argc, char* argv[])
     // Allocate
     gEngine = new sgct::Engine(argc, argv);
 	domeGame = new DomeGame(gEngine);
-    test = new Player();
+    
+    Player * test = new Player();
+    Player * test1 = new Player();
+    
+    domeGame->addPlayer(test);
+    domeGame->addPlayer(test1);
 
     // Bind your functions
 	gEngine->setInitOGLFunction(myInitOGLFun);
@@ -108,7 +112,6 @@ void myDrawFun()
 {
     glRotatef(static_cast<float>(curr_time.getVal()) * speed, 0.0f, 1.0f, 0.0f);
 	domeGame->draw();
-    test->render();
 }
 
 void myPreSyncFun()
@@ -140,17 +143,17 @@ void keyCallback(int key, int action)
         switch( key )
         {
             case 'A':
-                    test->setPosition(STEPLENGTH, 0.0f);
+                    domeGame->players[0]->setPosition(STEPLENGTH, 0.0f);
 
                 break;
             case 'S':
-                    test->setPosition(-STEPLENGTH, 0.0f);
+                    domeGame->players[0]->setPosition(-STEPLENGTH, 0.0f);
                 break;
             case 'W':
-                    test->setPosition(0.0f, STEPLENGTH);
+                    domeGame->players[0]->setPosition(0.0f, STEPLENGTH);
 				break;
             case 'Z':
-                    test->setPosition(0.0f, -STEPLENGTH);
+                    domeGame->players[0]->setPosition(0.0f, -STEPLENGTH);
                 break;
         }
     }

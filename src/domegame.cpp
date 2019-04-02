@@ -8,6 +8,9 @@ DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
 
 void DomeGame::draw() const{
 	myScene->draw();
+    for (int i = 0; i < players.size(); i++){
+        players[i]->render();
+    }
 }
 
 void DomeGame::init() {
@@ -31,4 +34,12 @@ void DomeGame::init() {
 	glDisable(GL_DEPTH_TEST);
 
 	std::cout << "johan was here xD" << std::endl;
+}
+
+void DomeGame::addPlayer(Player * newPlayer) {
+    players.push_back(newPlayer);
+}
+
+void DomeGame::renderPlayer(Player * newPlayer) {
+    newPlayer->render();
 }

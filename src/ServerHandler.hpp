@@ -24,7 +24,7 @@ namespace ServerHandler
 			break;
 
 		case LWS_CALLBACK_CLIENT_RECEIVE:
-			std::cout << reinterpret_cast<const char *>(in);
+			//std::cout << reinterpret_cast<const char *>(in);
 			if (msgCallFun)
 				msgCallFun(reinterpret_cast<const char *>(in),len);
 
@@ -103,7 +103,7 @@ namespace ServerHandler
 	}
 
 	void service() {
-		lws_service(context, /* timeout_ms = */ 250);
+		lws_service(context, 0);
 	}
 
 }

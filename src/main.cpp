@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <libwebsockets.h>
 #include "./ServerHandler.hpp"
+#include "./boxtest.hpp"
 #include "./Quad.hpp"
 #include "./Scene.hpp"
 #include "./Player.hpp"
@@ -19,6 +19,8 @@
 
 sgct::Engine * gEngine;
 DomeGame * domeGame;
+
+boxtest * box;
 
 void myDrawFun();
 void myPreSyncFun();
@@ -77,6 +79,8 @@ int main(int argc, char* argv[])
     domeGame->addPlayer(test);
     domeGame->addPlayer(test1);
 
+	box = new boxtest();
+
     // Bind your functions
 	gEngine->setInitOGLFunction(myInitOGLFun);
     gEngine->setDrawFunction(myDrawFun);
@@ -113,6 +117,7 @@ void myDrawFun()
 {
     glRotatef(static_cast<float>(curr_time.getVal()) * speed, 0.0f, 1.0f, 0.0f);
 	domeGame->draw();
+	box->draw();
 }
 
 void myPreSyncFun()
@@ -145,17 +150,35 @@ void keyCallback(int key, int action)
         {
             case 'A':
                     domeGame->players[0]->setPosition(STEPLENGTH, 0.0f);
-
+					box->Box_x -= 0.2f;
                 break;
-            case 'S':
+            case 'D':
                     domeGame->players[0]->setPosition(-STEPLENGTH, 0.0f);
+					box->Box_x += 0.2f;
                 break;
             case 'W':
                     domeGame->players[0]->setPosition(0.0f, STEPLENGTH);
+					box->Box_z -= 0.2f;
 				break;
-            case 'Z':
+            case 'S':
                     domeGame->players[0]->setPosition(0.0f, -STEPLENGTH);
+					box->Box_z += 0.2f;
                 break;
+			case SGCT_KEY_SPACE:
+					box->Box_y += 0.2f;
+				break;
+			case SGCT_KEY_LCTRL:
+					box->Box_y -= 0.2f;
+				break;
+			case 'Z':
+					box->Box_scale += 0.1f;
+				break;
+			case 'X':
+					box->Box_scale -= 0.1f;
+				break;
+			case 'L':
+				std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << box->Box_scale << "\n";
+				break;
         }
     }
 }

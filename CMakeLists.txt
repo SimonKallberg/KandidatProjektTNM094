@@ -5,6 +5,7 @@ project("dome_game")
 add_executable("${PROJECT_NAME}" 
 "src/main.cpp"
 "src/ServerHandler.hpp"
+"src/boxtest.hpp"
 "src/Quad.hpp"
 "src/Quad.cpp"
 "src/Scene.hpp"
@@ -12,6 +13,8 @@ add_executable("${PROJECT_NAME}"
 "src/DomeGame.hpp"
 "src/DomeGame.cpp"
 "src/Player.hpp"
+"src/ModelLoader.hpp"
+"src/ModelLoader.cpp"
 "src/Player.cpp"
 )
 
@@ -44,6 +47,7 @@ target_link_libraries(
     ${GLFW_LIBRARIES}
 	${LIBWEBSOCKETS_LIBRARY}
 )
+
 
 if( MSVC )
 	set(LIBS

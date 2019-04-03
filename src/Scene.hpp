@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Quad.hpp"
+#include "./ModelLoader.hpp"
 
 #ifndef SCENE
 #define SCENE
@@ -12,6 +13,7 @@ public:
     void draw() const;
 private:
     Quad *background;
+	ModelLoader *test_bg;
     
 };
 

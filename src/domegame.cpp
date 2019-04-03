@@ -8,12 +8,15 @@ DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
 
 void DomeGame::draw() const{
 	myScene->draw();
+    for (int i = 0; i < players.size(); i++){
+        players[i]->render();
+    }
 }
 
 void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
-	sgct::TextureManager::instance()->loadTexture("background", "background.png", true);
+	sgct::TextureManager::instance()->loadTexture("background", "../background.png", true);
 
 	// Enable some openGL stuff
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -31,4 +34,12 @@ void DomeGame::init() {
 	glDisable(GL_DEPTH_TEST);
 
 	std::cout << "johan was here xD" << std::endl;
+}
+
+void DomeGame::addPlayer(Player * newPlayer) {
+    players.push_back(newPlayer);
+}
+
+void DomeGame::renderPlayer(Player * newPlayer) {
+    newPlayer->render();
 }

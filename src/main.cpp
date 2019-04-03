@@ -8,17 +8,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <libwebsockets.h>
 #include "./ServerHandler.hpp"
+#include "./boxtest.hpp"
 #include "./Quad.hpp"
 #include "./Scene.hpp"
 #include "./Player.hpp"
 #include "./DomeGame.hpp"
+#include "./ModelLoader.hpp"
 
 
 sgct::Engine * gEngine;
 DomeGame * domeGame;
-Player * test;
+
+boxtest * box;
 
 void myDrawFun();
 void myPreSyncFun();
@@ -32,7 +34,7 @@ sgct::SharedDouble curr_time(0.0);
 
 float speed = 0.0f;
 
-float STEPLENGTH = 0.9f;
+float STEPLENGTH = 0.1f;
 
 void getServerMsg(const char * msg, size_t len)
 {
@@ -70,7 +72,14 @@ int main(int argc, char* argv[])
     // Allocate
     gEngine = new sgct::Engine(argc, argv);
 	domeGame = new DomeGame(gEngine);
-    test = new Player();
+    
+    Player * test = new Player();
+    Player * test1 = new Player();
+    
+    domeGame->addPlayer(test);
+    domeGame->addPlayer(test1);
+
+	box = new boxtest();
 
     // Bind your functions
 	gEngine->setInitOGLFunction(myInitOGLFun);
@@ -100,7 +109,7 @@ int main(int argc, char* argv[])
 void myInitOGLFun() {
     std::cout << "Init started.." << std::endl;
     domeGame->init();
-    sgct::TextureManager::instance()->loadTexture("player", "player.png", true);
+    sgct::TextureManager::instance()->loadTexture("player", "../player.png", true);
     std::cout << "Init DONE!" << std::endl;
 }
 
@@ -108,7 +117,7 @@ void myDrawFun()
 {
     glRotatef(static_cast<float>(curr_time.getVal()) * speed, 0.0f, 1.0f, 0.0f);
 	domeGame->draw();
-    test->render();
+	box->draw();
 }
 
 void myPreSyncFun()
@@ -140,18 +149,36 @@ void keyCallback(int key, int action)
         switch( key )
         {
             case 'A':
-                    test->setPosition(STEPLENGTH, 0.0f);
-
+                    domeGame->players[0]->setPosition(STEPLENGTH, 0.0f);
+					box->Box_x -= 0.2f;
                 break;
-            case 'S':
-                    test->setPosition(-STEPLENGTH, 0.0f);
+            case 'D':
+                    domeGame->players[0]->setPosition(-STEPLENGTH, 0.0f);
+					box->Box_x += 0.2f;
                 break;
             case 'W':
-                    test->setPosition(0.0f, STEPLENGTH);
+                    domeGame->players[0]->setPosition(0.0f, STEPLENGTH);
+					box->Box_z -= 0.2f;
 				break;
-            case 'Z':
-                    test->setPosition(0.0f, -STEPLENGTH);
+            case 'S':
+                    domeGame->players[0]->setPosition(0.0f, -STEPLENGTH);
+					box->Box_z += 0.2f;
                 break;
+			case SGCT_KEY_SPACE:
+					box->Box_y += 0.2f;
+				break;
+			case SGCT_KEY_LCTRL:
+					box->Box_y -= 0.2f;
+				break;
+			case 'Z':
+					box->Box_scale += 0.1f;
+				break;
+			case 'X':
+					box->Box_scale -= 0.1f;
+				break;
+			case 'L':
+				std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << box->Box_scale << "\n";
+				break;
         }
     }
 }

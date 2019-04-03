@@ -1,3 +1,6 @@
+#ifndef Player_hpp
+#define Player_hpp
+
 #include <iostream>
 #include <math.h>
 #include "./Quad.hpp"
@@ -18,7 +21,7 @@ public:
     
     float getPhi();
     
-    void render();
+    void render() const;
     
 private:
     //Spawns new players at origin
@@ -31,4 +34,5 @@ private:
     
 };
 
+#endif // PLAYER
 

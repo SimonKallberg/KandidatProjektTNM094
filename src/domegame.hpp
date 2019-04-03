@@ -1,9 +1,12 @@
-//#include "Player.hpp"
+#include "./Player.hpp"
 #include "./Scene.hpp"
 #include <stdlib.h>
 #include <stdio.h>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
+#include <algorithm>  // for_each
+#include <functional> // bind
 #ifndef DOMEGAME
 #define DOMEGAME
 
@@ -14,9 +17,13 @@ public:
     
     void init();
     void draw() const;
+    void addPlayer(Player * newPlayer);
+    void renderPlayer(Player * newPlayer);
+    
     size_t textureHandle;
     Scene * myScene;
-
+    std::vector<Player*> players;
+    
 private:
     
 };

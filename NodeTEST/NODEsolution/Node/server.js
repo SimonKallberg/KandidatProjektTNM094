@@ -100,6 +100,7 @@ wsServer.on('request', function (request) {
             playerArray.push({
                 rAddress: connection.socket.remoteAddress,
                 name: 'player' + (playerArray.length + 1),
+                id: (playerArray.length + 1),
                 controls: '0.0 0.0 0.0 0.0'
             });
             if (gameSocket) {
@@ -115,15 +116,20 @@ wsServer.on('request', function (request) {
                 arg = message.utf8Data.split(',');
           
                 if ( arg[0]== "info") {
-                    name = arg[1];
+                    name = playerArray[playerArray.map(function (p) { return p.rAddress; }).indexOf(connection.socket.remoteAddress)].name = arg[1];
                     weapon = arg[2];
-                    number = playerArray.length + 1;
+                    number = playerArray[playerArray.map(function (p) { return p.rAddress; }).indexOf(connection.socket.remoteAddress)].id;
                     connection.send(['changeBackground', number]);
                     console.log(name, weapon, number, "change person");
                 }
                 //when messege is called from client playbutton.
                 else if (arg[0] == "message") {
-                    console.log(arg[1], name);
+                    //Skickar controller till gamesocket
+                    if (gameSocket) {
+                        gameSocket.send("C " + arg[1] + number);
+                    }
+                    console.log(arg[1], name, number);
+                    
                 }
                
                 /* if (message.type === 'utf8') {

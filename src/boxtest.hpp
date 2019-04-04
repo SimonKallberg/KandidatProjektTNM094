@@ -5,7 +5,7 @@ class boxtest {
 public:
 	float Box_x = 0.0f;
 	float Box_y = 0.0f;
-	float Box_z = 0.0f;
+	float Box_z = -5.0f;
 	float Box_scale = 1.0f;
 	ModelLoader *test_box;
 	boxtest() {

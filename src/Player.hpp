@@ -11,11 +11,18 @@ public:
     
     Player();
     
-    Player(int in_theta, int in_phi, int in_dir);
+    Player(float in_theta, float in_phi, float in_dir);
     
     ~Player();
     
+	// used for spawning maybe
     void setPosition(float x, float y);
+
+	// set controls from server message
+	void setControls(int turn);
+
+	// moving the player, prob collision testing etc as well
+	void update();
     
     float getTheta();
     
@@ -24,14 +31,26 @@ public:
     void render() const;
     
 private:
+	// player avatar image(sprite is a word for an in game image)
+	Quad *sprite = new Quad("player", 0.1f, 0.1f);
+
+	const float RADIUS = 7.4f;
+
+	float speed = 0.2f;
+	float turn_speed = 0.05f;
+
     //Spawns new players at origin
     float theta = 0;
     float phi = 0;
-    //float score;
-    float direction = 0; //angle unit cirle
-    Quad *texture = new Quad("player", 0.1f, 0.1f);
-    const float RADIUS = 7.4f;
-    
+
+	// velocities
+	float v_theta = 0;
+	float v_phi = 0;
+
+    float direction = 0; //angle(degrees)  0 = straight up, 90 = right
+
+	// controls, -1 for left, 1 for right, 0 if it's not
+	int c_turn = 0;
 };
 
 #endif // PLAYER

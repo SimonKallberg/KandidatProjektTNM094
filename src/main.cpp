@@ -45,21 +45,15 @@ void getServerMsg(const char * msg, size_t len)
 	{
 		std::cout << "PLAYER ADDED\n";
 	}
-	else if (msgType == 'C') // controls were sent  (currently setup for player_amount x controls_size, as in one C message sends all players controls)
+	else if (msgType == 'C') // controls were sent for one player
 	{
 		std::cout << "controls received:\n";
-		int playerIndex = 0;
-		while (true) {
-			float controls[4];
-			for (int i = 0; i < 4; i++) {
-				strm >> controls[i];
-			}
-			if (!strm)
-				break;
-
-			std::cout << controls[0] << ", " << controls[1] << ", " << controls[2] << ", " << controls[3] << "\n";
-			// handle controls in controls[];
-		}
+		int playerIndex = -1;
+		strm >> playerIndex;
+		int turn = 0;
+		strm >> turn;
+		std::cout << "TURN:" << turn << "\n";
+		domeGame->players[playerIndex]->setControls(turn);
 	}
 }
 
@@ -129,6 +123,7 @@ void myPreSyncFun()
         curr_time.setVal(sgct::Engine::getTime());
 
 		ServerHandler::service();
+		domeGame->updatePlayers();
     }
 }
 
@@ -149,11 +144,17 @@ void keyCallback(int key, int action)
         switch( key )
         {
             case 'A':
-                    domeGame->players[0]->setPosition(STEPLENGTH, 0.0f);
+					if(action == SGCT_PRESS)
+						domeGame->players[0]->setControls(-1);
+					if (action == SGCT_RELEASE)
+						domeGame->players[0]->setControls(0);
 					box->Box_x -= 0.2f;
                 break;
             case 'D':
-                    domeGame->players[0]->setPosition(-STEPLENGTH, 0.0f);
+				if (action == SGCT_PRESS)
+					domeGame->players[0]->setControls(1);
+				if (action == SGCT_RELEASE)
+					domeGame->players[0]->setControls(0);
 					box->Box_x += 0.2f;
                 break;
             case 'W':

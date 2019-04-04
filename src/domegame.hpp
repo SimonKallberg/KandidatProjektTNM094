@@ -18,6 +18,7 @@ public:
     void init();
     void draw() const;
     void addPlayer(Player * newPlayer);
+	void updatePlayers();
     void renderPlayer(Player * newPlayer);
     
     size_t textureHandle;

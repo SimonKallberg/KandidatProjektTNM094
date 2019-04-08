@@ -26,11 +26,6 @@ void Player::setPosition(float x, float y){
     direction = x+y;
 }
 
-void Player::setControls(int turn) {
-	c_turn = turn;
-
-}
-
 void Player::shoot() {
     Bullet * newBullet = new Bullet(phi, theta, direction);
     bullets->push_back(newBullet);

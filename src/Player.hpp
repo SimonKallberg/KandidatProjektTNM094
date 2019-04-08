@@ -20,9 +20,6 @@ public:
     
 	// used for spawning maybe
     void setPosition(float x, float y);
-
-	// set controls from server message
-	void setControls(int turn);
     
     void shoot();
 
@@ -59,8 +56,6 @@ private:
     float direction = 0; //angle(degrees)  0 = straight up, 90 = right
 
 	std::string playerName;
-	// controls, -1 for left, 1 for right, 0 if it's not
-	int c_turn = 0;
     
     //bullet list
     std::vector<Bullet*> * bullets = nullptr;

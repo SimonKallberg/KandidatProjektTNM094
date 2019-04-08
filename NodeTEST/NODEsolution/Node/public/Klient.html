@@ -19,7 +19,7 @@
             <script>
 
                 var name;
-                var socket = new WebSocket('ws://172.20.10.3:80/');
+                var socket = new WebSocket('ws://172.20.10.2:80/');
 
                 //standard ändra?
                 socket.onopen = function (event) {
@@ -102,16 +102,16 @@
     <!--Game Viwe-->
     <div id="gameView">
         <div id="leftBox">
-            <div class="Button" id="fire" ontouchstart="message('fireStart')" ontouchend="message('fireEnd')">
+            <div class="Button" id="fire" ontouchstart="message('F1')" ontouchend="message('F0')">
             </div>
 
         </div>
         <div id="rightBox">
-            <div class="Button" id="right" ontouchstart="message('rightStart')" ontouchend="message('rightEnd')">
+            <div class="Button" id="right" ontouchstart="message('R1')" ontouchend="message('R0')">
 
             </div>
 
-            <div class="Button" id="left" ontouchstart="message('leftStart')" ontouchend="message('leftEnd')">
+            <div class="Button" id="left" ontouchstart="message('L1')" ontouchend="message('L0')">
 
             </div>
         </div>

@@ -8,7 +8,7 @@ DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
 
 void DomeGame::draw() const{
 	myScene->draw();
-    for (int i = 0; i < players.size(); i++){
+    for (unsigned int i = 0; i < players.size(); i++){
         players[i]->render();
     }
 }
@@ -42,7 +42,7 @@ void DomeGame::addPlayer(Player * newPlayer) {
 
 void DomeGame::updatePlayers() {
 	//myScene->draw();
-	for (int i = 0; i < players.size(); i++) {
+	for (unsigned int i = 0; i < players.size(); i++) {
 		players[i]->update();
 	}
 }

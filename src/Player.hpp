@@ -9,7 +9,7 @@ class Player {
 
 public:
     
-    Player();
+    Player(std::string &name);
     
     Player(float in_theta, float in_phi, float in_dir);
     
@@ -17,9 +17,6 @@ public:
     
 	// used for spawning maybe
     void setPosition(float x, float y);
-
-	// set controls from server message
-	void setControls(int turn);
 
 	// moving the player, prob collision testing etc as well
 	void update();
@@ -29,6 +26,10 @@ public:
     float getPhi();
     
     void render() const;
+
+	// controls, 1 for pressed, 0 if it's not
+	int c_left = 0;
+	int c_right = 0;
     
 private:
 	// player avatar image(sprite is a word for an in game image)
@@ -49,8 +50,7 @@ private:
 
     float direction = 0; //angle(degrees)  0 = straight up, 90 = right
 
-	// controls, -1 for left, 1 for right, 0 if it's not
-	int c_turn = 0;
+	std::string playerName;
 };
 
 #endif // PLAYER

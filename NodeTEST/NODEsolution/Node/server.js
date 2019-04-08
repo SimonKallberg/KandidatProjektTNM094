@@ -99,14 +99,10 @@ wsServer.on('request', function (request) {
         if (playerArray.map(function (p) { return p.rAddress; }).indexOf(connection.socket.remoteAddress) === -1) {
             playerArray.push({
                 rAddress: connection.socket.remoteAddress,
-                name: 'player' + (playerArray.length + 1),
-                id: (playerArray.length + 1),
+                name: 'player' + playerArray.length,
+                id: playerArray.length,
                 controls: '0.0 0.0 0.0 0.0'
             });
-            if (gameSocket) {
-                gameSocket.send('P');
-                console.log('notified GAME that player was added');
-            }
 
         }
 
@@ -115,20 +111,26 @@ wsServer.on('request', function (request) {
             if (message.type === 'utf8') {
                 arg = message.utf8Data.split(',');
           
-                if ( arg[0]== "info") {
+                if ( arg[0] === "info") {
                     name = playerArray[playerArray.map(function (p) { return p.rAddress; }).indexOf(connection.socket.remoteAddress)].name = arg[1];
                     weapon = arg[2];
                     number = playerArray[playerArray.map(function (p) { return p.rAddress; }).indexOf(connection.socket.remoteAddress)].id;
                     connection.send(['changeBackground', number]);
                     console.log(name, weapon, number, "change person");
+                    if (gameSocket) {
+                        gameSocket.send('P ' + arg[1]);
+                        console.log('notified GAME that player was added');
+                    } else {
+                        console.log('WARNING: NO GAME CONNECTION\nDANGER DANGER DANGER');
+                    }
                 }
                 //when messege is called from client playbutton.
-                else if (arg[0] == "message") {
+                else if (arg[0] === "message") {
                     //Skickar controller till gamesocket
                     if (gameSocket) {
-                        gameSocket.send("C " + arg[1] + number);
+                        gameSocket.send("C" + number + "" + arg[1]);
                     }
-                    console.log(arg[1], name, number);
+                    console.log("sending: C" + number + "" + arg[1]);
                     
                 }
                
@@ -184,7 +186,7 @@ function updateGameControls() {
         playerArray.forEach(function (p) {
             msg += p.controls + '\n';
         });
-        gameSocket.send('C\n' + msg);
+        //gameSocket.send('C\n' + msg);
         //console.log('Sending game:\n' + msg);
     }
 }

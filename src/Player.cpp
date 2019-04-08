@@ -1,8 +1,10 @@
 #include "./Player.hpp"
 
 
-Player::Player(){
-    
+Player::Player(std::string & name)
+: playerName(name)
+{
+   
 }
 
 Player::Player(float in_theta, float in_phi, float in_dir)
@@ -20,13 +22,8 @@ void Player::setPosition(float x, float y){
     direction = x+y;
 }
 
-void Player::setControls(int turn) {
-	c_turn = turn;
-
-}
-
 void Player::update() {
-	direction += turn_speed * c_turn;
+	direction += turn_speed * (c_right - c_left);
 	v_phi = speed * sin(direction);
 	v_theta = speed * cos(direction);
 	//theta += ; //Placeholders for changing position

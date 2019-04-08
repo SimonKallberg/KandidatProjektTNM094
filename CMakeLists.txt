@@ -16,6 +16,8 @@ add_executable("${PROJECT_NAME}"
 "src/ModelLoader.hpp"
 "src/ModelLoader.cpp"
 "src/Player.cpp"
+"src/Bullet.cpp"
+"src/Bullet.hpp"
 )
 
 target_compile_features("${PROJECT_NAME}" PUBLIC cxx_std_11)

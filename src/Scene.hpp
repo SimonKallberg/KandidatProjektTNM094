@@ -10,7 +10,7 @@ public:
     // Constructor
     Scene();
 
-    void draw() const;
+    void render() const;
 private:
     Quad *background;
 	ModelLoader *test_bg;

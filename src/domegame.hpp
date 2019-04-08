@@ -1,3 +1,6 @@
+#ifndef DOMEGAME
+#define DOMEGAME
+
 #include "./Player.hpp"
 #include "./Scene.hpp"
 #include <stdlib.h>
@@ -5,8 +8,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
-#ifndef DOMEGAME
-#define DOMEGAME
+
 
 class DomeGame{
 public:
@@ -14,14 +16,14 @@ public:
     DomeGame(sgct::Engine * gEngine);
     
     void init();
-    void draw() const;
-    void addPlayer(Player * newPlayer);
-	void updatePlayers();
-    void renderPlayer(Player * newPlayer);
+    void render() const;
+    void addPlayer();
+	void update();
     
     size_t textureHandle;
     Scene * myScene;
     std::vector<Player*> players;
+    std::vector<Bullet*> bullets;
     
 private:
     

@@ -16,7 +16,7 @@ public:
     Quad(const std::string& texture, float s);
     
     // Handles the drawing of an object
-    void draw(float x=0.0f, float y=0.0f, float z=0.0f) const;
+    void render(float x=0.0f, float y=0.0f, float z=0.0f) const;
     
     //Sets size of player
     void setSize(float s);

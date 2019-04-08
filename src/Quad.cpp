@@ -16,7 +16,7 @@ textureName(t), size(s) {
 }
 
 // Draw player based on position and MVP matrix
-void Quad::draw(float x, float y, float z) const {
+void Quad::render(float x, float y, float z) const {
     // Set the active texture unit
     glActiveTexture(GL_TEXTURE0);
     

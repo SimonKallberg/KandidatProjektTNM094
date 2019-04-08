@@ -1,22 +1,24 @@
 #include "./DomeGame.hpp"
 
-
 DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
 	myScene = new Scene();
 	std::cout << "DomeGame gjord" << std::endl;
 };
 
-void DomeGame::draw() const{
-	myScene->draw();
+void DomeGame::render() const{
+	myScene->render();
     for (int i = 0; i < players.size(); i++){
         players[i]->render();
+    }
+    for (int i = 0; i < bullets.size(); i++){
+        bullets[i]->render();
     }
 }
 
 void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
-	sgct::TextureManager::instance()->loadTexture("background", "../background.png", true);
+	sgct::TextureManager::instance()->loadTexture("background", "background.png", true);
 
 	// Enable some openGL stuff
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -36,17 +38,20 @@ void DomeGame::init() {
 	std::cout << "johan was here xD" << std::endl;
 }
 
-void DomeGame::addPlayer(Player * newPlayer) {
+void DomeGame::addPlayer() {
+    Player * newPlayer = new Player(&bullets);
     players.push_back(newPlayer);
 }
 
-void DomeGame::updatePlayers() {
-	//myScene->draw();
+void DomeGame::update() {
 	for (int i = 0; i < players.size(); i++) {
 		players[i]->update();
 	}
-}
-
-void DomeGame::renderPlayer(Player * newPlayer) {
-    newPlayer->render();
+    for (int i = 0; i < bullets.size(); i++) {
+        
+        if(!bullets[i]->update())
+        {
+            bullets.erase(bullets.begin() + i);
+        }
+    }
 }

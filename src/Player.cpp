@@ -1,12 +1,14 @@
 #include "./Player.hpp"
 
 
-Player::Player(){
+Player::Player(std::vector<Bullet*> * inBulletList)
+: bullets(inBulletList)
+{
     
 }
 
-Player::Player(float in_theta, float in_phi, float in_dir)
-: theta(in_theta), phi(in_phi), direction(in_dir)
+Player::Player(float in_theta, float in_phi, float in_dir, std::vector<Bullet*> * inBulletList)
+: theta(in_theta), phi(in_phi), direction(in_dir), bullets(inBulletList)
 {
 
 }
@@ -23,6 +25,11 @@ void Player::setPosition(float x, float y){
 void Player::setControls(int turn) {
 	c_turn = turn;
 
+}
+
+void Player::shoot() {
+    Bullet * newBullet = new Bullet(phi, theta, direction);
+    bullets->push_back(newBullet);
 }
 
 void Player::update() {
@@ -54,7 +61,7 @@ void Player::render() const{
 	glTranslatef(0, 0, -RADIUS);
 	glPushMatrix();
 	glRotatef(direction*180/3.14, 0, 0, -1);
-	sprite->draw(0, 0, 0);
+	sprite->render(0, 0, 0);
 	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();

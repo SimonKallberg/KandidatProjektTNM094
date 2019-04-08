@@ -4,9 +4,9 @@
 #include <math.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <stdlib.h>
 #include <stdio.h>
+#include <string>
 
 #include "./ServerHandler.hpp"
 #include "./boxtest.hpp"
@@ -15,7 +15,6 @@
 #include "./Player.hpp"
 #include "./DomeGame.hpp"
 #include "./ModelLoader.hpp"
-
 
 sgct::Engine * gEngine;
 DomeGame * domeGame;
@@ -57,7 +56,6 @@ void getServerMsg(const char * msg, size_t len)
 	}
 }
 
-
 int main(int argc, char* argv[])
 {
 	ServerHandler::setMessageCallback(getServerMsg);
@@ -67,11 +65,8 @@ int main(int argc, char* argv[])
     gEngine = new sgct::Engine(argc, argv);
 	domeGame = new DomeGame(gEngine);
     
-    Player * test = new Player();
-    Player * test1 = new Player();
-    
-    domeGame->addPlayer(test);
-    domeGame->addPlayer(test1);
+    domeGame->addPlayer();
+    domeGame->addPlayer();
 
 	box = new boxtest();
 
@@ -103,14 +98,14 @@ int main(int argc, char* argv[])
 void myInitOGLFun() {
     std::cout << "Init started.." << std::endl;
     domeGame->init();
-    sgct::TextureManager::instance()->loadTexture("player", "../player.png", true);
+    sgct::TextureManager::instance()->loadTexture("player", "player.png", true);
     std::cout << "Init DONE!" << std::endl;
 }
 
 void myDrawFun()
 {
     glRotatef(static_cast<float>(curr_time.getVal()) * speed, 0.0f, 1.0f, 0.0f);
-	domeGame->draw();
+	domeGame->render();
 	box->draw();
 }
 
@@ -123,7 +118,7 @@ void myPreSyncFun()
         curr_time.setVal(sgct::Engine::getTime());
 
 		ServerHandler::service();
-		domeGame->updatePlayers();
+		domeGame->update();
     }
 }
 
@@ -180,6 +175,10 @@ void keyCallback(int key, int action)
 			case 'L':
 				std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << box->Box_scale << "\n";
 				break;
+            case 'K':
+                if(action == SGCT_PRESS)
+                    domeGame->players[0]->shoot();
+                break;
         }
     }
 }

@@ -4,14 +4,17 @@
 #include <iostream>
 #include <math.h>
 #include "./Quad.hpp"
+#include "Bullet.hpp"
 
 class Player {
 
 public:
     
-    Player();
+   // Player() = delete;
     
-    Player(float in_theta, float in_phi, float in_dir);
+    Player(std::vector<Bullet*> * inBulletList);
+    
+    Player(float in_theta, float in_phi, float in_dir, std::vector<Bullet*> * inBulletList);
     
     ~Player();
     
@@ -20,6 +23,8 @@ public:
 
 	// set controls from server message
 	void setControls(int turn);
+    
+    void shoot();
 
 	// moving the player, prob collision testing etc as well
 	void update();
@@ -32,11 +37,11 @@ public:
     
 private:
 	// player avatar image(sprite is a word for an in game image)
-	Quad *sprite = new Quad("player", 0.1f, 0.1f);
+	Quad *sprite = new Quad("player", 0.2f, 0.2f);
 
 	const float RADIUS = 7.4f;
 
-	float speed = 0.2f;
+	float speed = 0.1f;
 	float turn_speed = 0.05f;
 
     //Spawns new players at origin
@@ -51,6 +56,9 @@ private:
 
 	// controls, -1 for left, 1 for right, 0 if it's not
 	int c_turn = 0;
+    
+    //bullet list
+    std::vector<Bullet*> * bullets = nullptr;
 };
 
 #endif // PLAYER

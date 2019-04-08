@@ -36,4 +36,13 @@ void Bullet::render(){
     
 }
 
+float Bullet::getPhi()
+{
+    return phi;
+}
+float Bullet::getTheta()
+{
+    return theta;
+}
+
 

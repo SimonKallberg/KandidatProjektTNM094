@@ -44,6 +44,11 @@ float Player::getPhi(){
     return phi;
 }
 
+void Player::decreaseScore(){
+    score -= 1;
+    std::cout << "The player" << playerName << "is" <<  score << std::endl;
+}
+
 
 void Player::render() const{
     

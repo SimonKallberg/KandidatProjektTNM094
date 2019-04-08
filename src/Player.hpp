@@ -28,6 +28,8 @@ public:
     
     float getPhi();
     
+    void decreaseScore();
+    
     void render() const;
 
 	// controls, 1 for pressed, 0 if it's not
@@ -42,6 +44,8 @@ private:
 
 	float speed = 0.1f;
 	float turn_speed = 0.05f;
+    
+    int score = 0;
 
     //Spawns new players at origin
     float theta = 0;

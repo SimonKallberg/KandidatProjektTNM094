@@ -12,6 +12,8 @@ public:
     
     bool update();
     void render();
+    float getPhi();
+    float getTheta();
     
 
     

@@ -50,8 +50,22 @@ void DomeGame::addPlayer(std::string &name) {
 }
 
 void DomeGame::update() {
+    float sizeOfBullet = 0.1f;
+    
 	for (int i = 0; i < players.size(); i++) {
 		players[i]->update();
+        for(int k = 0; k < bullets.size(); k++)
+        {
+            //If the bullet hits, decrease score
+            if(bullets[k]->getPhi() < players[i]->getPhi() + sizeOfBullet &&
+               bullets[k]->getPhi() > players[i]->getPhi() - sizeOfBullet &&
+               bullets[k]->getTheta() < players[i]->getTheta() + sizeOfBullet &&
+               bullets[k]->getTheta() > players[i]->getTheta() - sizeOfBullet)
+            {
+                players[i]->decreaseScore();
+            }
+               
+        }
 	}
     for (int i = 0; i < bullets.size(); i++) {
         

@@ -16,7 +16,7 @@ void DomeGame::draw() const{
 void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
-	sgct::TextureManager::instance()->loadTexture("background", "background.png", true);
+	sgct::TextureManager::instance()->loadTexture("background", "../background.png", true);
 
 	// Enable some openGL stuff
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -31,13 +31,20 @@ void DomeGame::init() {
 	glCullFace(GL_BACK);
 	// The polygon winding is counter clockwise (CCW)
 	glFrontFace(GL_CCW);
-	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 
 	std::cout << "johan was here xD" << std::endl;
 }
 
 void DomeGame::addPlayer(Player * newPlayer) {
     players.push_back(newPlayer);
+}
+
+void DomeGame::updatePlayers() {
+	//myScene->draw();
+	for (int i = 0; i < players.size(); i++) {
+		players[i]->update();
+	}
 }
 
 void DomeGame::renderPlayer(Player * newPlayer) {

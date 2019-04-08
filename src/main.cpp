@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <libwebsockets.h>
 #include "./ServerHandler.hpp"
+#include "./boxtest.hpp"
 #include "./Quad.hpp"
 #include "./Scene.hpp"
 #include "./Player.hpp"
@@ -19,6 +19,8 @@
 
 sgct::Engine * gEngine;
 DomeGame * domeGame;
+
+boxtest * box;
 
 void myDrawFun();
 void myPreSyncFun();
@@ -43,21 +45,15 @@ void getServerMsg(const char * msg, size_t len)
 	{
 		std::cout << "PLAYER ADDED\n";
 	}
-	else if (msgType == 'C') // controls were sent  (currently setup for player_amount x controls_size, as in one C message sends all players controls)
+	else if (msgType == 'C') // controls were sent for one player
 	{
 		std::cout << "controls received:\n";
-		int playerIndex = 0;
-		while (true) {
-			float controls[4];
-			for (int i = 0; i < 4; i++) {
-				strm >> controls[i];
-			}
-			if (!strm)
-				break;
-
-			std::cout << controls[0] << ", " << controls[1] << ", " << controls[2] << ", " << controls[3] << "\n";
-			// handle controls in controls[];
-		}
+		int playerIndex = -1;
+		strm >> playerIndex;
+		int turn = 0;
+		strm >> turn;
+		std::cout << "TURN:" << turn << "\n";
+		domeGame->players[playerIndex]->setControls(turn);
 	}
 }
 
@@ -76,6 +72,8 @@ int main(int argc, char* argv[])
     
     domeGame->addPlayer(test);
     domeGame->addPlayer(test1);
+
+	box = new boxtest();
 
     // Bind your functions
 	gEngine->setInitOGLFunction(myInitOGLFun);
@@ -105,7 +103,7 @@ int main(int argc, char* argv[])
 void myInitOGLFun() {
     std::cout << "Init started.." << std::endl;
     domeGame->init();
-    sgct::TextureManager::instance()->loadTexture("player", "player.png", true);
+    sgct::TextureManager::instance()->loadTexture("player", "../player.png", true);
     std::cout << "Init DONE!" << std::endl;
 }
 
@@ -113,6 +111,7 @@ void myDrawFun()
 {
     glRotatef(static_cast<float>(curr_time.getVal()) * speed, 0.0f, 1.0f, 0.0f);
 	domeGame->draw();
+	box->draw();
 }
 
 void myPreSyncFun()
@@ -124,6 +123,7 @@ void myPreSyncFun()
         curr_time.setVal(sgct::Engine::getTime());
 
 		ServerHandler::service();
+		domeGame->updatePlayers();
     }
 }
 
@@ -144,18 +144,42 @@ void keyCallback(int key, int action)
         switch( key )
         {
             case 'A':
-                    domeGame->players[0]->setPosition(STEPLENGTH, 0.0f);
-
+					if(action == SGCT_PRESS)
+						domeGame->players[0]->setControls(-1);
+					if (action == SGCT_RELEASE)
+						domeGame->players[0]->setControls(0);
+					box->Box_x -= 0.2f;
                 break;
-            case 'S':
-                    domeGame->players[0]->setPosition(-STEPLENGTH, 0.0f);
+            case 'D':
+				if (action == SGCT_PRESS)
+					domeGame->players[0]->setControls(1);
+				if (action == SGCT_RELEASE)
+					domeGame->players[0]->setControls(0);
+					box->Box_x += 0.2f;
                 break;
             case 'W':
                     domeGame->players[0]->setPosition(0.0f, STEPLENGTH);
+					box->Box_z -= 0.2f;
 				break;
-            case 'Z':
+            case 'S':
                     domeGame->players[0]->setPosition(0.0f, -STEPLENGTH);
+					box->Box_z += 0.2f;
                 break;
+			case SGCT_KEY_SPACE:
+					box->Box_y += 0.2f;
+				break;
+			case SGCT_KEY_LCTRL:
+					box->Box_y -= 0.2f;
+				break;
+			case 'Z':
+					box->Box_scale += 0.1f;
+				break;
+			case 'X':
+					box->Box_scale -= 0.1f;
+				break;
+			case 'L':
+				std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << box->Box_scale << "\n";
+				break;
         }
     }
 }

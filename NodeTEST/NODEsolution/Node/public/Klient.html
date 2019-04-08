@@ -9,40 +9,112 @@
     <title>AWario</title>
 
     <link rel="stylesheet" href="StyleSheet.css">
-    <script src="/socket.io/socket.io.js"></script>
+    
 </head>
 <body>
-    <div id="socketState">
+            <div id="socketState">
+
+
+            </div>
+            <script>
+
+                var name;
+                var socket = new WebSocket('ws://172.20.10.3:80/');
+
+                //standard ändra?
+                socket.onopen = function (event) {
+                    console.log('Connection is open ...');
+                };
+                socket.onerror = function (err) {
+                    console.log('err: ', err);
+                }
+                socket.onclose = function () {
+                    console.log("Connection is closed...");
+                }
+                //här tars alla komentarer från websocket emot
+                socket.onmessage = function (event) {
+                    arg = event.data.split(',');
         
-     
-    </div>
-    <script>
-        
-        var name;
-        var socket = io();
-        socket.emit('connection');
-        socket.on('getName', function () {
-            person = prompt("Please enter your name", "Harry Potter");
-            if (person == null || person == "") {
-                socket.emit('userName', 'Petra');
-            }
-            else {
-                socket.emit('userName', person);
-            }
-        });
-        
-        function message(arg) {
-            socket.emit('message', arg);
-        }
+                    if (arg[0] == "changeBackground") {
+                        url = "url(Images/Avatars/avatar" + arg[1] + ".png)";
+                        document.getElementById("gameView").style.backgroundImage = url;
+                        console.log(url);
+                    }
+                    else if (arg[0] == "end") {
+                        //do something
+                    }
+                };
+                
+                //save name and make change view from name to weapon
+                function nameFun() {
+                    name = document.getElementById("nameField").value.trim();
+                    name = document.getElementById("nameField").value.trim();
+                    if (name.toLowerCase().includes("bajs") || true == name.toLowerCase().includes("kuk")) {
+                        document.getElementById("nameField").placeholder = "Va fan det där är inte ditt namn!";
+                    }
+                    else if (!(name == null || name == "" || name == "Name" || name == "Skriv in ditt namn" || name == "Oj det där var inte ditt namn!" || name == "Va fan det där är inte ditt namn!") ){
+                        document.getElementById("nameView").style.visibility = "hidden";
+                        document.getElementById("weaponView").style.visibility = "visible";
+                    }
+                    else {
+                        document.getElementById("nameField").placeholder = "Oj det där var inte ditt namn!";
+                    }    
+                }
+                //save vepon and make change view from vepon to game
+                function weaponFun(arg) {
+                    socket.send(["info", name, arg]); //["info", name, arg]
+                    document.getElementById("weaponView").style.visibility = "hidden";
+                    document.getElementById("gameView").style.visibility = "visible";
+                }
+                
+                //Send a messege arg that is called from the playbuttons
+                function message(arg) {
+                    socket.send(['message', arg]);
+                }
 
     </script>
+    <!--Choose Name-->
+    <div id="nameView">
+        <div class="CenterBox">
+            Name:<br>
+            <input id="nameField" type="text" name="name" placeholder="Skriv in ditt namn">
+            <br><br>
+            <button id="nameButton" onclick="nameFun()"> Nästa </button>
+        </div>
+    </div>
 
-    <button class="button" id="right" ontouchstart="message('right_start')" ontouchend="message('right_end')">
-        Right
-    </button>
-    <button class="button" id="left" ontouchstart="message('left_start')" ontouchend="message('left_end')">
-        Left
-    </button>
+    <!--Choose vepon-->
+    <div id="weaponView">
+        <div class="CenterBox" id="veponBox">
+            weapon view <br />
+            <div class="Weapon" onclick="weaponFun(1)">
+                vapen 1
+            </div>
+            <div class="Weapon" onclick="weaponFun(2)">
+                vapen 2
+            </div>
+            <div class="Weapon" onclick="weaponFun(3)">
+                vapen 3
+            </div>
+        </div class="CenterBox">
+    </div>
 
+    <!--Game Viwe-->
+    <div id="gameView">
+        <div id="leftBox">
+            <div class="Button" id="fire" ontouchstart="message('fireStart')" ontouchend="message('fireEnd')">
+            </div>
+
+        </div>
+        <div id="rightBox">
+            <div class="Button" id="right" ontouchstart="message('rightStart')" ontouchend="message('rightEnd')">
+
+            </div>
+
+            <div class="Button" id="left" ontouchstart="message('leftStart')" ontouchend="message('leftEnd')">
+
+            </div>
+        </div>
+    </div>
 </body>
 </html>

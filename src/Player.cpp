@@ -5,6 +5,10 @@ Player::Player(std::vector<Bullet*> * inBulletList)
 : bullets(inBulletList)
 {
     
+Player::Player(std::string & name)
+: playerName(name)
+{
+   
 }
 
 Player::Player(float in_theta, float in_phi, float in_dir, std::vector<Bullet*> * inBulletList)
@@ -33,7 +37,7 @@ void Player::shoot() {
 }
 
 void Player::update() {
-	direction += turn_speed * c_turn;
+	direction += turn_speed * (c_right - c_left);
 	v_phi = speed * sin(direction);
 	v_theta = speed * cos(direction);
 	//theta += ; //Placeholders for changing position

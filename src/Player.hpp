@@ -10,7 +10,7 @@ class Player {
 
 public:
     
-   // Player() = delete;
+    Player(std::string &name);
     
     Player(std::vector<Bullet*> * inBulletList);
     
@@ -34,6 +34,10 @@ public:
     float getPhi();
     
     void render() const;
+
+	// controls, 1 for pressed, 0 if it's not
+	int c_left = 0;
+	int c_right = 0;
     
 private:
 	// player avatar image(sprite is a word for an in game image)
@@ -54,6 +58,7 @@ private:
 
     float direction = 0; //angle(degrees)  0 = straight up, 90 = right
 
+	std::string playerName;
 	// controls, -1 for left, 1 for right, 0 if it's not
 	int c_turn = 0;
     

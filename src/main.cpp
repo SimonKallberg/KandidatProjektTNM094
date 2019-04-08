@@ -38,21 +38,35 @@ float STEPLENGTH = 0.1f;
 void getServerMsg(const char * msg, size_t len)
 {
 	std::istringstream strm(msg);
-	char msgType;
+	char msgType = 'N';
 	strm >> msgType;
 	if (msgType == 'P') // player added
 	{
-		std::cout << "PLAYER ADDED\n";
+		std::string name;
+		strm >> name;
+		std::cout << "Player " + name + " added:\n";
+		domeGame->addPlayer(new Player(name));
 	}
-	else if (msgType == 'C') // controls were sent for one player
+	else if (msgType == 'C') // controls were sent for one player, structure: CIBV, for CONTROLS:, playerindex, button, value
 	{
-		std::cout << "controls received:\n";
-		int playerIndex = -1;
+		int playerIndex;
 		strm >> playerIndex;
-		int turn = 0;
-		strm >> turn;
-		std::cout << "TURN:" << turn << "\n";
-		domeGame->players[playerIndex]->setControls(turn);
+		char control;
+		strm >> control; // L, R
+		int value;
+		strm >> value; // 1 0, on off
+		std::cout << "INDEX:" << playerIndex;
+		std::cout << " CONTROL:" << control;
+		std::cout << " VALUE:" << value << "\n";
+		switch (control)
+		{
+			case 'L':
+				domeGame->players[playerIndex]->c_left = value;
+				break;
+			case 'R':
+				domeGame->players[playerIndex]->c_right = value;
+				break;
+		}
 	}
 }
 
@@ -64,9 +78,6 @@ int main(int argc, char* argv[])
     // Allocate
     gEngine = new sgct::Engine(argc, argv);
 	domeGame = new DomeGame(gEngine);
-    
-    domeGame->addPlayer();
-    domeGame->addPlayer();
 
 	box = new boxtest();
 
@@ -139,25 +150,25 @@ void keyCallback(int key, int action)
         switch( key )
         {
             case 'A':
-					if(action == SGCT_PRESS)
+					/*if(action == SGCT_PRESS)
 						domeGame->players[0]->setControls(-1);
 					if (action == SGCT_RELEASE)
-						domeGame->players[0]->setControls(0);
+						domeGame->players[0]->setControls(0);*/
 					box->Box_x -= 0.2f;
                 break;
             case 'D':
-				if (action == SGCT_PRESS)
+				/*if (action == SGCT_PRESS)
 					domeGame->players[0]->setControls(1);
 				if (action == SGCT_RELEASE)
-					domeGame->players[0]->setControls(0);
+					domeGame->players[0]->setControls(0);*/
 					box->Box_x += 0.2f;
                 break;
             case 'W':
-                    domeGame->players[0]->setPosition(0.0f, STEPLENGTH);
+                    //domeGame->players[0]->setPosition(0.0f, STEPLENGTH);
 					box->Box_z -= 0.2f;
 				break;
             case 'S':
-                    domeGame->players[0]->setPosition(0.0f, -STEPLENGTH);
+                    //domeGame->players[0]->setPosition(0.0f, -STEPLENGTH);
 					box->Box_z += 0.2f;
                 break;
 			case SGCT_KEY_SPACE:

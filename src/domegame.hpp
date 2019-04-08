@@ -17,7 +17,7 @@ public:
     
     void init();
     void render() const;
-    void addPlayer();
+    void addPlayer(std::string &name);
 	void update();
     
     size_t textureHandle;

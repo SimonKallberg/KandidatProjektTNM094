@@ -10,11 +10,9 @@ class Player {
 
 public:
     
-    Player(std::string &name);
-    
-    Player(std::vector<Bullet*> * inBulletList);
-    
-    Player(float in_theta, float in_phi, float in_dir, std::vector<Bullet*> * inBulletList);
+    Player(std::string &name, std::vector<Bullet*> * inBulletList);
+
+    Player(float in_theta, float in_phi, float in_dir, std::string &name, std::vector<Bullet*> * inBulletList);
     
     ~Player();
     

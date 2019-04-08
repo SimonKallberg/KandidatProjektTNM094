@@ -45,7 +45,7 @@ void getServerMsg(const char * msg, size_t len)
 		std::string name;
 		strm >> name;
 		std::cout << "Player " + name + " added:\n";
-		domeGame->addPlayer(new Player(name));
+		domeGame->addPlayer(name);
 	}
 	else if (msgType == 'C') // controls were sent for one player, structure: CIBV, for CONTROLS:, playerindex, button, value
 	{

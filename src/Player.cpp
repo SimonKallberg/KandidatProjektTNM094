@@ -1,18 +1,14 @@
 #include "./Player.hpp"
 
 
-Player::Player(std::vector<Bullet*> * inBulletList)
-: bullets(inBulletList)
+Player::Player(std::string & name, std::vector<Bullet*> * inBulletList)
+: playerName(name), bullets(inBulletList)
 {
     
-Player::Player(std::string & name)
-: playerName(name)
-{
-   
 }
 
-Player::Player(float in_theta, float in_phi, float in_dir, std::vector<Bullet*> * inBulletList)
-: theta(in_theta), phi(in_phi), direction(in_dir), bullets(inBulletList)
+Player::Player(float in_theta, float in_phi, float in_dir, std::string& name, std::vector<Bullet*> * inBulletList)
+: theta(in_theta), phi(in_phi), direction(in_dir), playerName(name), bullets(inBulletList)
 {
 
 }
@@ -71,9 +67,6 @@ void Player::render() const{
     // Draws the scene in dome or normal desktop mode
     
     //std::cout << "drawing player..." << std::endl;
-
-   
-    
 }
 
 

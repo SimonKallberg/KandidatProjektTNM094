@@ -36,10 +36,16 @@ void DomeGame::init() {
 	glEnable(GL_DEPTH_TEST);
 
 	std::cout << "johan was here xD" << std::endl;
+    
+    std::string test1 = "Ylva";
+    std::string test2 = "Ylva2";
+    
+    addPlayer(test1);
+    addPlayer(test2);
 }
 
-void DomeGame::addPlayer() {
-    Player * newPlayer = new Player(&bullets);
+void DomeGame::addPlayer(std::string &name) {
+    Player * newPlayer = new Player(name, &bullets);
     players.push_back(newPlayer);
 }
 

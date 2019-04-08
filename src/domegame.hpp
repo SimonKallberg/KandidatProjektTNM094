@@ -5,8 +5,6 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
-#include <algorithm>  // for_each
-#include <functional> // bind
 #ifndef DOMEGAME
 #define DOMEGAME
 

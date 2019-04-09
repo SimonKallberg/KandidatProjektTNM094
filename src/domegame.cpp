@@ -1,4 +1,4 @@
-#include "./DomeGame.hpp"
+#include "./domegame.hpp"
 
 DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
 	myScene = new Scene();

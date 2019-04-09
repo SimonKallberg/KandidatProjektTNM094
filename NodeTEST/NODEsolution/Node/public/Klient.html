@@ -2,77 +2,76 @@
 
 <html lang="sv">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
     <meta name="description" content="Awario- a game for the dome in Visualiseringscentrumet Norröping">
     <meta name="author" content="Group H">
     <meta charset="utf-8" />
     <title>AWario</title>
 
     <link rel="stylesheet" href="StyleSheet.css">
-    
+
 </head>
 <body>
-            <div id="socketState">
+        <script>
+            //Variable
+            var name;
+            //connecting to socket ws:...
+            var socket = new WebSocket('ws://172.20.10.2:80/');
 
+            //standard thigs delete???
+            socket.onopen = function (event) {
+                console.log('Connection is open ...');
+            };
+            socket.onerror = function (err) {
+                console.log('err: ', err);
+            }
+            socket.onclose = function () {
+                console.log("Connection is closed...");
+            }
 
-            </div>
-            <script>
-
-                var name;
-                var socket = new WebSocket('ws://172.20.10.2:80/');
-
-                //standard ändra?
-                socket.onopen = function (event) {
-                    console.log('Connection is open ...');
-                };
-                socket.onerror = function (err) {
-                    console.log('err: ', err);
+            //Messege recived from socket 
+            socket.onmessage = function (event) {
+                arg = event.data.split(' ');
+                //Change background depending on the players id
+                //When the game is ending do something
+                if (arg[0] == "changeBackground") {
+                    url = "url(Images/Avatars/avatar" + arg[1] + ".png)";
+                    document.getElementById("gameView").style.backgroundImage = url;
                 }
-                socket.onclose = function () {
-                    console.log("Connection is closed...");
+                else if (arg[0] == "end") {
+                    //do something
                 }
-                //här tars alla komentarer från websocket emot
-                socket.onmessage = function (event) {
-                    arg = event.data.split(',');
-        
-                    if (arg[0] == "changeBackground") {
-                        url = "url(Images/Avatars/avatar" + arg[1] + ".png)";
-                        document.getElementById("gameView").style.backgroundImage = url;
-                        console.log(url);
-                    }
-                    else if (arg[0] == "end") {
-                        //do something
-                    }
-                };
+            };
                 
-                //save name and make change view from name to weapon
-                function nameFun() {
-                    name = document.getElementById("nameField").value.trim();
-                    name = document.getElementById("nameField").value.trim();
-                    if (name.toLowerCase().includes("bajs") || true == name.toLowerCase().includes("kuk")) {
-                        document.getElementById("nameField").placeholder = "Va fan det där är inte ditt namn!";
-                    }
-                    else if (!(name == null || name == "" || name == "Name" || name == "Skriv in ditt namn" || name == "Oj det där var inte ditt namn!" || name == "Va fan det där är inte ditt namn!") ){
-                        document.getElementById("nameView").style.visibility = "hidden";
-                        document.getElementById("weaponView").style.visibility = "visible";
-                    }
-                    else {
-                        document.getElementById("nameField").placeholder = "Oj det där var inte ditt namn!";
-                    }    
+            //Save name and make change view from name to weapon
+            function nameFun() {
+                name = document.getElementById("nameField").value.trim();
+                //check the input name.
+                if (name.toLowerCase().includes("bajs") || true == name.toLowerCase().includes("kuk")) {
+                    document.getElementById("nameField").placeholder = "Va fan det där är inte ditt namn!";
                 }
-                //save vepon and make change view from vepon to game
-                function weaponFun(arg) {
-                    socket.send(["info", name, arg]); //["info", name, arg]
-                    document.getElementById("weaponView").style.visibility = "hidden";
-                    document.getElementById("gameView").style.visibility = "visible";
+                else if (!(name == null || name == "" || name == "Name" || name == "Skriv in ditt namn" || name == "Oj det där var inte ditt namn!" || name == "Va fan det där är inte ditt namn!" || name.length < 3) ){
+                    document.getElementById("nameView").style.visibility = "hidden";
+                    document.getElementById("weaponView").style.visibility = "visible";
                 }
+                else {
+                    document.getElementById("nameField").placeholder = "Oj det där var inte ditt namn!";
+                }
+            }
+            //save vepon and change view from vepon to game
+            function weaponFun(arg) {
+                socket.send("info "+ name + " " + arg); 
+                document.getElementById("weaponView").style.visibility = "hidden";
+                document.getElementById("gameView").style.visibility = "visible";
+            }
                 
-                //Send a messege arg that is called from the playbuttons
-                function message(arg) {
-                    socket.send(['message', arg]);
-                }
-
+            //Send a messege arg that is called from the playbuttons
+            function message(arg) {
+                socket.send("message "+arg);
+            }
     </script>
+
+
     <!--Choose Name-->
     <div id="nameView">
         <div class="CenterBox">

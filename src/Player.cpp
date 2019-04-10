@@ -50,7 +50,12 @@ float Player::getPhi(){
 
 void Player::decreaseScore(){
     score -= 1;
-    std::cout << "The player" << playerName << "is" <<  score << std::endl;
+    std::cout << "The player" << playerName << " has score " <<  score << std::endl;
+}
+
+void Player::increaseScore(){
+    score += 1;
+    std::cout << "The player" << playerName << " has score " <<  score << std::endl;
 }
 
 

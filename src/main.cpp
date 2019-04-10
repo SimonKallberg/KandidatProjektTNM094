@@ -153,17 +153,17 @@ void keyCallback(int key, int action)
         switch( key )
         {
             case 'A':
-					/*if(action == SGCT_PRESS)
-						domeGame->players[0]->setControls(-1);
+					if(action == SGCT_PRESS)
+						domeGame->players[0]->c_left = 1;
 					if (action == SGCT_RELEASE)
-						domeGame->players[0]->setControls(0);*/
+						domeGame->players[0]->c_left = 0;
 					box->Box_x -= 0.2f;
                 break;
             case 'D':
-				/*if (action == SGCT_PRESS)
-					domeGame->players[0]->setControls(1);
-				if (action == SGCT_RELEASE)
-					domeGame->players[0]->setControls(0);*/
+                if(action == SGCT_PRESS)
+                    domeGame->players[0]->c_right = 1;
+                if (action == SGCT_RELEASE)
+                    domeGame->players[0]->c_right = 0;
 					box->Box_x += 0.2f;
                 break;
             case 'W':

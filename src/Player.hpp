@@ -36,6 +36,8 @@ public:
     
     void decreaseScore();
     
+    void increaseScore();
+    
     void render() const;
 
 	// controls, 1 for pressed, 0 if it's not
@@ -50,8 +52,8 @@ private:
 
 	const float RADIUS = 7.4f;
 
-	float speed = 0.1f;
-	float turn_speed = 0.05f;
+	float speed = 0.05f;
+	float turn_speed = 0.01f;
     
     int score = 0;
 

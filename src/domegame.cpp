@@ -18,7 +18,10 @@ void DomeGame::render() const{
 void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
-	sgct::TextureManager::instance()->loadTexture("background", "background.png", true);
+	sgct::TextureManager::instance()->loadTexture("background", "../Images/background.png", true);
+	sgct::TextureManager::instance()->loadTexture("player", "../Images/player.png", true);
+	sgct::TextureManager::instance()->loadTexture("bullet", "../Images/bullet.jpg", true);
+	sgct::TextureManager::instance()->loadTexture("venus", "../Images/venus.jpg", true);
 
 	// Enable some openGL stuff
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

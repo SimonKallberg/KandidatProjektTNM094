@@ -67,6 +67,9 @@ void getServerMsg(const char * msg, size_t len)
 			case 'R':
 				domeGame->players[playerIndex]->c_right = value;
 				break;
+			case 'F':
+				domeGame->players[playerIndex]->c_shoot = value;
+				break;
 		}
 	}
 }
@@ -110,7 +113,6 @@ int main(int argc, char* argv[])
 void myInitOGLFun() {
     std::cout << "Init started.." << std::endl;
     domeGame->init();
-    sgct::TextureManager::instance()->loadTexture("player", "player.png", true);
     std::cout << "Init DONE!" << std::endl;
 }
 

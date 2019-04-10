@@ -35,6 +35,8 @@ public:
 	// controls, 1 for pressed, 0 if it's not
 	int c_left = 0;
 	int c_right = 0;
+	int c_shoot = 0;
+
     
 private:
 	// player avatar image(sprite is a word for an in game image)
@@ -61,6 +63,7 @@ private:
     
     //bullet list
     std::vector<Bullet*> * bullets = nullptr;
+	int lastShotFrame = 0;
 };
 
 #endif // PLAYER

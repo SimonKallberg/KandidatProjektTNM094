@@ -1,13 +1,13 @@
 #include "./Player.hpp"
 
 
-Player::Player(std::string & name, std::vector<Bullet*> * inBulletList)
-: playerName(name), bullets(inBulletList)
+Player::Player(std::string & name, std::string texName,std::vector<Bullet*> * inBulletList)
+: playerName(name), sprite(new Quad(texName, 0.5f, 0.5f)), bullets(inBulletList)
 {
 }
 
-Player::Player(float in_theta, float in_phi, float in_dir, std::string& name, std::vector<Bullet*> * inBulletList)
-: theta(in_theta), phi(in_phi), direction(in_dir), playerName(name), bullets(inBulletList)
+Player::Player(float in_theta, float in_phi, float in_dir, std::string& name, std::string texName, std::vector<Bullet*> * inBulletList)
+: theta(in_theta), phi(in_phi), direction(in_dir), playerName(name), sprite(new Quad(texName, 0.5f, 0.5f)) ,bullets(inBulletList)
 {
 }
 

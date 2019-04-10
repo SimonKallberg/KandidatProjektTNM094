@@ -16,9 +16,9 @@ class Player {
 
 public:
     
-    Player(std::string &name, std::vector<Bullet*> * inBulletList);
+    Player(std::string &name, std::string texName, std::vector<Bullet*> * inBulletList);
 
-    Player(float in_theta, float in_phi, float in_dir, std::string &name, std::vector<Bullet*> * inBulletList);
+    Player(float in_theta, float in_phi, float in_dir, std::string &name, std::string texName, std::vector<Bullet*> * inBulletList);
     
     ~Player();
     
@@ -48,7 +48,7 @@ public:
     
 private:
 	// player avatar image(sprite is a word for an in game image)
-	Quad *sprite = new Quad("player", 0.2f, 0.2f);
+    Quad *sprite = nullptr;
 
 	const float RADIUS = 7.4f;
 

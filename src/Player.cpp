@@ -23,7 +23,7 @@ void Player::setPosition(float x, float y){
 }
 
 void Player::shoot() {
-    Bullet * newBullet = new Bullet(phi, theta, direction);
+    Bullet * newBullet = new Bullet(phi, theta, direction, this);
     bullets->push_back(newBullet);
 }
 

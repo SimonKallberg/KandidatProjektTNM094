@@ -1,10 +1,16 @@
+//#include <iostream>
+//#include <math.h>
+
 #ifndef Player_hpp
 #define Player_hpp
 
-#include <iostream>
-#include <math.h>
+#include <string>
 #include "./Quad.hpp"
-#include "Bullet.hpp"
+#include "./Bullet.hpp"
+
+class Bullet;
+
+class Quad;
 
 class Player {
 

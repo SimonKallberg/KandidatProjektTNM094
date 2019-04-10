@@ -38,15 +38,14 @@ void DomeGame::init() {
 	std::cout << "johan was here xD" << std::endl;
     
     std::string test1 = "Ylva";
-    std::string test2 = "Ylva2";
     
     addPlayer(test1);
-    addPlayer(test2);
 }
 
 void DomeGame::addPlayer(std::string &name) {
     Player * newPlayer = new Player(name, &bullets);
     players.push_back(newPlayer);
+    std::cout << "Player created" << std::endl;
 }
 
 void DomeGame::update() {
@@ -60,11 +59,11 @@ void DomeGame::update() {
             if(bullets[k]->getPhi() < players[i]->getPhi() + sizeOfBullet &&
                bullets[k]->getPhi() > players[i]->getPhi() - sizeOfBullet &&
                bullets[k]->getTheta() < players[i]->getTheta() + sizeOfBullet &&
-               bullets[k]->getTheta() > players[i]->getTheta() - sizeOfBullet)
+               bullets[k]->getTheta() > players[i]->getTheta() - sizeOfBullet &&
+               bullets[k]->getOwner() != players[i] )
             {
                 players[i]->decreaseScore();
             }
-               
         }
 	}
     for (int i = 0; i < bullets.size(); i++) {

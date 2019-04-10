@@ -1,6 +1,4 @@
 #include "./Scene.hpp"
-#include <iostream>
-#include "./ModelLoader.hpp"
 
 // Constructor
 Scene::Scene(){

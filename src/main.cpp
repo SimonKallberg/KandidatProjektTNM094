@@ -12,6 +12,7 @@
 #include "./boxtest.hpp"
 #include "./Quad.hpp"
 #include "./Scene.hpp"
+#include "./Bullet.hpp"
 #include "./Player.hpp"
 #include "./DomeGame.hpp"
 #include "./ModelLoader.hpp"

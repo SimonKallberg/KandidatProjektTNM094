@@ -1,3 +1,6 @@
+#ifndef BOXTEST
+#define BOXTEST
+
 #include <iostream>
 #include "./ModelLoader.hpp"
 
@@ -23,3 +26,5 @@ public:
 	}
 
 };
+
+#endif

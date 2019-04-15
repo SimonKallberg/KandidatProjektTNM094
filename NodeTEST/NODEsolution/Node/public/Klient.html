@@ -51,6 +51,10 @@
                 console.log('err: ', err);
             }
             socket.onclose = function () {
+                document.getElementById("StartView").style.visibility = "visible";
+                document.getElementById("nameView").style.visibility = "hidden";
+                document.getElementById("weaponView").style.visibility = "hidden";
+                document.getElementById("gameView").style.visibility = "hidden";
                 console.log("Connection is closed...");
             }
 
@@ -86,6 +90,14 @@
                     document.getElementById("nameField").value = "";
                 }
             }
+            function runScript(e) {
+                //See notes about 'which' and 'key'
+                if (e.keyCode == 13) {
+                    nameFun();
+                    return false;
+                }
+            }
+
             //save vepon and change view from vepon to game
             function weaponFun(arg) {
                 socket.send("info "+ name + " " + arg); 
@@ -109,7 +121,7 @@
         <div class="nameText">
             Name:
         </div>
-        <input id="nameField" type="text" name="name" placeholder="Skriv in ditt namn" onclick='lockScreen()';>
+        <input id="nameField" type="text" name="name" placeholder="Skriv in ditt namn" onkeypress="return runScript(event)";>
         <button id="nameButton" onclick="nameFun()"> Nästa </button>
         
     </div>

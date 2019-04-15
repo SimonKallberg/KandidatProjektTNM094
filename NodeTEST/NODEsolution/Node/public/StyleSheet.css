@@ -45,7 +45,7 @@
 }
 /*Name view */
 #nameView {
-    visibility:hidden;
+    visibility: hidden;
     width: 100vw;
     height: 100vh;
     position: absolute;
@@ -153,8 +153,92 @@
     background-image: url("Images/Button/buttonfirepressed.png");
 }
 
- /* Smartphones  ----------- min 640*/
-@media only screen and (min-width : 500px) and (max-device-width : 951px) {
+
+/*********************/
+/*****Smartphones*****/
+/*********************/
+@media only screen and (min-width : 320px) and (max-device-width : 640px) {
+    /* Styles */
+    body {
+        color: #ffffff;
+        font-size: 30px;
+    }
+
+    .nameText {
+        height: 14vh;
+        margin-top: 10vw;
+        color: #5FC8F3;
+    }
+
+    #nameField {
+        height: 4vh;
+        width: 40vw;
+        font-size: 25px;
+        border-radius: 2vw;
+        padding: 15px;
+        border-color: black;
+        border-width: 4px;
+        background-color: inherit;
+        color: #5FC8F3;
+    }
+
+    #nameButton {
+        border-width: 4px;
+        font-size: 5vw;
+        text-shadow: 1px -1px #189DB2;
+        width: 20vw;
+        height: 20vh;
+        margin-top: 5vh;
+    }
+
+    #weaponBox {
+        height: 50vh;
+    }
+
+    .Weapon {
+        height: 25vh;
+        width: 15vw;
+        border: solid #000;
+        border-width: 4px;
+        margin-left: 10vw;
+        padding: 2vw;
+        margin-top: 6vh;
+    }
+
+    #gameView {
+        background-size: 52%;
+    }
+
+    .Button {
+        width: 18vw;
+        height: 18vw;
+    }
+
+    #left {
+        top: 35vh;
+        left: 10vw;
+    }
+
+    #right {
+        top: 35vh;
+        right: 5vw;
+    }
+
+    #fire {
+        top: 29vh;
+        left: 10vw;
+        width: 25vw;
+        height: 25vw;
+    }
+}
+
+
+
+
+        /*********************/
+        /*****Smartphones*****/
+        /*********************/
+@media only screen and (min-width : 640px) and (max-device-width : 951px) {
     /* Styles */
     body {
         color: #ffffff;

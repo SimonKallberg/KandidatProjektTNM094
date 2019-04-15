@@ -16,7 +16,32 @@
             //Variable
             var name;
             //connecting to socket ws:...
-            var socket = new WebSocket('ws://192.168.1.106/');
+            var socket = new WebSocket('ws://192.168.43.177/');
+            
+            
+            //orientation 
+            function openFullScreen() {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.mozRequestFullScreen) { /* Firefox */
+                    document.mozRequestFullScreen();
+                } else if (document.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                    document.webkitRequestFullscreen();
+                } else if (document.msRequestFullscreen) { /* IE/Edge */
+                    document.msRequestFullscreen();
+                }
+            }
+      
+            function lockScreen() {
+                openFullScreen();
+
+                //rotation funkar inte på datorn!!!
+                var orientation = screen.msOrientation || screen.mozOrientation || (screen.orientation || {}).type;
+                screen.orientation.lock("landscape-primary");
+                
+                document.getElementById("startView").style.visibility = "hidden";
+                document.getElementById("nameView").style.visibility = "visible";
+            }
            
             //standard thigs delete???
             socket.onopen = function (event) {
@@ -45,6 +70,7 @@
                 
             //Save name and make change view from name to weapon
             function nameFun() {
+                openFullScreen();
                 name = document.getElementById("nameField").value.trim();
                 //check the input name.
                 if (name.toLowerCase().includes("bajs") || true == name.toLowerCase().includes("kuk")) {
@@ -54,7 +80,6 @@
                 else if (!(name == null || name == "" || name == "Name" || name == "Skriv in ditt namn" || name == "Oj det där var inte ditt namn!" || name == "Va fan det där är inte ditt namn!" || name.length < 3) ){
                     document.getElementById("nameView").style.visibility = "hidden";
                     document.getElementById("weaponView").style.visibility = "visible";
-                    
                 }
                 else {
                     document.getElementById("nameField").placeholder = "Oj det där var inte ditt namn!";
@@ -74,13 +99,17 @@
             }
     </script>
 
+    <!--Start Game-->
+    <div id="startView">
+        <button id="startButton" onclick="lockScreen()">Starta</button>
+    </div>
 
     <!--Choose Name-->
     <div id="nameView">
         <div class="nameText">
             Name:
         </div>
-        <input id="nameField" type="text" name="name" placeholder="Skriv in ditt namn">
+        <input id="nameField" type="text" name="name" placeholder="Skriv in ditt namn" onclick='lockScreen()';>
         <button id="nameButton" onclick="nameFun()"> Nästa </button>
         
     </div>

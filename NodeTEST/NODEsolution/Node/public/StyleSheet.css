@@ -23,8 +23,29 @@
     color: #5FC8F3;
 }
 
+/*StartView*/
+#startView {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+}
+#startButton {
+    background-color: #5FC8F3;
+    border-color: black;
+    color: black;
+    font-weight: bold;
+    margin: auto;
+    display: block;
+    border-width: 10px;
+    font-size: 5vw;
+    text-shadow: 1px -1px #189DB2;
+    width: 25vw;
+    height: 25vh;
+    margin-top: 30vh;
+}
 /*Name view */
 #nameView {
+    visibility:hidden;
     width: 100vw;
     height: 100vh;
     position: absolute;
@@ -75,7 +96,7 @@
     visibility: hidden;
     width: 100vw;
     height: 100vh;
-    background-image: url("Images/Avatars/non.png");
+    background-image: url("Images/Avatars/avatar1.png");
     background-position: top;
     background-repeat: no-repeat;
 }

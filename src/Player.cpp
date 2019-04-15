@@ -4,13 +4,11 @@
 Player::Player(std::string & name, std::vector<Bullet*> * inBulletList)
 : playerName(name), bullets(inBulletList)
 {
-    
 }
 
 Player::Player(float in_theta, float in_phi, float in_dir, std::string& name, std::vector<Bullet*> * inBulletList)
 : theta(in_theta), phi(in_phi), direction(in_dir), playerName(name), bullets(inBulletList)
 {
-
 }
 
 Player::~Player(){
@@ -23,7 +21,7 @@ void Player::setPosition(float x, float y){
 }
 
 void Player::shoot() {
-    Bullet * newBullet = new Bullet(phi, theta, direction);
+    Bullet * newBullet = new Bullet(phi, theta, direction, this);
     bullets->push_back(newBullet);
 }
 
@@ -34,6 +32,12 @@ void Player::update() {
 	//theta += ; //Placeholders for changing position
 	phi += v_phi;
 	theta += v_theta;
+	
+	lastShotFrame++;
+	if (lastShotFrame > 20 && c_shoot == 1) {
+		shoot();
+		lastShotFrame = 0;
+	}
 }
 
 float Player::getTheta(){
@@ -46,7 +50,12 @@ float Player::getPhi(){
 
 void Player::decreaseScore(){
     score -= 1;
-    std::cout << "The player" << playerName << "is" <<  score << std::endl;
+    std::cout << "The player" << playerName << " has score " <<  score << std::endl;
+}
+
+void Player::increaseScore(){
+    score += 1;
+    std::cout << "The player" << playerName << " has score " <<  score << std::endl;
 }
 
 

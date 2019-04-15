@@ -1,3 +1,6 @@
+#ifndef BOXTEST
+#define BOXTEST
+
 #include <iostream>
 #include "./ModelLoader.hpp"
 
@@ -9,7 +12,7 @@ public:
 	float Box_scale = 1.0f;
 	ModelLoader *test_box;
 	boxtest() {
-		test_box = new ModelLoader("box", "background");
+		test_box = new ModelLoader("../../Objects/box", "background");
 	}
 
 	void draw() {
@@ -23,3 +26,5 @@ public:
 	}
 
 };
+
+#endif

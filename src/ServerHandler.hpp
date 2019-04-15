@@ -1,5 +1,8 @@
 #include "libwebsockets.h"
 
+#ifndef Serverhandler
+#define Serverhandler
+
 namespace ServerHandler
 {
 	const int MAX_PLAYERS = 100;
@@ -107,3 +110,5 @@ namespace ServerHandler
 	}
 
 }
+
+#endif

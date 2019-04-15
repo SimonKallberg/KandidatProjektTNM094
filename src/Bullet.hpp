@@ -1,19 +1,23 @@
+#include "./Quad.hpp"
+#include "./Player.hpp"
+
 #ifndef Bullet_hpp
 #define Bullet_hpp
 
-#include "./Quad.hpp"
+class Player;
 
 class Bullet {
     
 public:
     Bullet() = delete;
-    Bullet(float in_phi, float in_theta, float in_direction);
+    Bullet(float in_phi, float in_theta, float in_direction, Player* in_owner);
     ~Bullet();
     
     bool update();
     void render();
     float getPhi();
     float getTheta();
+    Player* getOwner();
     
 
     
@@ -25,6 +29,7 @@ private:
     float theta = 0.0f;
     float direction = 0.0f;
     float speed = 0.2f;
+    Player *owner = nullptr;
 };
 
 #endif 

@@ -1,6 +1,3 @@
-#ifndef Quad_hpp
-#define Quad_hpp
-
 #include <stdio.h>
 #include <cstdlib>
 #include <ctime>
@@ -8,6 +5,9 @@
 #include <stdio.h>
 #include <iostream>
 #include "sgct.h"
+
+#ifndef Quad_hpp
+#define Quad_hpp
 
 class Quad {
 public:

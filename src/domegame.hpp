@@ -1,6 +1,3 @@
-#ifndef DOMEGAME
-#define DOMEGAME
-
 #include "./Player.hpp"
 #include "./Scene.hpp"
 #include <stdlib.h>
@@ -9,6 +6,8 @@
 #include <ctime>
 #include <vector>
 
+#ifndef DOMEGAME
+#define DOMEGAME
 
 class DomeGame{
 public:

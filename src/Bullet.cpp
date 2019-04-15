@@ -1,10 +1,10 @@
 #include "./Bullet.hpp"
 
-Bullet::Bullet(float in_phi, float in_theta, float in_direction){
+Bullet::Bullet(float in_phi, float in_theta, float in_direction, Player * in_owner){
     phi = in_phi;
     theta = in_theta;
     direction = in_direction;
-    
+    owner = in_owner;
 }
 
 bool Bullet::update(){
@@ -45,4 +45,7 @@ float Bullet::getTheta()
     return theta;
 }
 
-
+Player* Bullet::getOwner()
+{
+    return owner;
+}

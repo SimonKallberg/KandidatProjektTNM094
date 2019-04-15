@@ -1,6 +1,4 @@
-#include "ModelLoader.hpp"
-
-
+#include "./ModelLoader.hpp"
 
 ModelLoader::ModelLoader(const std::string &meshName, const std::string &textureName, float scale) :
 	textureName(textureName) {

@@ -14,6 +14,7 @@ public:
 private:
     Quad *background;
 	ModelLoader *test_bg;
+	ModelLoader *test_star;
     
 };
 

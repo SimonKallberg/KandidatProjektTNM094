@@ -1,4 +1,4 @@
-#include "./DomeGame.hpp"
+#include "./domegame.hpp"
 
 DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
 	myScene = new Scene();
@@ -18,7 +18,10 @@ void DomeGame::render() const{
 void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
-	sgct::TextureManager::instance()->loadTexture("background", "background.png", true);
+	sgct::TextureManager::instance()->loadTexture("background", "../../Images/background.png", true);
+	sgct::TextureManager::instance()->loadTexture("player", "../../Images/player.png", true);
+	sgct::TextureManager::instance()->loadTexture("bullet", "../../Images/bullet.jpg", true);
+	sgct::TextureManager::instance()->loadTexture("venus", "../../Images/venus.jpg", true);
 
 	// Enable some openGL stuff
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -37,7 +40,7 @@ void DomeGame::init() {
 
 	std::cout << "johan was here xD" << std::endl;
     
-    std::string test1 = "Ylva";
+    std::string test1 = "Ylva1";
     std::string test2 = "Ylva2";
     
     addPlayer(test1);
@@ -47,24 +50,27 @@ void DomeGame::init() {
 void DomeGame::addPlayer(std::string &name) {
     Player * newPlayer = new Player(name, &bullets);
     players.push_back(newPlayer);
+    std::cout << "Player created" << std::endl;
 }
 
 void DomeGame::update() {
-    float sizeOfBullet = 0.1f;
+    float sizeOfBullet = 1.0f;
     
 	for (int i = 0; i < players.size(); i++) {
 		players[i]->update();
         for(int k = 0; k < bullets.size(); k++)
         {
-            //If the bullet hits, decrease score
+            //If the bullet hits, decrease & increase score
             if(bullets[k]->getPhi() < players[i]->getPhi() + sizeOfBullet &&
                bullets[k]->getPhi() > players[i]->getPhi() - sizeOfBullet &&
                bullets[k]->getTheta() < players[i]->getTheta() + sizeOfBullet &&
-               bullets[k]->getTheta() > players[i]->getTheta() - sizeOfBullet)
+               bullets[k]->getTheta() > players[i]->getTheta() - sizeOfBullet &&
+               bullets[k]->getOwner() != players[i] )
             {
                 players[i]->decreaseScore();
+                bullets[k]->getOwner()->increaseScore();
+                bullets.erase(bullets.begin() + k);
             }
-               
         }
 	}
     for (int i = 0; i < bullets.size(); i++) {

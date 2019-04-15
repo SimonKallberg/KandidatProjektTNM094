@@ -1,10 +1,16 @@
+//#include <iostream>
+//#include <math.h>
+
 #ifndef Player_hpp
 #define Player_hpp
 
-#include <iostream>
-#include <math.h>
+#include <string>
 #include "./Quad.hpp"
-#include "Bullet.hpp"
+#include "./Bullet.hpp"
+
+class Bullet;
+
+class Quad;
 
 class Player {
 
@@ -30,11 +36,15 @@ public:
     
     void decreaseScore();
     
+    void increaseScore();
+    
     void render() const;
 
 	// controls, 1 for pressed, 0 if it's not
 	int c_left = 0;
 	int c_right = 0;
+	int c_shoot = 0;
+
     
 private:
 	// player avatar image(sprite is a word for an in game image)
@@ -42,8 +52,8 @@ private:
 
 	const float RADIUS = 7.4f;
 
-	float speed = 0.1f;
-	float turn_speed = 0.05f;
+	float speed = 0.05f;
+	float turn_speed = 0.01f;
     
     int score = 0;
 
@@ -61,6 +71,7 @@ private:
     
     //bullet list
     std::vector<Bullet*> * bullets = nullptr;
+	int lastShotFrame = 0;
 };
 
 #endif // PLAYER

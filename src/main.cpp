@@ -12,6 +12,7 @@
 #include "./boxtest.hpp"
 #include "./Quad.hpp"
 #include "./Scene.hpp"
+#include "./Bullet.hpp"
 #include "./Player.hpp"
 #include "./DomeGame.hpp"
 #include "./ModelLoader.hpp"
@@ -66,6 +67,9 @@ void getServerMsg(const char * msg, size_t len)
 			case 'R':
 				domeGame->players[playerIndex]->c_right = value;
 				break;
+			case 'F':
+				domeGame->players[playerIndex]->c_shoot = value;
+				break;
 		}
 	}
 }
@@ -109,7 +113,6 @@ int main(int argc, char* argv[])
 void myInitOGLFun() {
     std::cout << "Init started.." << std::endl;
     domeGame->init();
-    sgct::TextureManager::instance()->loadTexture("player", "player.png", true);
     std::cout << "Init DONE!" << std::endl;
 }
 
@@ -150,17 +153,17 @@ void keyCallback(int key, int action)
         switch( key )
         {
             case 'A':
-					/*if(action == SGCT_PRESS)
-						domeGame->players[0]->setControls(-1);
+					if(action == SGCT_PRESS)
+						domeGame->players[0]->c_left = 1;
 					if (action == SGCT_RELEASE)
-						domeGame->players[0]->setControls(0);*/
+						domeGame->players[0]->c_left = 0;
 					box->Box_x -= 0.2f;
                 break;
             case 'D':
-				/*if (action == SGCT_PRESS)
-					domeGame->players[0]->setControls(1);
-				if (action == SGCT_RELEASE)
-					domeGame->players[0]->setControls(0);*/
+                if(action == SGCT_PRESS)
+                    domeGame->players[0]->c_right = 1;
+                if (action == SGCT_RELEASE)
+                    domeGame->players[0]->c_right = 0;
 					box->Box_x += 0.2f;
                 break;
             case 'W':

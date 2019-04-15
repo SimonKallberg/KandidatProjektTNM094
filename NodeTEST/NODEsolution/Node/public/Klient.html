@@ -2,7 +2,7 @@
 
 <html lang="sv">
 <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <meta name="description" content="Awario- a game for the dome in Visualiseringscentrumet Norröping">
     <meta name="author" content="Group H">
     <meta charset="utf-8" />
@@ -16,8 +16,8 @@
             //Variable
             var name;
             //connecting to socket ws:...
-            var socket = new WebSocket('ws://172.20.10.2:80/');
-
+            var socket = new WebSocket('ws://192.168.1.106/');
+           
             //standard thigs delete???
             socket.onopen = function (event) {
                 console.log('Connection is open ...');
@@ -48,14 +48,17 @@
                 name = document.getElementById("nameField").value.trim();
                 //check the input name.
                 if (name.toLowerCase().includes("bajs") || true == name.toLowerCase().includes("kuk")) {
-                    document.getElementById("nameField").placeholder = "Va fan det där är inte ditt namn!";
+                    document.getElementById("nameField").placeholder = "Va, det där är inte ditt namn!";
+                    document.getElementById("nameField").value = "";
                 }
                 else if (!(name == null || name == "" || name == "Name" || name == "Skriv in ditt namn" || name == "Oj det där var inte ditt namn!" || name == "Va fan det där är inte ditt namn!" || name.length < 3) ){
                     document.getElementById("nameView").style.visibility = "hidden";
                     document.getElementById("weaponView").style.visibility = "visible";
+                    
                 }
                 else {
                     document.getElementById("nameField").placeholder = "Oj det där var inte ditt namn!";
+                    document.getElementById("nameField").value = "";
                 }
             }
             //save vepon and change view from vepon to game
@@ -74,18 +77,20 @@
 
     <!--Choose Name-->
     <div id="nameView">
-        <div class="CenterBox">
-            Name:<br>
-            <input id="nameField" type="text" name="name" placeholder="Skriv in ditt namn">
-            <br><br>
-            <button id="nameButton" onclick="nameFun()"> Nästa </button>
+        <div class="nameText">
+            Name:
         </div>
+        <input id="nameField" type="text" name="name" placeholder="Skriv in ditt namn">
+        <button id="nameButton" onclick="nameFun()"> Nästa </button>
+        
     </div>
 
     <!--Choose vepon-->
     <div id="weaponView">
-        <div class="CenterBox" id="veponBox">
-            weapon view <br />
+        <div class="nameText">
+            Choose a weapon
+        </div>
+        <div id="weaponBox">
             <div class="Weapon" onclick="weaponFun(1)">
                 vapen 1
             </div>
@@ -95,7 +100,7 @@
             <div class="Weapon" onclick="weaponFun(3)">
                 vapen 3
             </div>
-        </div class="CenterBox">
+        </div>
     </div>
 
     <!--Game Viwe-->

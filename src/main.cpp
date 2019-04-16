@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
+#include <fstream>
 
 #include "./ServerHandler.hpp"
 #include "./boxtest.hpp"
@@ -74,14 +75,37 @@ void getServerMsg(const char * msg, size_t len)
 	}
 }
 
+std::string findRootDir(std::string rootDir)
+{
+    std::ifstream ifs;
+    ifs.open(rootDir + "/config.h");
+    std::cout << rootDir << std::endl;
+    
+    while( (ifs.rdstate() & std::ifstream::failbit ) != 0 )
+    {
+        rootDir = rootDir.substr(0, rootDir.find_last_of("\\/"));
+        ifs.open(rootDir + "/config.h");
+        std::cout << rootDir << std::endl;
+        if(rootDir == "")
+        {
+            std::cout << "Couldn't find root directory!" << std::endl;
+            break;
+        }
+        
+    }
+    return rootDir;
+}
+
 int main(int argc, char* argv[])
 {
+    std::string rootDir = findRootDir(argv[0]);
+    
 	ServerHandler::setMessageCallback(getServerMsg);
 	ServerHandler::connect();
 
     // Allocate
     gEngine = new sgct::Engine(argc, argv);
-	domeGame = new DomeGame(gEngine);
+	domeGame = new DomeGame(gEngine, rootDir);
 
 	box = new boxtest();
 

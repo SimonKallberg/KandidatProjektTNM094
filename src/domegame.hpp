@@ -13,7 +13,7 @@
 class DomeGame{
 public:
     // Constructor
-    DomeGame(sgct::Engine * gEngine);
+    DomeGame(sgct::Engine * gEngine, std::string in_rootDir);
     
     void init();
     void render() const;
@@ -28,7 +28,7 @@ public:
     std::vector<Bullet*> bullets;
     
 private:
-    
+    std::string rootDir = "";
 };
 
 #endif // DOMEGAME

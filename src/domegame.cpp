@@ -1,6 +1,8 @@
 #include "./domegame.hpp"
 
-DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
+DomeGame::DomeGame(sgct::Engine * gEngine, std::string in_rootDir)
+: rootDir(in_rootDir)
+{		//Constructor
 	myScene = new Scene();
 	std::cout << "DomeGame gjord" << std::endl;
 };
@@ -36,16 +38,16 @@ void DomeGame::gameOver(){
 void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
-	sgct::TextureManager::instance()->loadTexture("background", "../../Images/background.png", true);
-	sgct::TextureManager::instance()->loadTexture("player", "../../Images/player.png", true);
-	sgct::TextureManager::instance()->loadTexture("bullet", "../../Images/bullet.jpg", true);
-	sgct::TextureManager::instance()->loadTexture("venus", "../../Images/venus.jpg", true);
+	sgct::TextureManager::instance()->loadTexture("background", rootDir + "/Images/background.png", true);
+	sgct::TextureManager::instance()->loadTexture("player", rootDir + "/Images/player.png", true);
+	sgct::TextureManager::instance()->loadTexture("bullet", rootDir + "/Images/bullet.jpg", true);
+	sgct::TextureManager::instance()->loadTexture("venus", rootDir + "/Images/venus.jpg", true);
     
     std::string avatar = "avatar";
     
     for(int i = 1; i < 31; i++)
     {
-        sgct::TextureManager::instance()->loadTexture(avatar + std::to_string(i), "../../Images/" + avatar + std::to_string(i) + ".png", true);
+        sgct::TextureManager::instance()->loadTexture(avatar + std::to_string(i), rootDir + "/Images/" + avatar + std::to_string(i) + ".png", true);
     }
 
 	// Enable some openGL stuff

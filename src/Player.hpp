@@ -22,6 +22,8 @@ public:
     
     ~Player();
     
+    bool operator>(const Player &rhs) const;
+    
 	// used for spawning maybe
     void setPosition(float x, float y);
     
@@ -33,6 +35,10 @@ public:
     float getTheta();
     
     float getPhi();
+    
+    std::string getPlayerName();
+    
+    int getScore();
     
     void decreaseScore();
     

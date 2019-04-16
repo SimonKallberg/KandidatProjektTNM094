@@ -176,6 +176,7 @@ void keyCallback(int key, int action)
                 break;
 			case SGCT_KEY_SPACE:
 					box->Box_y += 0.2f;
+                    domeGame->gameOver();
 				break;
 			case SGCT_KEY_LCTRL:
 					box->Box_y -= 0.2f;

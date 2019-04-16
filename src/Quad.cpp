@@ -3,14 +3,12 @@
 // Quad constructor, using width and heigth
 Quad::Quad(const std::string& t, float w, float h):
 textureName(t), width(w), height(h) {
-    std::cout << "Quad constructor" << std::endl;
     size = fmax(w,h);
 }
 
 // Quad constructor, using only size
 Quad::Quad(const std::string& t, float s):
 textureName(t), size(s) {
-    std::cout << "Quad constructor" << std::endl;
     width = s;
     height = s;
 }

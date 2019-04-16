@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <algorithm>
 
 #ifndef DOMEGAME
 #define DOMEGAME
@@ -19,6 +20,7 @@ public:
     void addPlayer(std::string &name);
     void addPlayer(std::string &name, float in_theta, float in_phi, float in_dir);
     void update();
+    void gameOver();
     
     size_t textureHandle;
     Scene * myScene;

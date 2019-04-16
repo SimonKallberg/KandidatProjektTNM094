@@ -14,6 +14,11 @@ Player::Player(float in_theta, float in_phi, float in_dir, std::string& name, st
 Player::~Player(){
 }
 
+bool Player::operator>(const Player& rhs) const {
+    std::cout << "comparing players "<< std::endl;
+    return (score < rhs.score);
+}
+
 void Player::setPosition(float x, float y){
     theta = y; //Placeholders for changing position
     phi = x;
@@ -46,6 +51,14 @@ float Player::getTheta(){
 
 float Player::getPhi(){
     return phi;
+}
+
+std::string Player::getPlayerName(){
+    return playerName;
+}
+
+int Player::getScore(){
+    return score;
 }
 
 void Player::decreaseScore(){

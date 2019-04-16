@@ -15,6 +15,24 @@ void DomeGame::render() const{
     }
 }
 
+void DomeGame::gameOver(){
+    std::cout << "GAME OVER!!" << std::endl;
+    
+    //Sorting the players by score, descending order
+    std::sort(players.begin(), players.end(), [ ]( const Player* lhs, const Player* rhs )
+    {
+        return *lhs > *rhs;
+    });
+    
+    for(int i = 0; i < players.size(); i++)
+    {
+        std::cout << "The score of ";
+        std::cout << players[i]->getPlayerName() << " is " << players[i]->getScore() << std::endl;
+    }
+    players.clear();
+    bullets.clear();
+}
+
 void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);

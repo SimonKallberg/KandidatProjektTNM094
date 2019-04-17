@@ -3,7 +3,7 @@
 DomeGame::DomeGame(sgct::Engine * gEngine, std::string in_rootDir)
 : rootDir(in_rootDir)
 {		//Constructor
-	myScene = new Scene();
+	myScene = new Scene(in_rootDir);
 	std::cout << "DomeGame gjord" << std::endl;
 };
 

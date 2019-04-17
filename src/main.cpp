@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
     gEngine = new sgct::Engine(argc, argv);
 	domeGame = new DomeGame(gEngine, rootDir);
 
-	box = new boxtest();
+	box = new boxtest(rootDir);
 
     // Bind your functions
 	gEngine->setInitOGLFunction(myInitOGLFun);

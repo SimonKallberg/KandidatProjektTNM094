@@ -1,78 +1,97 @@
 ﻿body {
+    background-image: url("Images/background.jpeg");
     width: 100vw;
     height: 100vh;
-    background-image: url("Images/background.jpeg");
-    background-color: #FFE71C;
+    background-color: #000000;
     background-position: top;
     background-repeat: no-repeat;
     background-size: cover;
-    margin:0px;
-    color:aliceblue;
+    margin: 0px;
 }
-#nameView {
+
+/*Placeholder*/
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #5FC8F3;
+    opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #5FC8F3;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: #5FC8F3;
+}
+
+/*StartView*/
+#startView {
     width: 100vw;
     height: 100vh;
-    position:absolute;
+    position: absolute;
 }
-.CenterBox{
+#startButton {
+    background-color: #5FC8F3;
+    border-color: black;
+    color: black;
+    font-weight: bold;
     margin: auto;
     display: block;
-    margin-top: 12%;
-    height: 8vh;
-    width: 35vw;
-    font-size:large;
+    border-width: 10px;
+    font-size: 5vw;
+    text-shadow: 1px -1px #189DB2;
+    width: 25vw;
+    height: 25vh;
+    margin-top: 30vh;
 }
+/*Name view */
+#nameView {
+    visibility: hidden;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+}
+
+.nameText {
+    margin: auto;
+    text-align: center;
+    position: relative;
+    width: auto;
+}
+
 #nameField {
-    height: inherit;
-    width: inherit;
+    position: relative;
+    margin: auto;
+    display: block;
 }
 
 #nameButton {
-    background-color: #14B2CC;
-    border-color: #189DB2;
-    border-width: 10px;
-    border-radius: 100%;
-    color: #FF0076;
-    font-size: 40px;
+    background-color: #5FC8F3;
+    border-color: black;
+    color: black;
     font-weight: bold;
-    text-shadow: 3px -3px #189DB2;
-    width: 30%;
-    min-width: 176px;
-    max-width: 600px;
-    height: 50%;
-    min-height: 112px;
-    max-height: 500px;
     margin: auto;
     display: block;
 }
 
+/*Weapon view */
 #weaponView {
     visibility: hidden;
     width: 100vw;
     height: 100vh;
     position: absolute;
 }
-#weaponBox {
-    text-align: center;
-    height: 40vh;
-    width: 150vh;
-}
 
+#weaponBox{
+    width:100vw;
+}
 .Weapon {
     display: inline-block;
-    height: 10vh;
-    width: 10vw;
-    margin-right: 10vw;
-    background-color: black;
     text-align: center;
-    padding: 2vw;
-    margin-top: 5vh;
+    border-color: black;
+    color: #5FC8F3;
 }
 
-
-
-
-
+/*Game view*/
 #gameView {
     visibility: hidden;
     width: 100vw;
@@ -80,28 +99,26 @@
     background-image: url("Images/Avatars/avatar1.png");
     background-position: top;
     background-repeat: no-repeat;
-    background-size: 50%;
+}
+
+
+#leftBox {
+    height: 99vh;
+    width: 40vw;
+    position: absolute;
+}
+
+#rightBox {
+    position: absolute;
+    height: 99vh;
+    width: 60vw;
+    right: 0px;
 }
 .Button {
-    background-color: #14B2CC;
-    /* border-color: #189DB2;
-    border-width: 10px;
-    border-radius: 100%;
-    color: #FF0076;
-    font-size: 40px;
-    font-weight: bold;
-    text-shadow: 3px -3px #189DB2;*/
-    width: 15vw;
-    min-width: 100px;
-    max-width: 500px;
-    height: 15vw;
-    min-height: 100px;
-    max-height: 500px; 
     background-color: transparent;
     background-position: top;
     background-repeat: no-repeat;
     background-size: cover;
-
     /*texten can not be selected*/
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -110,45 +127,264 @@
     -ms-user-select: none;
     user-select: none;
 }
-#leftBox {
-    height: 99vh;
-    width: 45vw;
-    position: absolute;
-}
-#rightBox {
-    position: absolute;
-    height: 99vh;
-    width: 45vw;
-    right:0px;
-}
+
 #left {
     position: absolute;
-    top: 40vh;
-    left: 2vw;
     background-image: url("Images/Button/buttonleft.png");
 }
-#left:active{
-    background-image: url("Images/Button/buttonleftpressed.png");
 
+#left:active {
+    background-image: url("Images/Button/buttonleftpressed.png");
 }
 #right {
     position: absolute;
-    top: 40vh;
-    right: 5vw;
     background-image: url("Images/Button/buttonright.png");
 }
 
 #right:active {
     background-image: url("Images/Button/buttonrightpressed.png");
 }
-
 #fire {
     position: absolute;
-    top: 40vh;
-    right: 5vw;
     background-image: url("Images/Button/buttonfire.png");
 }
 
 #fire:active {
     background-image: url("Images/Button/buttonfirepressed.png");
+}
+
+
+/*********************/
+/*****Smartphones*****/
+/*********************/
+@media only screen and (min-width : 320px) and (max-device-width : 640px) {
+    /* Styles */
+    body {
+        color: #ffffff;
+        font-size: 30px;
+    }
+
+    .nameText {
+        height: 14vh;
+        margin-top: 10vw;
+        color: #5FC8F3;
+    }
+
+    #nameField {
+        height: 4vh;
+        width: 40vw;
+        font-size: 25px;
+        border-radius: 2vw;
+        padding: 15px;
+        border-color: black;
+        border-width: 4px;
+        background-color: inherit;
+        color: #5FC8F3;
+    }
+
+    #nameButton {
+        border-width: 4px;
+        font-size: 5vw;
+        text-shadow: 1px -1px #189DB2;
+        width: 20vw;
+        height: 20vh;
+        margin-top: 5vh;
+    }
+
+    #weaponBox {
+        height: 50vh;
+    }
+
+    .Weapon {
+        height: 25vh;
+        width: 15vw;
+        border: solid #000;
+        border-width: 4px;
+        margin-left: 10vw;
+        padding: 2vw;
+        margin-top: 6vh;
+    }
+
+    #gameView {
+        background-size: 52%;
+    }
+
+    .Button {
+        width: 18vw;
+        height: 18vw;
+    }
+
+    #left {
+        top: 35vh;
+        left: 10vw;
+    }
+
+    #right {
+        top: 35vh;
+        right: 5vw;
+    }
+
+    #fire {
+        top: 29vh;
+        left: 10vw;
+        width: 25vw;
+        height: 25vw;
+    }
+}
+
+
+
+
+        /*********************/
+        /*****Smartphones*****/
+        /*********************/
+@media only screen and (min-width : 640px) and (max-device-width : 951px) {
+    /* Styles */
+    body {
+        color: #ffffff;
+        font-size: 35px;
+    }
+
+    .nameText {
+        height: 14vh;
+        margin-top: 10vw;
+        color: #5FC8F3;
+    }
+
+    #nameField {
+        height: 4vh;
+        width: 40vw;
+        font-size: 25px;
+        border-radius: 2vw;
+        padding: 15px;
+        border-color: black;
+        border-width: 6px;
+        background-color: inherit;
+        color: #5FC8F3;
+    }
+
+    #nameButton {
+        border-width: 7px;
+        font-size: 5vw;
+        text-shadow: 1px -1px #189DB2;
+        width: 25vw;
+        height: 25vh;
+        margin-top: 7vh;
+    }
+
+    #weaponBox {
+        height: 40vh;
+    }
+
+    .Weapon {
+        height: 25vh;
+        width: 15vw;
+        border: solid #000;
+        border-width: 7px;
+        margin-left: 9vw;
+        padding: 2vw;
+        margin-top: 6vh;
+    }
+
+    #gameView {
+        background-size: 54%;
+    }
+
+    .Button {
+        width: 20vw;
+        height: 20vw;
+    }
+    #left {
+        top: 35vh;
+        left: 10vw;
+    }
+
+    #right {
+        top: 35vh;
+        right: 5vw;
+    }
+
+    #fire {
+        top: 29vh;
+        left: 12vw;
+        width:25vw;
+        height:25vw;
+    }
+}
+
+
+    /*********************/
+    /******* iPads********/
+    /*********************/
+@media only screen and (min-device-width :900px ) and (max-device-width : 1366px) {
+    /* Styles */
+    body {
+        color: #ffffff;
+        font-size: 72px;
+    }
+
+    .nameText {
+        height: 10vh;
+        margin-top: 10vw;
+        color: #5FC8F3;
+    }
+
+    #nameField {
+        height: 8vh;
+        width: 50vw;
+        font-size: 50px;
+        border-radius: 2vw;
+        padding: 20px;
+        border-color: black;
+        border-width: 9px;
+        background-color: inherit;
+        color: #5FC8F3;
+    }
+
+    #nameButton {
+        border-width: 15px;
+        font-size: 8vw;
+        text-shadow: 3px -3px #189DB2;
+        width: 32vw;
+        height: 25vh;
+        margin-top: 10vh;
+    }
+
+    #weaponBox {
+        height: 60vh;
+    }
+
+    .Weapon {
+        height: 30vh;
+        width: 20vw;
+        border: solid #000;
+        border-width: 15px;
+        margin-left: 4vw;
+        padding: 2vw;
+        margin-top: 6vh;
+    }
+
+    #gameView {
+        background-size: 70%;
+    }
+
+    .Button {
+        width: 22vw;
+        height: 22vw;
+    }
+
+    #left {
+        top: 40vh;
+        left: 5vw;
+    }
+    #right {
+        top: 40vh;
+        right: 5vw;
+    }
+    #fire {
+        top: 37vh;
+        left: 10vw;
+        width:25vw;
+        height:25vw;
+    }
 }

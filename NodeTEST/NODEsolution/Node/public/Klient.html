@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="sv">
 <head>
@@ -17,9 +17,9 @@
             var name;
             //connecting to socket ws:...
             var socket = new WebSocket('ws://192.168.43.177/');
-            
-            
-            //orientation 
+
+
+            //orientation
             function openFullScreen() {
                 if (document.documentElement.requestFullscreen) {
                     document.documentElement.requestFullscreen();
@@ -31,18 +31,18 @@
                     document.msRequestFullscreen();
                 }
             }
-      
+
             function lockScreen() {
                 openFullScreen();
 
                 //rotation funkar inte på datorn!!!
                 var orientation = screen.msOrientation || screen.mozOrientation || (screen.orientation || {}).type;
                 screen.orientation.lock("landscape-primary");
-                
+
                 document.getElementById("startView").style.visibility = "hidden";
                 document.getElementById("nameView").style.visibility = "visible";
             }
-           
+
             //standard thigs delete???
             socket.onopen = function (event) {
                 console.log('Connection is open ...');
@@ -58,7 +58,7 @@
                 console.log("Connection is closed...");
             }
 
-            //Messege recived from socket 
+            //Messege recived from socket
             socket.onmessage = function (event) {
                 arg = event.data.split(' ');
                 //Change background depending on the players id
@@ -71,7 +71,7 @@
                     //do something
                 }
             };
-                
+
             //Save name and make change view from name to weapon
             function nameFun() {
                 openFullScreen();
@@ -100,11 +100,11 @@
 
             //save vepon and change view from vepon to game
             function weaponFun(arg) {
-                socket.send("info "+ name + " " + arg); 
+                socket.send("info "+ name + " " + arg);
                 document.getElementById("weaponView").style.visibility = "hidden";
                 document.getElementById("gameView").style.visibility = "visible";
             }
-                
+
             //Send a messege arg that is called from the playbuttons
             function message(arg) {
                 socket.send("message "+arg);
@@ -123,7 +123,7 @@
         </div>
         <input id="nameField" type="text" name="name" placeholder="Skriv in ditt namn" onkeypress="return runScript(event)";>
         <button id="nameButton" onclick="nameFun()"> Nästa </button>
-        
+
     </div>
 
     <!--Choose vepon-->

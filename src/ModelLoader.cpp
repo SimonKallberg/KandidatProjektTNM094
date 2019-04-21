@@ -42,7 +42,7 @@ glm::vec3 ModelLoader::getMinVertexValues() {
 	return minValues;
 }
 
-void ModelLoader::draw() const {
+void ModelLoader::draw(float scale, glm::vec3 pos) const {
 	// Set the active texture unit
 	glActiveTexture(GL_TEXTURE0);
 
@@ -60,18 +60,18 @@ void ModelLoader::draw() const {
 
 		//Vertex 1
 		glNormal3f(normals[i].x, normals[i].y, normals[i].z);
-		glTexCoord2d(uvs[i].x, uvs[i].y);
-		glVertex3f(vertices[i].x, vertices[i].y, vertices[i].z);
+		glVertexAttrib2f(1, uvs[i].x, uvs[i].y);
+		glVertexAttrib3f(0, pos.x + scale * vertices[i].x, pos.y + scale * vertices[i].y, pos.z + scale * vertices[i].z);
 
 		//Vertex 2
 		glNormal3f(normals[i + 1].x, normals[i + 1].y, normals[i + 1].z);
-		glTexCoord2d(uvs[i + 1].x, uvs[i + 1].y);
-		glVertex3f(vertices[i + 1].x, vertices[i + 1].y, vertices[i + 1].z);
+		glVertexAttrib2f(1, uvs[i + 1].x, uvs[i + 1].y);
+		glVertexAttrib3f(0, pos.x + scale * vertices[i + 1].x, pos.y + scale * vertices[i + 1].y, pos.z + scale *  vertices[i + 1].z);
 
 		//Vertex 3
 		glNormal3f(normals[i + 2].x, normals[i + 2].y, normals[i + 2].z);
-		glTexCoord2d(uvs[i + 2].x, uvs[i + 2].y);
-		glVertex3f(vertices[i + 2].x, vertices[i + 2].y, vertices[i + 2].z);
+		glVertexAttrib2f(1, uvs[i + 2].x, uvs[i + 2].y);
+		glVertexAttrib3f(0, pos.x + scale * vertices[i + 2].x, pos.y + scale * vertices[i + 2].y, pos.z + scale * vertices[i + 2].z);
 
 		glEnd();
 	}

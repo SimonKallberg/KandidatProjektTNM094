@@ -5,6 +5,10 @@
 #define Player_hpp
 
 #include <string>
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/common.hpp>
 #include "./Quad.hpp"
 #include "./Bullet.hpp"
 
@@ -28,12 +32,18 @@ public:
     void shoot();
 
 	// moving the player, prob collision testing etc as well
-	void update();
-    
-    float getTheta();
-    
-    float getPhi();
-    
+	void update(float dt);
+
+	glm::quat getQuat();
+	glm::mat4 getRotationMatrix();
+	glm::vec3 getWorldVelocity(); // still in rotational units, but aligned with the XYZ world
+
+	// apply a velocity from the xyz world to the local velocity. Orthogonal part to dome is ignored
+	void addWorldVelocity(glm::vec3 w_vel);
+
+	// apply a translation from the xyz world to the local velocity. Orthogonal part to dome is ignored. The parallel part is in rotation units(rads)
+	void addWorldTranslation(glm::vec3 w_trans);
+
     void decreaseScore();
     
     void increaseScore();
@@ -45,33 +55,34 @@ public:
 	int c_right = 0;
 	int c_shoot = 0;
 
+	static void initSprite();
+
+	static void bindSprite();
     
 private:
 	// player avatar image(sprite is a word for an in game image)
-	Quad *sprite = new Quad("player", 0.2f, 0.2f);
+	// this static quad is drawn multiple times in a frame, 1 per player
+	static Quad * sprite;
+	float acceleration = 0.2f; // unit/s^2
+	float turn_speed = 3.0f; // radians/s
+	float slowdown = 0.6; // speed multiplier per second, if no acceleration then after one second velocity = velocity * slowdown;
 
-	const float RADIUS = 7.4f;
+	//Spawns new players at origin
+	glm::quat position = glm::quat(1,0,0,0);
 
-	float speed = 0.05f;
-	float turn_speed = 0.01f;
-    
-    int score = 0;
-
-    //Spawns new players at origin
-    float theta = 0;
-    float phi = 0;
+	float direction = 0; //angle(degrees)  0 = straight up, 90 = right
 
 	// velocities
-	float v_theta = 0;
-	float v_phi = 0;
+	float up_vel = 0.0f;
+	float right_vel = 0.0f;
 
-    float direction = 0; //angle(degrees)  0 = straight up, 90 = right
 
+	int score = 0;
 	std::string playerName;
     
     //bullet list
     std::vector<Bullet*> * bullets = nullptr;
-	int lastShotFrame = 0;
+	float lastShotTime = 0.0f; //how long ago the last bullet was fired
 };
 
 #endif // PLAYER

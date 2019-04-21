@@ -5,6 +5,7 @@ Quad::Quad(const std::string& t, float w, float h):
 textureName(t), width(w), height(h) {
     std::cout << "Quad constructor" << std::endl;
     size = fmax(w,h);
+	init();
 }
 
 // Quad constructor, using only size
@@ -13,47 +14,62 @@ textureName(t), size(s) {
     std::cout << "Quad constructor" << std::endl;
     width = s;
     height = s;
+	init();
 }
 
-// Draw player based on position and MVP matrix
-void Quad::render(float x, float y, float z) const {
-    // Set the active texture unit
-    glActiveTexture(GL_TEXTURE0);
-    
-    // Bind the texture by its set handle
-    glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(textureName));
-    
-    glPushMatrix();
-    glTranslatef(x,y,z);
-    
-    // Draw the player polygon
-    glBegin(GL_QUADS);
-    // Set the normal of the polygon
-    glNormal3f(0.0, 0.0, 1.0);
-    
-    // Set starting position of the texture mapping
-    // The polygon is drawn from the world coordinates perspective
-    // (we set the origin in the center of the polygon)
-    // while the texture is drawn from the polygons coordinates
-    // (we draw from the bottom-left corner of the polygon)
-    
-    // Define polygon vertices in counter clock wise order
-    glTexCoord2d(1, 0);
-    glVertex3f(+width, -height, 0);
-    
-    glTexCoord2d(1, 1);
-    glVertex3f(+width, +height, 0);
-    
-    glTexCoord2d(0, 1);
-    glVertex3f(-width, +height, 0);
-    
-    glTexCoord2d(0, 0);
-    glVertex3f(-width, -height, 0);
-    
-    glEnd();
-    
-    glPopMatrix();
-    
+void Quad::init() {
+	const GLfloat vertex[] = {
+		-width / 2.0f, height / 2.0f, 0.0f,
+		-width / 2.0f, -height / 2.0f, 0.0f,
+		width / 2.0f, height / 2.0f, 0.0f,
+		width / 2.0f, -height / 2.0f, 0.0f
+
+	};
+
+	const GLfloat texture[] = {
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 1.0f,
+		1.0f, 0.0f
+	};
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	glGenBuffers(1, &VB);
+	glBindBuffer(GL_ARRAY_BUFFER, VB);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(
+		0,3, GL_FLOAT, GL_FALSE,0,reinterpret_cast<void*>(0));
+
+	glGenBuffers(1, &TB);
+	glBindBuffer(GL_ARRAY_BUFFER, TB);
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(texture), texture, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(
+		1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(0));
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	std::cout << "QUAD INITED" << std::endl;
+}
+
+void Quad::render() const {    
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+void Quad::bindVAO() const {
+	glBindVertexArray(VAO);
+}
+
+void Quad::setTexture(std::string tex) {
+	textureName = tex;
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(textureName));
+
 }
 
 // Set size of player

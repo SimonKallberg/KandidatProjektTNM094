@@ -12,7 +12,7 @@ public:
 	float Box_scale = 1.0f;
 	ModelLoader *test_box;
 	boxtest() {
-		test_box = new ModelLoader("../../Objects/box", "background");
+		test_box = new ModelLoader("../Objects/box", "background");
 	}
 
 	void draw() {

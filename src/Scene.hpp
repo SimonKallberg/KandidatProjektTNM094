@@ -11,6 +11,8 @@ public:
     Scene();
 
     void render() const;
+
+
 private:
     Quad *background;
 	ModelLoader *test_bg;

@@ -19,7 +19,7 @@ public:
 	glm::vec3 getMaxVertexValues();
 	glm::vec3 getMinVertexValues();
 
-	void draw() const;
+	void draw(float scale = 1, glm::vec3 pos = glm::vec3(0, 0, 0)) const;
 
 
 	std::vector<glm::vec3> vertices;

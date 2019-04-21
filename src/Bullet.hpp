@@ -10,25 +10,31 @@ class Bullet {
     
 public:
     Bullet() = delete;
-    Bullet(float in_phi, float in_theta, float in_direction, Player* in_owner);
+    Bullet(glm::quat pos, float dir, float up_v, float right_v, Player * in_owner);
     ~Bullet();
     
-    bool update();
+    bool update(float dt);
     void render();
+	static void initSprite();
+	static void bindSprite();
+	glm::quat getQuat();
+	glm::mat4 getRotationMatrix();
+	glm::vec3 getWorldVelocity();
     float getPhi();
     float getTheta();
     Player* getOwner();
-    
-
-    
+        
 private:
-    Quad *sprite = new Quad("bullet", 0.1f, 0.1f);
+	static Quad *sprite;
     const float RADIUS = 7.4f;
-    float lifeTime = 50.0f;
-    float phi = 0.0f;
-    float theta = 0.0f;
-    float direction = 0.0f;
-    float speed = 0.2f;
+	const float speed = 1.0f; // propulsion from the player weapon.
+	float slowdown = 0.5; // speed multiplier per second, if no acceleration then after one second velocity = velocity * slowdown;
+	float direction;
+	glm::quat position;
+	float up_vel;
+	float right_vel;
+
+	float lifeTime = 2.0f; // seconds
     Player *owner = nullptr;
 };
 

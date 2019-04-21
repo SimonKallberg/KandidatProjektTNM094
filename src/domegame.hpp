@@ -17,15 +17,20 @@ public:
     void init();
     void render() const;
     void addPlayer(std::string &name);
-	void update();
+	void update(float dt);
     
     size_t textureHandle;
     Scene * myScene;
     std::vector<Player*> players;
     std::vector<Bullet*> bullets;
+
+	glm::mat4 MVP;
     
 private:
-    
+	const float DOME_RADIUS = 7.4f;
+
+	GLint MVP_loc = -1;
+	GLint TEX_loc = -1;
 };
 
 #endif // DOMEGAME

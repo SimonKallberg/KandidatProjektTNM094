@@ -14,6 +14,7 @@
 
 class Bullet;
 
+class Quad;
 
 class Player {
 

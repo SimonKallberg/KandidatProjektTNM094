@@ -72,8 +72,8 @@ void DomeGame::init() {
 	std::cout << "johan was here xD" << std::endl;
 
 	
-	//Movable::initSprite();
-	//Weapon::initBullets(bullets);
+	Player::initSprite();
+	Bullet::initSprite();
     
     std::string test1 = "Ylva1";
     std::string test2 = "Ylva2";

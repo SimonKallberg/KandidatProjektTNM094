@@ -14,7 +14,6 @@
 
 class Bullet;
 
-class Quad;
 
 class Player {
 
@@ -70,7 +69,7 @@ private:
 	//Spawns new players at origin
 	glm::quat position = glm::quat(1,0,0,0);
 
-	float direction = 0; //angle(degrees)  0 = straight up, 90 = right
+	float direction = 0; //angle(radians)  0 = straight up, 90 = right
 
 	// velocities
 	float up_vel = 0.0f;

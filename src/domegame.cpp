@@ -17,7 +17,7 @@ void DomeGame::render() const{
 	
 	Player::bindSprite();
 	for (int i = 0; i < players.size(); i++){
-		glm::mat4 trans = glm::translate(MVP * players[i]->getRotationMatrix() , glm::vec3(0, 0, -DOME_RADIUS));
+		glm::mat4 trans = glm::translate(MVP * players[i]->getRotationMatrix(), glm::vec3(0, 0, -DOME_RADIUS));
 		glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &trans[0][0]);
         players[i]->render();
 
@@ -25,8 +25,12 @@ void DomeGame::render() const{
 
 	Bullet::bindSprite();
 	for (int i = 0; i < bullets.size(); i++) {
-		glm::mat4 trans = glm::translate(MVP * bullets[i]->getRotationMatrix(), glm::vec3(0, 0, -DOME_RADIUS));
-		glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &trans[0][0]);
+		glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -DOME_RADIUS));
+		glm::mat4 rot = bullets[i]->getRotationMatrix();
+		glm::mat4 scale = glm::scale(glm::mat4(), bullets[i]->getSize()*glm::vec3(1, 1, 1));
+
+		glm::mat4 playerMat = MVP * rot * trans * scale;
+		glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &playerMat[0][0]);
 		bullets[i]->render();
 	}
 
@@ -38,7 +42,7 @@ void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
 	sgct::TextureManager::instance()->loadTexture("background", "../Images/background.png", true);
-	sgct::TextureManager::instance()->loadTexture("player", "../Images/player.png", true);
+	sgct::TextureManager::instance()->loadTexture("player", "../Images/avatar3.png", true);
 	sgct::TextureManager::instance()->loadTexture("bullet", "../Images/bullet.jpg", true);
 	sgct::TextureManager::instance()->loadTexture("venus", "../Images/venus.jpg", true);
 
@@ -67,8 +71,9 @@ void DomeGame::init() {
 
 	std::cout << "johan was here xD" << std::endl;
 
-	Bullet::initSprite();
-	Player::initSprite();
+	
+	//Movable::initSprite();
+	//Weapon::initBullets(bullets);
     
     std::string test1 = "Ylva1";
     std::string test2 = "Ylva2";
@@ -96,7 +101,6 @@ void DomeGame::update(float dt) {
 		}
 	}
 
-    float sizeOfBullet = 0.2f;
 	float playerRadius = 0.5f;
 	for (int i = 0; i < players.size(); i++) {
 		for (int k = i + 1; k < players.size(); k++)
@@ -139,7 +143,7 @@ void DomeGame::update(float dt) {
 			glm::vec3 b_pos = bullets[k]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
 			glm::vec3 diff = p_pos - b_pos;
             //If the bullet hits: decrease & increase score
-            if(bullets[k]->getOwner() != players[i] && glm::length(diff) < sizeOfBullet + playerRadius) // insert player radius + bullet radius here
+            if(bullets[k]->getOwner() != players[i] && glm::length(diff) < bullets[k]->getSize() + playerRadius) // insert player radius + bullet radius here
             {
 				players[i]->addWorldVelocity(bullets[k]->getWorldVelocity() * 0.5f);
                 players[i]->decreaseScore();

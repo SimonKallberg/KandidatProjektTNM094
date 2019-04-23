@@ -21,6 +21,9 @@ public:
     
     size_t textureHandle;
     Scene * myScene;
+	sgct::SharedVector<Player> * apa;
+
+
     std::vector<Player*> players;
     std::vector<Bullet*> bullets;
 

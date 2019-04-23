@@ -10,10 +10,11 @@ public:
 	float Box_y = 0.0f;
 	float Box_z = -5.0f;
 	float Box_scale = 1.0f;
-	ModelLoader *test_box;
-	boxtest() {
+	static ModelLoader * test_box;
+	static void init() {
 		test_box = new ModelLoader("../Objects/box", "background");
 	}
+	boxtest() {	};
 
 	void draw() {
 		glPushMatrix();
@@ -26,5 +27,7 @@ public:
 	}
 
 };
+
+ModelLoader* boxtest::test_box = nullptr;
 
 #endif

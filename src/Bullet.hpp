@@ -6,7 +6,7 @@
 
 class Player;
 
-class Bullet {
+class Bullet  {
     
 public:
     Bullet() = delete;
@@ -20,15 +20,18 @@ public:
 	glm::quat getQuat();
 	glm::mat4 getRotationMatrix();
 	glm::vec3 getWorldVelocity();
-    float getPhi();
-    float getTheta();
+	float getSize();
     Player* getOwner();
+
         
 private:
 	static Quad *sprite;
     const float RADIUS = 7.4f;
 	const float speed = 1.0f; // propulsion from the player weapon.
 	float slowdown = 0.5; // speed multiplier per second, if no acceleration then after one second velocity = velocity * slowdown;
+	float size = 0.5f;
+	float spread = 0.5f;
+	float sizeSpread = 0.8f;
 	float direction;
 	glm::quat position;
 	float up_vel;

@@ -21,6 +21,7 @@ sgct::Engine * gEngine;
 DomeGame * domeGame;
 
 boxtest * box;
+sgct::SharedObject<boxtest> s_box;
 
 void myDrawFun();
 void myPreSyncFun();
@@ -116,6 +117,8 @@ void myInitOGLFun() {
     domeGame->init();
     std::cout << "Init DONE!" << std::endl;
 	curr_time.setVal(sgct::Engine::getTime());
+
+	boxtest::init();
 }
 
 
@@ -123,7 +126,7 @@ void myDrawFun()
 {
 	domeGame->MVP = gEngine->getCurrentModelViewProjectionMatrix();
 	domeGame->render();
-	//box->draw();
+	s_box.getVal().draw();
 
 }
 
@@ -138,7 +141,7 @@ void myPreSyncFun()
 		delta_time = curr_time.getVal() - delta_time;
 
 		//std::cout << 1/delta_time << "FPS\n";
-		ServerHandler::service();
+		//ServerHandler::service();
 		domeGame->update(delta_time);
 		
     }
@@ -203,10 +206,13 @@ void keyCallback(int key, int action)
 void myEncodeFun()
 {
 	sgct::SharedData::instance()->writeDouble(&curr_time);
+	s_box.setVal(*box);
+	sgct::SharedData::instance()->writeObj(&s_box);
 }
 
 
 void myDecodeFun()
 {
 	sgct::SharedData::instance()->readDouble(&curr_time);
+	sgct::SharedData::instance()->readObj(&s_box);
 }

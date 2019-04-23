@@ -89,7 +89,7 @@ void Player::addWorldTranslation(glm::vec3 w_trans) {
 
 Quad* Player::sprite = nullptr;
 void Player::initSprite() {
-	sprite = new Quad("player", 0.5f);
+	sprite = new Quad("player", 1.0f);
 }
 
 void Player::bindSprite() {

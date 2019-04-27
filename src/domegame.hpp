@@ -1,4 +1,6 @@
 #include "./Player.hpp"
+#include "./Weapon.hpp"
+#include "./Projectile.hpp"
 #include "./Scene.hpp"
 #include <stdlib.h>
 #include <stdio.h>
@@ -25,7 +27,7 @@ public:
 
 
     std::vector<Player*> players;
-    std::vector<Bullet*> bullets;
+    std::vector<Projectile*> * projectiles;
 
 	glm::mat4 MVP;
     

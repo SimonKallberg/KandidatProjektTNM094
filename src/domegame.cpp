@@ -5,33 +5,44 @@ DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
 	std::cout << "DomeGame gjord" << std::endl;
 };
 
+float a = 0.0f;
 void DomeGame::render() const{
 	glUniform1i(TEX_loc, 0);
 
-	
-    
 	sgct::ShaderManager::instance()->bindShaderProgram("test");
 
+	//bind sceneshader here tho pliz
 	glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
 	myScene->render();
 	
-	Player::bindSprite();
-	for (int i = 0; i < players.size(); i++){
-		glm::mat4 trans = glm::translate(MVP * players[i]->getRotationMatrix(), glm::vec3(0, 0, -DOME_RADIUS));
-		glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &trans[0][0]);
-        players[i]->render();
+	DomeDrawable::bindSprite();
 
-    }
 
-	Bullet::bindSprite();
-	for (int i = 0; i < bullets.size(); i++) {
+	for (int i = 0; i < players.size(); i++) {
 		glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -DOME_RADIUS));
-		glm::mat4 rot = bullets[i]->getRotationMatrix();
-		glm::mat4 scale = glm::scale(glm::mat4(), bullets[i]->getSize()*glm::vec3(1, 1, 1));
+		glm::mat4 rot = players[i]->getRotationMatrix();
+		glm::mat4 scale = glm::scale(glm::mat4(), players[i]->getScale()*glm::vec3(1, 1, 1));
 
 		glm::mat4 playerMat = MVP * rot * trans * scale;
 		glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &playerMat[0][0]);
-		bullets[i]->render();
+		players[i]->render();
+
+		Weapon* wp = players[i]->getWeapon();
+		trans = glm::translate(trans, glm::vec3(0, 0, 0.1f));
+		scale = glm::scale(scale, wp->getScale() * glm::vec3(1, 1, 1));
+		glm::mat4 weaponMat = MVP * rot *  wp->getRotationMatrix() * trans * scale;
+		glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &weaponMat[0][0]);
+		wp->render();
+	}
+
+	for (int i = 0; i < projectiles->size(); i++) {
+		glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -DOME_RADIUS));
+		glm::mat4 rot = projectiles->at(i)->getRotationMatrix();
+		glm::mat4 scale = glm::scale(glm::mat4(), projectiles->at(i)->getScale()*glm::vec3(1, 1, 1));
+
+		glm::mat4 playerMat = MVP * rot * trans * scale;
+		glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &playerMat[0][0]);
+		projectiles->at(i)->render();
 	}
 
 	glBindVertexArray(0);
@@ -55,10 +66,10 @@ void DomeGame::init() {
 	sgct::ShaderManager::instance()->unBindShaderProgram();
 
 	// Enable some openGL stuff
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glDisable( GL_LIGHTING );
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);
@@ -71,19 +82,15 @@ void DomeGame::init() {
 
 	std::cout << "johan was here xD" << std::endl;
 
-	
-	Player::initSprite();
-	Bullet::initSprite();
+	DomeDrawable::initSprite();
+	projectiles = new std::vector<Projectile*>();
+	Weapon::init(projectiles);
     
-    std::string test1 = "Ylva1";
-    std::string test2 = "Ylva2";
-    
-    //addPlayer(test1);
-    //addPlayer(test2);
 }
 
 void DomeGame::addPlayer(std::string &name) {
-    Player * newPlayer = new Player(name, &bullets);
+    Player * newPlayer = new Player(name,std::string("player"));
+	newPlayer->setWeapon(new Shotgun(newPlayer));
     players.push_back(newPlayer);
     std::cout << "Player created" << std::endl;
 }
@@ -92,16 +99,16 @@ void DomeGame::update(float dt) {
 	for (int i = 0; i < players.size(); i++) {
 		//players[i]->update(dt * (1.0f - i*0.8f)); to make the second player much slower for testing
 		players[i]->update(dt);
+		players[i]->getWeapon()->update(dt,players[i]->c_shoot);
 	}
-	for (int i = 0; i < bullets.size(); i++) {
-
-		if (!bullets[i]->update(dt))
+	for (int i = 0; i < projectiles->size(); i++) {
+		if (!projectiles->at(i)->update(dt))
 		{
-			bullets.erase(bullets.begin() + i);
+			projectiles->erase(projectiles->begin() + i);
+			i--;
 		}
 	}
 
-	float playerRadius = 0.5f;
 	for (int i = 0; i < players.size(); i++) {
 		for (int k = i + 1; k < players.size(); k++)
 		{
@@ -110,7 +117,7 @@ void DomeGame::update(float dt) {
 			glm::vec3 diff = p2_pos - p1_pos;
 
 			//If the players collide: apply knockbacks and place them outside eachothers radius
-			if (glm::length(diff) < 2 * playerRadius) // insert player radius * 2 radius here
+			if (glm::length(diff) < (players[i]->getScale() + players[k]->getScale())/2) // radius = scale/2
 			{
 				glm::vec3 p1_w_vel = players[i]->getWorldVelocity();
 				glm::vec3 p2_w_vel = players[k]->getWorldVelocity();
@@ -130,25 +137,25 @@ void DomeGame::update(float dt) {
 				players[k]->addWorldVelocity(p1_w_rel_vel);
 
 				// move players away from each others radius
-				glm::vec3 trans = n_diff *(2*playerRadius - glm::length(diff)) / DOME_RADIUS * 0.50f ; // 0.55f for extra margin
+				glm::vec3 trans = n_diff *((players[i]->getScale() + players[k]->getScale())/2 - glm::length(diff)) / DOME_RADIUS * 0.50f ; // 0.55f for extra margin
 				players[i]->addWorldTranslation(-trans);
 				players[k]->addWorldTranslation(trans);
 			}
 		}
 	}
 	for (int i = 0; i < players.size(); i++) {
-        for(int k = 0; k < bullets.size(); k++)
+        for(int k = 0; k < projectiles->size(); k++)
         {
 			glm::vec3 p_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
-			glm::vec3 b_pos = bullets[k]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+			glm::vec3 b_pos = projectiles->at(k)->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
 			glm::vec3 diff = p_pos - b_pos;
             //If the bullet hits: decrease & increase score
-            if(bullets[k]->getOwner() != players[i] && glm::length(diff) < bullets[k]->getSize() + playerRadius) // insert player radius + bullet radius here
+            if(projectiles->at(k)->getOwner() != players[i] && glm::length(diff) < (projectiles->at(k)->getScale() + players[i]->getScale())/2)
             {
-				players[i]->addWorldVelocity(bullets[k]->getWorldVelocity() * 0.5f);
+				players[i]->addWorldVelocity(projectiles->at(k)->getWorldVelocity() * 0.05f);
                 players[i]->decreaseScore();
-                bullets[k]->getOwner()->increaseScore();
-                bullets.erase(bullets.begin() + k);
+                projectiles->at(k)->getOwner()->increaseScore();
+                projectiles->erase(projectiles->begin() + k);
             }
         }
 	}

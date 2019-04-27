@@ -12,7 +12,7 @@
 #include "./boxtest.hpp"
 #include "./Quad.hpp"
 #include "./Scene.hpp"
-#include "./Bullet.hpp"
+//#include "./Bullet.hpp"
 #include "./Player.hpp"
 #include "./DomeGame.hpp"
 #include "./ModelLoader.hpp"
@@ -126,7 +126,7 @@ void myDrawFun()
 {
 	domeGame->MVP = gEngine->getCurrentModelViewProjectionMatrix();
 	domeGame->render();
-	s_box.getVal().draw();
+	//s_box.getVal().draw();
 
 }
 

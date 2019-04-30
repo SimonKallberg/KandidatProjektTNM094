@@ -23,11 +23,13 @@ public:
     
     size_t textureHandle;
     Scene * myScene;
-	sgct::SharedVector<Player> * apa;
-
+	
+	sgct::SharedVector<Player> added_players;
+	sgct::SharedVector<Projectile> added_projectiles;
+	sgct::SharedVector<int> removed_projectiles;
 
     std::vector<Player*> players;
-    std::vector<Projectile*> * projectiles;
+    std::vector<Projectile*> * projectiles = nullptr;
 
 	glm::mat4 MVP;
     

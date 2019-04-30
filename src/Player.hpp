@@ -14,11 +14,11 @@ public:
 	: playerName(name), DomeMovable(tex, pos)
 	{
 		weapon = nullptr;
-		slowdown = 0.2;
+		slowdown = 0.2f;
 		scale = 1.0f;
 	};
 
-	Weapon * getWeapon();
+	Weapon * getWeapon() const;
 	void setWeapon(Weapon* wp);
     
 	void update(float dt);

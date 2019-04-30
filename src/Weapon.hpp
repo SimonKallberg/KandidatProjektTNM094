@@ -18,10 +18,12 @@ public:
 	virtual void update(float dt, int c_shoot);
 
 	// used to set the projectile list pointer
-	static void init(std::vector<Projectile*> *list);
+	static void init(std::vector<Projectile*> *list,sgct::SharedVector<Projectile> *add_list);
 
 protected:
 	static std::vector<Projectile*> *projectiles;
+	static sgct::SharedVector<Projectile> *added_projectiles;
+
 	Player* owner;
 
 	float chargedTime = 0.0f; // how long the fire button has been held down

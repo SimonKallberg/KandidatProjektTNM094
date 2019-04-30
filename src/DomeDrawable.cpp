@@ -45,3 +45,37 @@ void DomeDrawable::bindSprite() {
 void DomeDrawable::setTexture(std::string tex) {
 	texture = tex;
 }
+
+
+void DomeDrawable::writeData() {
+	sgct::SharedObject<glm::quat> s_pos = position;
+	sgct::SharedData::instance()->writeObj(&s_pos);
+
+	sgct::SharedFloat s_dir = direction;
+	sgct::SharedData::instance()->writeFloat(&s_dir);
+
+	sgct::SharedFloat s_scale = scale;
+	sgct::SharedData::instance()->writeFloat(&s_scale);
+
+	sgct::SharedString s_tex = texture;
+	sgct::SharedData::instance()->writeString(&s_tex);
+}
+
+void DomeDrawable::readData() {
+	sgct::SharedObject<glm::quat> s_pos;
+	sgct::SharedData::instance()->readObj(&s_pos);
+	position = s_pos.getVal();
+
+	sgct::SharedFloat s_dir;
+	sgct::SharedData::instance()->readFloat(&s_dir);
+	direction = s_dir.getVal();
+
+	sgct::SharedFloat s_scale;
+	sgct::SharedData::instance()->readFloat(&s_scale);
+	scale = s_scale.getVal();
+
+	sgct::SharedString s_tex;
+	sgct::SharedData::instance()->readString(&s_tex);
+	texture = s_tex.getVal();
+
+}

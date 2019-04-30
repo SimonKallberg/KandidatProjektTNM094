@@ -6,6 +6,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/common.hpp>
+#include "./sgct.h"
 #include "./Quad.hpp"
 
 
@@ -29,6 +30,9 @@ public:
 	static void initSprite();
 	static void bindSprite();
 	void render() const;
+
+	virtual void writeData();
+	virtual void readData();
 
 	void setTexture(std::string tex);
 

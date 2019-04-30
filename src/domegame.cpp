@@ -7,6 +7,7 @@ DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
 
 float a = 0.0f;
 void DomeGame::render() const{
+	std::cout << "\nR-1   \n";
 	glUniform1i(TEX_loc, 0);
 
 	sgct::ShaderManager::instance()->bindShaderProgram("test");
@@ -47,6 +48,8 @@ void DomeGame::render() const{
 
 	glBindVertexArray(0);
 	sgct::ShaderManager::instance()->unBindShaderProgram();
+	std::cout << "\nR-2   \n";
+
 }
 
 void DomeGame::init() {
@@ -83,8 +86,9 @@ void DomeGame::init() {
 	std::cout << "johan was here xD" << std::endl;
 
 	DomeDrawable::initSprite();
+
 	projectiles = new std::vector<Projectile*>();
-	Weapon::init(projectiles);
+	Weapon::init(projectiles, &added_projectiles);
     
 }
 
@@ -92,6 +96,7 @@ void DomeGame::addPlayer(std::string &name) {
     Player * newPlayer = new Player(name,std::string("player"));
 	newPlayer->setWeapon(new Shotgun(newPlayer));
     players.push_back(newPlayer);
+	added_players.addVal(*newPlayer);
     std::cout << "Player created" << std::endl;
 }
 
@@ -105,6 +110,7 @@ void DomeGame::update(float dt) {
 		if (!projectiles->at(i)->update(dt))
 		{
 			projectiles->erase(projectiles->begin() + i);
+			removed_projectiles.addVal(i);
 			i--;
 		}
 	}
@@ -156,6 +162,8 @@ void DomeGame::update(float dt) {
                 players[i]->decreaseScore();
                 projectiles->at(k)->getOwner()->increaseScore();
                 projectiles->erase(projectiles->begin() + k);
+				removed_projectiles.addVal(k);
+
             }
         }
 	}

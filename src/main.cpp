@@ -12,7 +12,6 @@
 #include "./boxtest.hpp"
 #include "./Quad.hpp"
 #include "./Scene.hpp"
-//#include "./Bullet.hpp"
 #include "./Player.hpp"
 #include "./DomeGame.hpp"
 #include "./ModelLoader.hpp"
@@ -127,7 +126,6 @@ void myDrawFun()
 	domeGame->MVP = gEngine->getCurrentModelViewProjectionMatrix();
 	domeGame->render();
 	//s_box.getVal().draw();
-
 }
 
 void myPreSyncFun()
@@ -139,6 +137,7 @@ void myPreSyncFun()
         //get the time in seconds
         curr_time.setVal(sgct::Engine::getTime());
 		delta_time = curr_time.getVal() - delta_time;
+
 
 		//std::cout << 1/delta_time << "FPS\n";
 		//ServerHandler::service();
@@ -202,17 +201,84 @@ void keyCallback(int key, int action)
     }
 }
 
-
 void myEncodeFun()
 {
-	sgct::SharedData::instance()->writeDouble(&curr_time);
-	s_box.setVal(*box);
-	sgct::SharedData::instance()->writeObj(&s_box);
+	sgct::SharedData::instance()->writeVector(&domeGame->added_players);
+	domeGame->added_players.clear();
+
+	sgct::SharedData::instance()->writeVector(&domeGame->added_projectiles);
+	domeGame->added_projectiles.clear();
+
+	sgct::SharedData::instance()->writeVector(&domeGame->removed_projectiles);
+	domeGame->removed_projectiles.clear();
+
+
+	for (int i = 0; i < domeGame->players.size(); i++) {
+		domeGame->players[i]->writeData();
+		domeGame->players[i]->getWeapon()->writeData();
+	}
+
+	for (int i = 0; i < domeGame->projectiles->size(); i++) {
+		domeGame->projectiles->at(i)->writeData();
+	}
 }
 
 
 void myDecodeFun()
 {
-	sgct::SharedData::instance()->readDouble(&curr_time);
-	sgct::SharedData::instance()->readObj(&s_box);
+	std::cout << "\n0 ADDPLAYER:\n";
+
+	sgct::SharedData::instance()->readVector(&domeGame->added_players);
+	std::vector<Player> add_players = domeGame->added_players.getVal();
+	for (int i = 0; i < add_players.size(); i++) {
+		std::cout << "0";
+
+		Player * newPlayer = new Player(std::string("addedP"), std::string("player"));
+		newPlayer->setWeapon(new Shotgun(newPlayer));
+		domeGame->players.push_back(newPlayer);
+
+	}
+
+	std::cout << "\n0-1 ADDPROJECTILES:\n";
+	sgct::SharedData::instance()->readVector(&domeGame->added_projectiles);
+	std::vector<Projectile> add_projectiles = domeGame->added_projectiles.getVal();
+	for (int i = 0; i < add_projectiles.size(); i++) {
+		std::cout << "1";
+
+		Projectile * newProjectile = new Projectile(add_projectiles[i]);
+		domeGame->projectiles->push_back(newProjectile);
+
+	}
+
+	std::cout << "\n0-2 REMPROJECTILES:\n";
+	sgct::SharedData::instance()->readVector(&domeGame->removed_projectiles);
+	std::vector<int> rem_indices = domeGame->removed_projectiles.getVal();
+	for (int i = 0; i < rem_indices.size(); i++) {
+		std::cout << "2";
+		domeGame->projectiles->erase(domeGame->projectiles->begin() + rem_indices[i]);
+	}
+
+		
+	std::cout << "\n0-3 READPLAYERS:\n";
+
+	for (int i = 0; i < domeGame->players.size(); i++) {
+		std::cout << "3";
+
+		domeGame->players[i]->readData();
+		domeGame->players[i]->getWeapon()->readData();
+	}
+
+
+	std::cout << "\n0-4 READPROJECTILES\n";
+	if (domeGame->projectiles != nullptr) {
+
+		for (int i = 0; i < domeGame->projectiles->size(); i++) {
+			std::cout << "4";
+
+			domeGame->projectiles->at(i)->readData();
+		}
+	}
+	
+	std::cout << "\nEND\n";
+
 }

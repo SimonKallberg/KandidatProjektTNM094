@@ -25,8 +25,11 @@ void Weapon::update(float dt, int c_shoot) {
 }
 
 std::vector<Projectile*>* Weapon::projectiles = nullptr;
-void Weapon::init(std::vector<Projectile*> *list) {
+sgct::SharedVector<Projectile>* Weapon::added_projectiles = nullptr;
+
+void Weapon::init(std::vector<Projectile*> *list, sgct::SharedVector<Projectile> *add_list) {
 	projectiles = list;
+	added_projectiles = add_list;
 }
 
 
@@ -62,9 +65,11 @@ Shotgun::Shotgun(Player * in_owner)
 }
 
 void Shotgun::shoot() {
-	glm::quat p_pos = owner->getQuat() * projectileOffset;
-	for(int i = 0; i < pellets; i++)
+	glm::quat p_pos = owner->getQuat() * projectileOffset; std::cout << owner->getQuat().x << " ,  " << owner->getQuat().y << " ,  " << owner->getQuat().z << " ,  "  <<"\n";
+	for (int i = 0; i < pellets; i++) {
 		projectiles->push_back(new ShotgunPellet(p_pos, owner));
+		added_projectiles->addVal(ShotgunPellet(p_pos, owner));
+	}
 }
 
 void Shotgun::update(float dt, int c_shoot) {

@@ -1,6 +1,6 @@
 #include "./Player.hpp"
 
-Weapon * Player::getWeapon() {
+Weapon * Player::getWeapon() const {
 	return weapon;
 }
 

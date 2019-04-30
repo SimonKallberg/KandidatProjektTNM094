@@ -18,7 +18,7 @@ public:
     
     void init();
     void render() const;
-    void addPlayer(std::string &name);
+    void addPlayer(std::string &name, std::string weaponType, glm::quat pos = glm::quat());
 	void update(float dt);
     
     size_t textureHandle;
@@ -28,8 +28,9 @@ public:
 	sgct::SharedVector<Projectile> added_projectiles;
 	sgct::SharedVector<int> removed_projectiles;
 
-    std::vector<Player*> players;
-    std::vector<Projectile*> * projectiles = nullptr;
+	// needs to be Player* for the weapons to find their owner Player
+    std::vector<Player*> players; 
+    std::vector<Projectile> projectiles;
 
 	glm::mat4 MVP;
     

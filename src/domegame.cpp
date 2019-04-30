@@ -7,7 +7,6 @@ DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
 
 float a = 0.0f;
 void DomeGame::render() const{
-	std::cout << "\nR-1   \n";
 	glUniform1i(TEX_loc, 0);
 
 	sgct::ShaderManager::instance()->bindShaderProgram("test");
@@ -36,19 +35,18 @@ void DomeGame::render() const{
 		wp->render();
 	}
 
-	for (int i = 0; i < projectiles->size(); i++) {
+	for (int i = 0; i < projectiles.size(); i++) {
 		glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -DOME_RADIUS));
-		glm::mat4 rot = projectiles->at(i)->getRotationMatrix();
-		glm::mat4 scale = glm::scale(glm::mat4(), projectiles->at(i)->getScale()*glm::vec3(1, 1, 1));
+		glm::mat4 rot = projectiles[i].getRotationMatrix();
+		glm::mat4 scale = glm::scale(glm::mat4(), projectiles[i].getScale()*glm::vec3(1, 1, 1));
 
 		glm::mat4 playerMat = MVP * rot * trans * scale;
 		glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &playerMat[0][0]);
-		projectiles->at(i)->render();
+		projectiles[i].render();
 	}
 
 	glBindVertexArray(0);
 	sgct::ShaderManager::instance()->unBindShaderProgram();
-	std::cout << "\nR-2   \n";
 
 }
 
@@ -87,15 +85,17 @@ void DomeGame::init() {
 
 	DomeDrawable::initSprite();
 
-	projectiles = new std::vector<Projectile*>();
-	Weapon::init(projectiles, &added_projectiles);
+	Weapon::init(&projectiles, &added_projectiles);
     
 }
 
-void DomeGame::addPlayer(std::string &name) {
-    Player * newPlayer = new Player(name,std::string("player"));
-	newPlayer->setWeapon(new Shotgun(newPlayer));
-    players.push_back(newPlayer);
+void DomeGame::addPlayer(std::string &name, std::string weaponType, glm::quat pos) {
+    Player * newPlayer = new Player(name,std::string("player"),pos);
+	if(weaponType == "shotgun")
+		newPlayer->setWeapon(new Shotgun(newPlayer), "shotgun");
+	if (weaponType == "smg")
+		newPlayer->setWeapon(new SMG(newPlayer), "smg");
+	players.push_back(newPlayer);
 	added_players.addVal(*newPlayer);
     std::cout << "Player created" << std::endl;
 }
@@ -106,10 +106,10 @@ void DomeGame::update(float dt) {
 		players[i]->update(dt);
 		players[i]->getWeapon()->update(dt,players[i]->c_shoot);
 	}
-	for (int i = 0; i < projectiles->size(); i++) {
-		if (!projectiles->at(i)->update(dt))
+	for (int i = 0; i < projectiles.size(); i++) {
+		if (!projectiles[i].update(dt))
 		{
-			projectiles->erase(projectiles->begin() + i);
+			projectiles.erase(projectiles.begin() + i);
 			removed_projectiles.addVal(i);
 			i--;
 		}
@@ -150,18 +150,18 @@ void DomeGame::update(float dt) {
 		}
 	}
 	for (int i = 0; i < players.size(); i++) {
-        for(int k = 0; k < projectiles->size(); k++)
+        for(int k = 0; k < projectiles.size(); k++)
         {
 			glm::vec3 p_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
-			glm::vec3 b_pos = projectiles->at(k)->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+			glm::vec3 b_pos = projectiles[k].getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
 			glm::vec3 diff = p_pos - b_pos;
             //If the bullet hits: decrease & increase score
-            if(projectiles->at(k)->getOwner() != players[i] && glm::length(diff) < (projectiles->at(k)->getScale() + players[i]->getScale())/2)
+            if(projectiles[k].getOwner() != players[i] && glm::length(diff) < (projectiles[k].getScale() + players[i]->getScale())/2)
             {
-				players[i]->addWorldVelocity(projectiles->at(k)->getWorldVelocity() * 0.05f);
+				players[i]->addWorldVelocity(projectiles[k].getWorldVelocity() * 0.05f);
                 players[i]->decreaseScore();
-                projectiles->at(k)->getOwner()->increaseScore();
-                projectiles->erase(projectiles->begin() + k);
+                projectiles[k].getOwner()->increaseScore();
+                projectiles.erase(projectiles.begin() + k);
 				removed_projectiles.addVal(k);
 
             }

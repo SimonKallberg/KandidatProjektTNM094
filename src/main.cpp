@@ -46,7 +46,7 @@ void getServerMsg(const char * msg, size_t len)
 		std::string name;
 		strm >> name;
 		std::cout << "Player " + name + " added:\n";
-		domeGame->addPlayer(name);
+		domeGame->addPlayer(name, "shotgun");
 	}
 	else if (msgType == 'C') // controls were sent for one player, structure: CIBV, for: [ *CONTROLS*, playerindex, button, value ]
 	{
@@ -182,11 +182,13 @@ void keyCallback(int key, int action)
 				break;
 			case 'Z':
 					box->Box_scale += 0.1f;
+					if (action == SGCT_PRESS)
+						domeGame->addPlayer(std::string("DOME_MASTER"), "smg");
 				break;
 			case 'X':
 					box->Box_scale -= 0.1f;
 					if (action == SGCT_PRESS)
-						domeGame->addPlayer(std::string("DOME_MASTER"));
+						domeGame->addPlayer(std::string("DOME_MASTER"), "shotgun");
 				break;
 			case 'L':
 					std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << box->Box_scale << "\n";
@@ -218,67 +220,60 @@ void myEncodeFun()
 		domeGame->players[i]->getWeapon()->writeData();
 	}
 
-	for (int i = 0; i < domeGame->projectiles->size(); i++) {
-		domeGame->projectiles->at(i)->writeData();
+	for (int i = 0; i < domeGame->projectiles.size(); i++) {
+		domeGame->projectiles[i].writeData();
 	}
 }
 
 
 void myDecodeFun()
 {
-	std::cout << "\n0 ADDPLAYER:\n";
+	//std::cout << "\n0 ADDPLAYER:\n";
 
 	sgct::SharedData::instance()->readVector(&domeGame->added_players);
 	std::vector<Player> add_players = domeGame->added_players.getVal();
 	for (int i = 0; i < add_players.size(); i++) {
-		std::cout << "0";
-
-		Player * newPlayer = new Player(std::string("addedP"), std::string("player"));
-		newPlayer->setWeapon(new Shotgun(newPlayer));
-		domeGame->players.push_back(newPlayer);
+		//std::cout << "0";
+		domeGame->addPlayer(add_players[i].getName(), add_players[i].weaponType, add_players[i].getQuat());
 
 	}
 
-	std::cout << "\n0-1 ADDPROJECTILES:\n";
+	//std::cout << "\n0-1 ADDPROJECTILES:\n";
 	sgct::SharedData::instance()->readVector(&domeGame->added_projectiles);
 	std::vector<Projectile> add_projectiles = domeGame->added_projectiles.getVal();
 	for (int i = 0; i < add_projectiles.size(); i++) {
-		std::cout << "1";
-
-		Projectile * newProjectile = new Projectile(add_projectiles[i]);
-		domeGame->projectiles->push_back(newProjectile);
+		//std::cout << "1";
+		domeGame->projectiles.push_back(Projectile(add_projectiles[i]));
 
 	}
 
-	std::cout << "\n0-2 REMPROJECTILES:\n";
+	//std::cout << "\n0-2 REMPROJECTILES:\n";
 	sgct::SharedData::instance()->readVector(&domeGame->removed_projectiles);
 	std::vector<int> rem_indices = domeGame->removed_projectiles.getVal();
 	for (int i = 0; i < rem_indices.size(); i++) {
-		std::cout << "2";
-		domeGame->projectiles->erase(domeGame->projectiles->begin() + rem_indices[i]);
+		//std::cout << "2";
+		domeGame->projectiles.erase(domeGame->projectiles.begin() + rem_indices[i]);
 	}
 
 		
-	std::cout << "\n0-3 READPLAYERS:\n";
+	//std::cout << "\n0-3 READPLAYERS:\n";
 
 	for (int i = 0; i < domeGame->players.size(); i++) {
-		std::cout << "3";
+		//std::cout << "3";
 
 		domeGame->players[i]->readData();
 		domeGame->players[i]->getWeapon()->readData();
 	}
 
 
-	std::cout << "\n0-4 READPROJECTILES\n";
-	if (domeGame->projectiles != nullptr) {
+	//std::cout << "\n0-4 READPROJECTILES\n";
+	for (int i = 0; i < domeGame->projectiles.size(); i++) {
+		//std::cout << "4";
 
-		for (int i = 0; i < domeGame->projectiles->size(); i++) {
-			std::cout << "4";
-
-			domeGame->projectiles->at(i)->readData();
-		}
+		domeGame->projectiles[i].readData();
 	}
 	
-	std::cout << "\nEND\n";
+	
+	//std::cout << "\nEND\n";
 
 }

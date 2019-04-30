@@ -39,4 +39,10 @@ public:
 	ShotgunPellet(glm::quat pos, Player * in_owner);
 };
 
+class SMGRound : public Projectile {
+public:
+	SMGRound() = delete;
+	SMGRound(glm::quat pos, Player * in_owner);
+};
+
 #endif 

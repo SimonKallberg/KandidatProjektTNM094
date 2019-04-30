@@ -18,8 +18,11 @@ public:
 		scale = 1.0f;
 	};
 
+	std::string weaponType;
+	std::string getName();
+
 	Weapon * getWeapon() const;
-	void setWeapon(Weapon* wp);
+	void setWeapon(Weapon* wp, std::string type);
     
 	void update(float dt);
 

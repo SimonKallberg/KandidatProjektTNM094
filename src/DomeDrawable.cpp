@@ -47,6 +47,8 @@ void DomeDrawable::setTexture(std::string tex) {
 }
 
 
+
+
 void DomeDrawable::writeData() {
 	sgct::SharedObject<glm::quat> s_pos = position;
 	sgct::SharedData::instance()->writeObj(&s_pos);

@@ -51,3 +51,19 @@ ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner)
 	propulsionSpread = 0.5f;
 	Projectile::init();
 }
+
+
+//smground
+
+SMGRound::SMGRound(glm::quat pos, Player * in_owner)
+	: Projectile(std::string(), pos, in_owner)
+{
+	texture = "player";
+	lifeTime = 0.5f;
+	scale = 0.1f;
+	propulsionSpeed = 1.5f;
+	sizeSpread = 0.01f;
+	directionSpread = 0.05f;
+	propulsionSpread = 0.1f;
+	Projectile::init();
+}

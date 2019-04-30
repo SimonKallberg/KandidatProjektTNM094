@@ -1,13 +1,18 @@
 #include "./Player.hpp"
 
+std::string Player::getName() {
+	return playerName;
+}
+
 Weapon * Player::getWeapon() const {
 	return weapon;
 }
 
-void Player::setWeapon(Weapon* wp) {
+void Player::setWeapon(Weapon* wp, std::string type) {
 	if (weapon)
 		delete weapon;
 	weapon = wp;
+	weaponType = type;
 }
 
 void Player::update(float dt) {

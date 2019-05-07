@@ -11,8 +11,8 @@ public:
 	float Box_z = -5.0f;
 	float Box_scale = 1.0f;
 	ModelLoader *test_box;
-	boxtest() {
-		test_box = new ModelLoader("../../Objects/box", "background");
+	boxtest(std::string in_rootDir): rootDir(in_rootDir){
+		test_box = new ModelLoader(rootDir + "/Objects/box", "background");
 	}
 
 	void draw() {
@@ -24,7 +24,8 @@ public:
 		glPopMatrix();
 		glPopMatrix();
 	}
-
+private:
+    std::string rootDir = "";
 };
 
 #endif

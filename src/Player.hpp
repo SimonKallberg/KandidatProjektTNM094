@@ -16,11 +16,13 @@ class Player {
 
 public:
     
-    Player(std::string &name, std::vector<Bullet*> * inBulletList);
+    Player(std::string &name, std::string texName, std::vector<Bullet*> * inBulletList);
 
-    Player(float in_theta, float in_phi, float in_dir, std::string &name, std::vector<Bullet*> * inBulletList);
+    Player(float in_theta, float in_phi, float in_dir, std::string &name, std::string texName, std::vector<Bullet*> * inBulletList);
     
     ~Player();
+    
+    bool operator>(const Player &rhs) const;
     
 	// used for spawning maybe
     void setPosition(float x, float y);
@@ -33,6 +35,10 @@ public:
     float getTheta();
     
     float getPhi();
+    
+    std::string getPlayerName();
+    
+    int getScore();
     
     void decreaseScore();
     
@@ -48,7 +54,7 @@ public:
     
 private:
 	// player avatar image(sprite is a word for an in game image)
-	Quad *sprite = new Quad("player", 0.2f, 0.2f);
+    Quad *sprite = nullptr;
 
 	const float RADIUS = 7.4f;
 

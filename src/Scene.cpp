@@ -1,12 +1,13 @@
 #include "./Scene.hpp"
 
 // Constructor
-Scene::Scene(){
+Scene::Scene(std::string in_rootDir): rootDir(in_rootDir)
+{
 	std::cout << "scene gjord" << std::endl;
     //background = new Quad("background", 2.5f, 1.5f);
 
-	test_bg = new ModelLoader("../../Objects/sphere", "background");
-	test_star = new ModelLoader("../../Objects/lowpoly", "venus");
+	test_bg = new ModelLoader(rootDir + "/Objects/sphere", "background");
+	test_star = new ModelLoader(rootDir + "/Objects/lowpoly", "venus");
 }
 
 float Dome_Radius = 8;

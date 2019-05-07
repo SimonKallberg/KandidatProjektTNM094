@@ -1,0 +1,13 @@
+{
+  "name": "node",
+  "version": "0.0.0",
+  "description": "Node",
+  "main": "server.js",
+  "author": {
+    "name": "anond"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "websocket": "^1.0.28"
+  }
+}

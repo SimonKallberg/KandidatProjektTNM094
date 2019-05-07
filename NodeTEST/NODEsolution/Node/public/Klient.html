@@ -2,118 +2,26 @@
 
 <html lang="sv">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <meta name="description" content="Awario- a game for the dome in Visualiseringscentrumet Norröping">
     <meta name="author" content="Group H">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
     <meta charset="utf-8" />
     <title>AWario</title>
 
     <link rel="stylesheet" href="StyleSheet.css">
+    <script type="text/javascript" src="Script.js"></script>
 
 </head>
 <body>
-        <script>
-            //Variable
-            var name;
-            //connecting to socket ws:...
-            var socket = new WebSocket('ws://192.168.43.177/');
-            
-            
-            //orientation 
-            function openFullScreen() {
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
-                } else if (document.mozRequestFullScreen) { /* Firefox */
-                    document.mozRequestFullScreen();
-                } else if (document.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-                    document.webkitRequestFullscreen();
-                } else if (document.msRequestFullscreen) { /* IE/Edge */
-                    document.msRequestFullscreen();
-                }
-            }
-      
-            function lockScreen() {
-                openFullScreen();
-
-                //rotation funkar inte på datorn!!!
-                var orientation = screen.msOrientation || screen.mozOrientation || (screen.orientation || {}).type;
-                screen.orientation.lock("landscape-primary");
-                
-                document.getElementById("startView").style.visibility = "hidden";
-                document.getElementById("nameView").style.visibility = "visible";
-            }
-           
-            //standard thigs delete???
-            socket.onopen = function (event) {
-                console.log('Connection is open ...');
-            };
-            socket.onerror = function (err) {
-                console.log('err: ', err);
-            }
-            socket.onclose = function () {
-                document.getElementById("StartView").style.visibility = "visible";
-                document.getElementById("nameView").style.visibility = "hidden";
-                document.getElementById("weaponView").style.visibility = "hidden";
-                document.getElementById("gameView").style.visibility = "hidden";
-                console.log("Connection is closed...");
-            }
-
-            //Messege recived from socket 
-            socket.onmessage = function (event) {
-                arg = event.data.split(' ');
-                //Change background depending on the players id
-                //When the game is ending do something
-                if (arg[0] == "changeBackground") {
-                    url = "url(Images/Avatars/avatar" + arg[1] + ".png)";
-                    document.getElementById("gameView").style.backgroundImage = url;
-                }
-                else if (arg[0] == "end") {
-                    //do something
-                }
-            };
-                
-            //Save name and make change view from name to weapon
-            function nameFun() {
-                openFullScreen();
-                name = document.getElementById("nameField").value.trim();
-                //check the input name.
-                if (name.toLowerCase().includes("bajs") || true == name.toLowerCase().includes("kuk")) {
-                    document.getElementById("nameField").placeholder = "Va, det där är inte ditt namn!";
-                    document.getElementById("nameField").value = "";
-                }
-                else if (!(name == null || name == "" || name == "Name" || name == "Skriv in ditt namn" || name == "Oj det där var inte ditt namn!" || name == "Va fan det där är inte ditt namn!" || name.length < 3) ){
-                    document.getElementById("nameView").style.visibility = "hidden";
-                    document.getElementById("weaponView").style.visibility = "visible";
-                }
-                else {
-                    document.getElementById("nameField").placeholder = "Oj det där var inte ditt namn!";
-                    document.getElementById("nameField").value = "";
-                }
-            }
-            function runScript(e) {
-                //See notes about 'which' and 'key'
-                if (e.keyCode == 13) {
-                    nameFun();
-                    return false;
-                }
-            }
-
-            //save vepon and change view from vepon to game
-            function weaponFun(arg) {
-                socket.send("info "+ name + " " + arg); 
-                document.getElementById("weaponView").style.visibility = "hidden";
-                document.getElementById("gameView").style.visibility = "visible";
-            }
-                
-            //Send a messege arg that is called from the playbuttons
-            function message(arg) {
-                socket.send("message "+arg);
-            }
-    </script>
+        
 
     <!--Start Game-->
     <div id="startView">
-        <button id="startButton" onclick="lockScreen()">Starta</button>
+        <button id="startButton" onclick="startFun()">Starta</button>
     </div>
 
     <!--Choose Name-->

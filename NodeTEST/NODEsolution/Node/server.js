@@ -32,7 +32,7 @@ var wsServer = new WebSocketServer({
 
 //when a call for the websocket is made
 wsServer.on('request', function (request) {
-    
+
     //check if the call is made from the game
     if (request.remoteAddress === gameAddress) {
         console.log('GAME CONNECTING...');
@@ -58,69 +58,62 @@ wsServer.on('request', function (request) {
         var name;
         var weapon;
         var number;
-        //check if a player is defiend and if not, create player
-        if (playerArray.map(function (p) { return p.rAddress; }).indexOf(connection.socket.remoteAddress) === -1) {
-            playerArray.push({
-                rAddress: connection.socket.remoteAddress,
-                name: 'player' + playerArray.length,
-                id: playerArray.length,
-                controls: '0.0 0.0 0.0 0.0'
-            });
-
-        }
 
         //call från websidan
         connection.on('message', function (message) {
             if (message.type === 'utf8') {
                 arg = message.utf8Data.split(' ');
-          
-                if ( arg[0] === "info") {
-                    name = playerArray[playerArray.map(function (p) { return p.rAddress; }).indexOf(connection.socket.remoteAddress)].name = arg[1];
-                    weapon = arg[2];
-                    number = playerArray[playerArray.map(function (p) { return p.rAddress; }).indexOf(connection.socket.remoteAddress)].id;
-                    connection.send('changeBackground '+ number);
-                    console.log(name, weapon, number, "change person");
+
+                if (arg[0] === "info") {
                     if (gameSocket) {
-                        gameSocket.send('P ' + arg[1]);
-                        console.log('notified GAME that player was added');
-                    } else {
+                        //check if a player is defiend and if not, create player
+                        if (playerArray.map(function (p) { return p.rAddress; }).indexOf(connection.socket.remoteAddress) === -1) {
+                            playerArray.push({
+                                rAddress: connection.socket.remoteAddress,
+                                name: 'player' + playerArray.length,
+                                id: playerArray.length,
+                                controls: '0.0 0.0 0.0 0.0'
+                            });
+
+                            gameSocket.send('P ' + arg[1]);
+                            console.log('notified GAME that player was added');
+                        }
+                        name = playerArray[playerArray.map(function (p) { return p.rAddress; }).indexOf(connection.socket.remoteAddress)].name = arg[1];
+                        weapon = arg[2];
+                        number = playerArray[playerArray.map(function (p) { return p.rAddress; }).indexOf(connection.socket.remoteAddress)].id;
+                        connection.send('changeBackground ' + number);
+                        console.log(name, weapon, number, "change person");
+
+                    }
+                    else {
                         console.log('WARNING: NO GAME CONNECTION \n DANGER DANGER DANGER');
                     }
                 }
                 //when messege is called from client playbutton.
                 else if (arg[0] === "message") {
-                    //Skickar controller till gamesocket
+                    //Send controller to gamesocket
                     if (gameSocket) {
                         gameSocket.send("C" + number + "" + arg[1]);
                     }
                     console.log("sending: C" + number + "" + arg[1]);
-                    
-                }
-               
-                /* if (message.type === 'utf8') {
-                     playerArray[playerArray.map(function (p) { return p.rAddress; }).indexOf(connection.socket.remoteAddress)].controls = message.utf8Data;
-                 }*/
-                //var index;
 
-                // logControls();
+                }
             }
         });
+
         //when connection closes 
         connection.on('close', function (reasonCode, description) {
             console.log('connection ' + connection.socket.remoteAddress + ' closed. code: ' + reasonCode + ', desc: ' + description);
             connectionArray.splice(connectionArray.map(function (e) { return e.socket.remoteAddress; }).indexOf(connection.socket.remoteAddress), 1);
-            logConnections();
+            connectionArray.push(connection);
         });
-
-        connectionArray.push(connection);
-        logConnections();
-
-    } else {
+    }
+    else {
         request.reject(666, 'already a connection to ip');
         console.log('connection duplicate, denied');
-    }
+    }    
 });
-
+/* BORT?
 
 function logConnections() {
     console.log('LOG:\nclients connected:');
@@ -142,7 +135,7 @@ function logControls() {
     });
 }
 
-
+*/
 function updateGameControls() {
     if (playerArray.length > 0) {
         var msg = '';
@@ -153,5 +146,3 @@ function updateGameControls() {
         //console.log('Sending game:\n' + msg);
     }
 }
-
-

@@ -29,7 +29,7 @@ float DomeDrawable::getDirection() const {
 
 void DomeDrawable::render() const {
 	sprite->bindVAO();
-	sprite->setTexture(texture);
+	sprite->setTexture(texture, bumpTexture);
 	sprite->render();
 };
 

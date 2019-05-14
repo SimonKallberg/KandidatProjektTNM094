@@ -16,6 +16,7 @@ public:
 		weapon = nullptr;
 		slowdown = 0.2f;
 		scale = 1.0f;
+		bumpTexture = "testbump";
 	};
 
 	std::string weaponType;

@@ -19,6 +19,7 @@ public:
     void init();
     void render() const;
     void addPlayer(std::string &name, std::string weaponType, glm::quat pos = glm::quat());
+	void renderPlayer(Player *p) const;
 	void update(float dt);
     
     size_t textureHandle;
@@ -37,8 +38,23 @@ public:
 private:
 	const float DOME_RADIUS = 7.4f;
 
-	GLint MVP_loc = -1;
-	GLint TEX_loc = -1;
+	const static int N_LIGHTS = 8; // needs to be consistent with playershader(f and v)
+	struct PlayerShader{
+		GLint MVP_loc = -1;
+		GLint model_loc = -1;
+		GLint d_tex_loc = -1;
+		GLint b_tex_loc = -1;
+		GLint light_pos_loc[N_LIGHTS];
+
+	} playershader;
+
+	struct ProjectileShader {
+		GLint MVP_loc = -1;
+		GLint model_loc = -1;
+		GLint d_tex_loc = -1;
+
+	} projectileshader;
+
 };
 
 #endif // DOMEGAME

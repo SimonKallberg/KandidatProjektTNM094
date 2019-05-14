@@ -39,6 +39,7 @@ public:
 protected:
 	static Quad * sprite;
 	std::string texture;
+	std::string bumpTexture = "NOBUMP";
 	glm::quat position = glm::quat(1, 0, 0, 0);
 	float direction = 0; //angle(radians)  0 = straight up, 90 = right
 

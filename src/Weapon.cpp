@@ -81,7 +81,7 @@ Shotgun::Shotgun(Player * in_owner)
 }
 
 void Shotgun::shoot() {
-	glm::quat p_pos = owner->getQuat() * projectileOffset; std::cout << owner->getQuat().x << " ,  " << owner->getQuat().y << " ,  " << owner->getQuat().z << " ,  "  <<"\n";
+	glm::quat p_pos = owner->getQuat() * projectileOffset;
 	for (int i = 0; i < pellets; i++) {
 		projectiles->push_back(ShotgunPellet(p_pos, owner));
 		added_projectiles->addVal(ShotgunPellet(p_pos, owner));
@@ -133,3 +133,46 @@ void SMG::shoot() {
 void SMG::update(float dt, int c_shoot) {
 	Weapon::update(dt, c_shoot);
 }
+
+
+// LightBallLauncher
+
+LightBallLauncher::LightBallLauncher(Player * in_owner)
+	: Weapon(std::string(), in_owner)
+{
+	texture = "earth";
+	weaponSize = 0.4f;
+	weaponBloatSize = 0.1f;
+
+	visualRecoil = 0.1f;
+	visualRecoilRecovery = 0.8f;
+
+	weaponOffsetUp = 0.1f;
+	weaponOffsetRight = 0.0f;
+	projectileOffsetUp = 0.15f;
+	projectileOffsetRight = 0.0f;
+
+	//offset
+	position *= glm::quat(owner->getScale() * weaponOffsetUp * glm::vec3(1.0f, 0.0f, 0.0f));
+	position *= glm::quat(owner->getScale() * weaponOffsetRight * glm::vec3(0.0f, -1.0f, 0.0f));
+
+	projectileOffset *= glm::quat(owner->getScale() * projectileOffsetUp * glm::vec3(1.0f, 0.0f, 0.0f));
+	projectileOffset *= glm::quat(owner->getScale() * projectileOffsetRight * glm::vec3(0.0f, -1.0f, 0.0f));
+
+	scale = weaponSize; // relative to player
+
+	reloadTime = 1.0f;
+	chargeTime = 0.0f;
+}
+
+void LightBallLauncher::shoot() {
+	glm::quat p_pos = owner->getQuat() * projectileOffset; std::cout << owner->getQuat().x << " ,  " << owner->getQuat().y << " ,  " << owner->getQuat().z << " ,  " << "\n";
+	projectiles->push_back(LightBall(p_pos, owner));
+	added_projectiles->addVal(LightBall(p_pos, owner));
+}
+
+
+void LightBallLauncher::update(float dt, int c_shoot) {
+	Weapon::update(dt, c_shoot);
+}
+

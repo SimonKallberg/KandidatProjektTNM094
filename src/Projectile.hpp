@@ -45,4 +45,9 @@ public:
 	SMGRound(glm::quat pos, Player * in_owner);
 };
 
+class LightBall : public Projectile {
+public:
+	LightBall() = delete;
+	LightBall(glm::quat pos, Player * in_owner);
+};
 #endif 

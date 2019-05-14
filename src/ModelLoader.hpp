@@ -26,9 +26,20 @@ public:
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> uvs;
 
+	// tangent space stuff for bumpmaps
+	std::vector<glm::vec3> tangents;
+	std::vector<glm::vec3> bitangents;
+
+
+
 	std::string textureName;
+	std::string bumpTextureName = "NOBUMP";
 
 private:
+
+	// calculate the tangent space vectors
+	void initTangents();
+
 
 	bool loadOBJ(const std::string &meshName, float sx = 1.0f, float sy = 1.0f, float sz = 1.0f);
 

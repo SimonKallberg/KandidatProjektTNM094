@@ -72,4 +72,12 @@ public:
 protected:
 };
 
+class LightBallLauncher : public Weapon {
+public:
+	LightBallLauncher() = delete;
+	LightBallLauncher(Player* in_owner);
+	void update(float dt, int c_shoot);
+	void shoot();
+};
+
 #endif

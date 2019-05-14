@@ -58,12 +58,26 @@ ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner)
 SMGRound::SMGRound(glm::quat pos, Player * in_owner)
 	: Projectile(std::string(), pos, in_owner)
 {
-	texture = "player";
+	texture = "player2";
 	lifeTime = 0.5f;
 	scale = 0.1f;
 	propulsionSpeed = 1.5f;
 	sizeSpread = 0.01f;
 	directionSpread = 0.05f;
 	propulsionSpread = 0.1f;
+	Projectile::init();
+}
+
+LightBall::LightBall(glm::quat pos, Player * in_owner)
+	: Projectile(std::string(), pos, in_owner)
+{
+	texture = "testbump";
+	lifeTime = 60.0f;
+	scale = 0.5f;
+	propulsionSpeed = 1.0f;
+	sizeSpread = 0.0f;
+	directionSpread = 0.0f;
+	propulsionSpread = 0.0f;
+	slowdown = 0.1f;
 	Projectile::init();
 }

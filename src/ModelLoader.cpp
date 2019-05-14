@@ -4,7 +4,7 @@ ModelLoader::ModelLoader(const std::string &meshName, const std::string &texture
 	textureName(textureName) {
 	if (loadOBJ(meshName, scale, scale, scale)) {
 		std::cout << "mesh loaded succesfully" << std::endl;
-
+		initTangents();
 	}
 	else printf("ERROR: COULDN'T READ OBJECT\n");
 }
@@ -12,6 +12,7 @@ ModelLoader::ModelLoader(const std::string &meshName, const std::string &texture
 ModelLoader::ModelLoader(const std::string &meshName, float sx, float sy, float sz) {
 	if (loadOBJ(meshName, sx, sy, sz)) {
 		std::cout << "simon e gud" << std::endl;
+		initTangents();
 	}
 	else printf("ERROR: COULDN'T READ OBJECT\n");
 }
@@ -43,39 +44,91 @@ glm::vec3 ModelLoader::getMinVertexValues() {
 }
 
 void ModelLoader::draw(float scale, glm::vec3 pos) const {
-	// Set the active texture unit
-	glActiveTexture(GL_TEXTURE0);
 
-	// Bind the texture by its set handle
+
+	// bind diffuse texture to slot 0
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(textureName));
 
-
-	// Bind the texture by its set handle
-	//glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureID("avatar3.png"));
-
+	// bind bumpmap texture to texture slot 1
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(bumpTextureName));
 
 	for (unsigned int i = 0; i < vertices.size() - 2; i += 3) {
 
 		glBegin(GL_TRIANGLES);
 
 		//Vertex 1
-		glNormal3f(normals[i].x, normals[i].y, normals[i].z);
+		glVertexAttrib3f(4, bitangents[i].x, bitangents[i].y, bitangents[i].z);
+		glVertexAttrib3f(3, tangents[i].x, tangents[i].y, tangents[i].z);
+		glVertexAttrib3f(2, normals[i].x, normals[i].y, normals[i].z);
 		glVertexAttrib2f(1, uvs[i].x, uvs[i].y);
 		glVertexAttrib3f(0, pos.x + scale * vertices[i].x, pos.y + scale * vertices[i].y, pos.z + scale * vertices[i].z);
-
+		
 		//Vertex 2
-		glNormal3f(normals[i + 1].x, normals[i + 1].y, normals[i + 1].z);
+		glVertexAttrib3f(4, bitangents[i + 1].x, bitangents[i + 1].y, bitangents[i + 1].z);
+		glVertexAttrib3f(3, tangents[i + 1].x, tangents[i + 1].y, tangents[i + 1].z);
+		glVertexAttrib3f(2, normals[i + 1].x, normals[i + 1].y, normals[i + 1].z);
 		glVertexAttrib2f(1, uvs[i + 1].x, uvs[i + 1].y);
 		glVertexAttrib3f(0, pos.x + scale * vertices[i + 1].x, pos.y + scale * vertices[i + 1].y, pos.z + scale *  vertices[i + 1].z);
-
+		
 		//Vertex 3
-		glNormal3f(normals[i + 2].x, normals[i + 2].y, normals[i + 2].z);
+		glVertexAttrib3f(4, bitangents[i + 2].x, bitangents[i + 2].y, bitangents[i + 2].z);
+		glVertexAttrib3f(3, tangents[i + 2].x, tangents[i + 2].y, tangents[i + 2].z);
+		glVertexAttrib3f(2, normals[i + 2].x, normals[i + 2].y, normals[i + 2].z);
 		glVertexAttrib2f(1, uvs[i + 2].x, uvs[i + 2].y);
 		glVertexAttrib3f(0, pos.x + scale * vertices[i + 2].x, pos.y + scale * vertices[i + 2].y, pos.z + scale * vertices[i + 2].z);
+		
+		//std::cout << "tan: x:" << tangents[i].x << "  y: " << tangents[i].y << "  z: " << tangents[i].z << "\n";
+		//std::cout << "bitan: x:" << bitangents[i].x << "  y: " << bitangents[i].y << "  z: " << bitangents[i].z << "\n";
+		//std::cout << "norm: x:" << normals[i].x << "  y: " << normals[i].y << "  z: " << normals[i].z << "\n\n";
 
 		glEnd();
 	}
 
+}
+
+void ModelLoader::initTangents() {
+	for (unsigned int i = 0; i < vertices.size() - 2; i += 3) {
+		glm::vec3 edge1 = vertices[i + 1] - vertices[i];
+		glm::vec3 edge2 = vertices[i + 2] - vertices[i];
+		glm::vec2 deltaUV1 = uvs[i + 1] - uvs[i];
+		glm::vec2 deltaUV2 = uvs[i + 2] - uvs[i];
+
+		float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+		glm::vec3 tangent;
+		tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+		tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+		tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+		tangent = glm::normalize(tangent);
+
+		glm::vec3 bitangent;
+		bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+		bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+		bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+		bitangent = glm::normalize(bitangent);
+
+		glm::vec3 T;
+		glm::vec3 B;
+
+		T = glm::normalize(tangent - glm::dot(tangent, normals[i]) * normals[i]);
+		B = glm::cross(normals[i], T);
+		tangents.push_back(T);
+		bitangents.push_back(B);
+
+		T = glm::normalize(tangent - glm::dot(tangent, normals[i]) * normals[i + 1]);
+		B = glm::cross(normals[i + 1], T);
+		tangents.push_back(T);
+		bitangents.push_back(B);
+
+		T = glm::normalize(tangent - glm::dot(tangent, normals[i]) * normals[i + 2]);
+		B = glm::cross(normals[i + 2], T);
+		tangents.push_back(T);
+		bitangents.push_back(B);
+
+	}
+	std::cout << "TANGENT INIT";
 }
 
 bool ModelLoader::loadOBJ(const std::string &meshName, float sx, float sy, float sz) {

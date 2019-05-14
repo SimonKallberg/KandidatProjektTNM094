@@ -190,6 +190,10 @@ void keyCallback(int key, int action)
 					if (action == SGCT_PRESS)
 						domeGame->addPlayer(std::string("DOME_MASTER"), "shotgun");
 				break;
+			case 'C':
+					if (action == SGCT_PRESS)
+						domeGame->addPlayer(std::string("DOME_MASTER"), "light");
+				break;
 			case 'L':
 					std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << box->Box_scale << "\n";
 				break;

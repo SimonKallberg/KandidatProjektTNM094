@@ -10,8 +10,17 @@ layout(location = 4) in vec3 bitangent;
 uniform mat4 MVP;
 uniform mat4 model;
 
+#define NR_POINT_LIGHTS 8  
+struct PointLight {    
+    vec3 position;
+
+    vec3 color;
+}; 
+uniform PointLight pointLights[NR_POINT_LIGHTS];
+
 out vec2 uv;
 out vec3 tangentFragPos;
+out PointLight tangentLights[NR_POINT_LIGHTS];
 
 void main()
 {
@@ -26,7 +35,10 @@ void main()
 	mat3 TBN = transpose(mat3(T, B, N));
 	
 	tangentFragPos = TBN * vec3(model * vec4(pos, 1.0));
-
+	for(int i = 0; i < NR_POINT_LIGHTS; i++){
+		tangentLights[i].position = TBN * pointLights[i].position;
+		tangentLights[i].color = pointLights[i].color;
+	}
 
 	gl_Position =  MVP * model * vec4(pos, 1.0);
 }

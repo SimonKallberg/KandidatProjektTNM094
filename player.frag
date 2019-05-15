@@ -7,8 +7,7 @@ in vec3 tangentFragPos;
 in struct PointLight {    
     vec3 position;
 
-    vec3 ambient;
-    vec3 diffuse;
+	vec3 color;
 } tangentLights[NR_POINT_LIGHTS];
 
 uniform sampler2D d_tex;
@@ -16,7 +15,7 @@ uniform sampler2D b_tex;
 
 // constants
 vec3 viewPosition = vec3(0.0, 0.0, 0.0); //dome centre
-vec3 ambient = vec3(0.3, 0.3, 0.3);
+vec3 ambient = vec3(0.5, 0.5, 0.5);
 
 // attenuation constants
 float const_Att = 1.0;

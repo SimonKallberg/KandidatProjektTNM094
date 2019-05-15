@@ -36,7 +36,7 @@ void DomeGame::render() const{
 			glm::vec3 j_pos = projectiles[j].getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
 
 			if (glm::length(i_pos - j_pos) < 3.0f) { // render if light is close enough
-				glm::vec3 lightpos = projectiles[j].getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.0f));
+				glm::vec3 lightpos = projectiles[j].getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.1f));
 				glUniform3fv(playershader.light_pos_loc[lightindex++], 1, &lightpos[0]);
 
 			}
@@ -70,7 +70,7 @@ void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
 	sgct::TextureManager::instance()->loadTexture("background", "../Images/background.png", true);
-	sgct::TextureManager::instance()->loadTexture("bullet", "../Images/bullet.jpg", true);
+	sgct::TextureManager::instance()->loadTexture("bullet", "../Images/WEAPON.png", true);
 	sgct::TextureManager::instance()->loadTexture("venus", "../Images/venus.jpg", true);
 	sgct::TextureManager::instance()->loadTexture("earth", "../Images/earth_texture.png", true);
 	sgct::TextureManager::instance()->loadTexture("testbump", "../Images/testbump.png", true);
@@ -163,6 +163,9 @@ void DomeGame::renderPlayer(Player *p) const {
 }
 
 void DomeGame::update(float dt) {
+
+	myScene->update(dt);
+
 	for (int i = 0; i < players.size(); i++) {
 		//players[i]->update(dt * (1.0f - i*0.8f)); to make the second player much slower for testing
 		players[i]->update(dt);

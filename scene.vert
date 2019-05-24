@@ -10,7 +10,7 @@ layout(location = 4) in vec3 bitangent;
 uniform mat4 MVP;
 uniform mat4 model;
 
-#define NR_POINT_LIGHTS 8  
+#define NR_POINT_LIGHTS 2  
 struct PointLight {    
     vec3 position;
 

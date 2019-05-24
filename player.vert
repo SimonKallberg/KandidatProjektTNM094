@@ -35,8 +35,11 @@ void main()
 	mat3 TBN = transpose(mat3(T, B, N));
 	
 	tangentFragPos = TBN * vec3(model * vec4(pos, 1.0));
-	for(int i = 0; i < NR_POINT_LIGHTS; i++)
+	for(int i = 0; i < NR_POINT_LIGHTS; i++){
 		tangentLights[i].position = TBN * pointLights[i].position;
+		tangentLights[i].color = pointLights[i].color;
+	}
+		
 
 
 	gl_Position =  MVP * model * vec4(pos, 1.0);

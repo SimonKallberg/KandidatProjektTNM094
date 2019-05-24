@@ -140,17 +140,18 @@ void SMG::update(float dt, int c_shoot) {
 LightBallLauncher::LightBallLauncher(Player * in_owner)
 	: Weapon(std::string(), in_owner)
 {
-	texture = "earth";
-	weaponSize = 0.4f;
+	texture = "weapon1";
+	bumpTexture = "weapon1normal";
+	weaponSize = 0.8f;
 	weaponBloatSize = 0.1f;
 
-	visualRecoil = 0.1f;
-	visualRecoilRecovery = 0.8f;
+	visualRecoil = 0.0f;
+	visualRecoilRecovery = 0.0f;
 
-	weaponOffsetUp = 0.1f;
-	weaponOffsetRight = 0.0f;
-	projectileOffsetUp = 0.15f;
-	projectileOffsetRight = 0.0f;
+	weaponOffsetUp = 0.00f;
+	weaponOffsetRight = 0.08f;
+	projectileOffsetUp = 0.06f;
+	projectileOffsetRight = 0.08f;
 
 	//offset
 	position *= glm::quat(owner->getScale() * weaponOffsetUp * glm::vec3(1.0f, 0.0f, 0.0f));

@@ -21,7 +21,7 @@ public:
 
 private:
 	
-	const static int N_LIGHTS = 8; // needs to be consistent with sceneshader(f and v)
+	const static int N_LIGHTS = 2; // needs to be consistent with sceneshader(f and v)
 	static struct SceneShader {
 		GLint MVP_loc;
 		GLint model_loc;

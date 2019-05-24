@@ -1,7 +1,8 @@
 #include "./Projectile.hpp"
 
 void Projectile::init() {
-	timeLeft = lifeTime;
+	lifetimeLeft = lifetime;
+	deathtimeLeft = deathtime;
 	direction = 0;
 
 	//proplsion spread
@@ -16,16 +17,49 @@ void Projectile::init() {
 	right_vel += propulsionSpeed * sin(direction);
 }
 
+void Projectile::collide() {
+	up_vel = 0;
+	right_vel = 0;
+	scale *= 1.2f;
+	lifetimeLeft = -0.1f;
+	color = deathColor;
+}
+
 bool Projectile::update(float dt){
 	
-	DomeMovable::update(dt);
-
-    timeLeft -= dt;
-    if(timeLeft < 0)
+	
+    if(lifetimeLeft <= 0)
     {
-        return false;
+        if(deathtimeLeft <= 0)
+			return false;
+		
+		deathtimeLeft -= dt;
+
+		float smallifier = pow(0.2, dt);;
+		alpha *= smallifier;
+		scale *= smallifier;
+		slowdown = 0.1f;
     }
-    else return true;
+
+	DomeMovable::update(dt);
+	lifetimeLeft -= dt;
+	direction += 0.0f;
+
+    return true;
+}
+
+bool Projectile::alive() const{
+	if (lifetimeLeft > 0)
+		return true;
+	else
+		return false;
+}
+
+glm::vec4 Projectile::getColor() const {
+	return glm::vec4(color, alpha);
+}
+glm::vec3 Projectile::getLightColor() const {
+	return color * alpha;
 }
 
 
@@ -43,7 +77,7 @@ ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner)
 	:  Projectile(std::string(), pos, in_owner)
 {
 	texture = "venus";
-	lifeTime = 0.5f;
+	lifetime = 0.5f;
 	scale = 0.1f;
 	propulsionSpeed = 1.0f;
 	sizeSpread = 0.05f;
@@ -59,7 +93,7 @@ SMGRound::SMGRound(glm::quat pos, Player * in_owner)
 	: Projectile(std::string(), pos, in_owner)
 {
 	texture = "player2";
-	lifeTime = 0.5f;
+	lifetime = 0.5f;
 	scale = 0.1f;
 	propulsionSpeed = 1.5f;
 	sizeSpread = 0.01f;
@@ -71,13 +105,18 @@ SMGRound::SMGRound(glm::quat pos, Player * in_owner)
 LightBall::LightBall(glm::quat pos, Player * in_owner)
 	: Projectile(std::string(), pos, in_owner)
 {
-	texture = "testbump";
-	lifeTime = 60.0f;
-	scale = 0.5f;
+	texture = "projectile";
+	lifetime = 2.0f;
+	scale = 0.4f;
 	propulsionSpeed = 1.0f;
 	sizeSpread = 0.0f;
 	directionSpread = 0.0f;
 	propulsionSpread = 0.0f;
-	slowdown = 0.1f;
+	slowdown = 0.8f;
+
+	damage = 0.6f;
+
+	deathColor = glm::vec3(2.0f, 1.0f, 0.0f);
+	deathtime = 2.0f;
 	Projectile::init();
 }

@@ -3,7 +3,7 @@
 in vec2 uv;
 in vec3 tangentFragPos;
 
-#define NR_POINT_LIGHTS 8  
+#define NR_POINT_LIGHTS 2  
 in struct PointLight {    
     vec3 position;
 

@@ -20,6 +20,7 @@ public:
     void render() const;
     void addPlayer(std::string &name, std::string weaponType, glm::quat pos = glm::quat());
 	void renderPlayer(Player *p) const;
+	void renderWeapon(Player *p) const;
 	void update(float dt);
     
     size_t textureHandle;
@@ -45,6 +46,7 @@ private:
 		GLint d_tex_loc = -1;
 		GLint b_tex_loc = -1;
 		GLint light_pos_loc[N_LIGHTS];
+		GLint light_color_loc[N_LIGHTS];
 
 	} playershader;
 
@@ -52,6 +54,7 @@ private:
 		GLint MVP_loc = -1;
 		GLint model_loc = -1;
 		GLint d_tex_loc = -1;
+		GLint color = -1;
 
 	} projectileshader;
 

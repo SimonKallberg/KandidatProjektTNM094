@@ -30,6 +30,7 @@ void main()
 	vec4 texColor = texture(d_tex, uv.st); //rgba = vec4(.05,0.5,0.5,rgba.a);
 	vec3 fragColor = ambient * texColor.rgb;
 
+
 	for(int i = 0; i < NR_POINT_LIGHTS; i++){
 
 		// light dir for diffuse, spectral. lightdist for attenuation
@@ -40,7 +41,7 @@ void main()
 
 		float diffuse = max(dot(norm, lightDir), 0.0);
 
-		fragColor += attenuation * (texColor.rgb *  diffuse);
+		fragColor += tangentLights[i].color * attenuation * (texColor.rgb *  diffuse);
 
 	}
 	gl_FragColor = vec4(fragColor, texColor.a);

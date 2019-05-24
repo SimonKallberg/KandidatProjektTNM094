@@ -15,9 +15,17 @@ public:
 	void init();
     
     virtual bool update(float dt);
+
+	void collide();
+
+	bool alive() const; // for collision test
+
+	glm::vec4 getColor() const;
+	glm::vec3 getLightColor() const;
 	
     Player* getOwner();
-        
+	float damage = 1;
+
 protected:
 	
 	// propulsion from the player weapon.
@@ -28,8 +36,18 @@ protected:
 	float directionSpread = 0.0f;
 	float sizeSpread = 0.0f;
 
-	float timeLeft; // seconds left to deletion
-	float lifeTime = 1.0f; // total seconds to live
+	float lifetimeLeft; // seconds left to deletion
+	float lifetime = 1.0f; // total seconds to live
+
+	float deathtime = 1.0f;
+	float deathtimeLeft = 1.0f;
+
+	glm::vec3 color = glm::vec3(1, 1, 1);
+	glm::vec3 deathColor = glm::vec3(1, 1, 1);
+
+	float alpha = 1;
+
+
     Player *owner = nullptr;
 };
 

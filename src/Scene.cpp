@@ -38,7 +38,7 @@ void Scene::initScene() {
 
 	systems.push_back(Body(venus));
 	temp = &systems[0];
-	temp->ambient = glm::vec3(1, 1, 1);
+	temp->ambient = glm::vec3(2, 1, 1);
 	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(20.0f, 0.0f, -60.0f));
 	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(1.0f, 1.0f, 1.0f));
 	temp->subBodies.push_back(Body(earth, temp));

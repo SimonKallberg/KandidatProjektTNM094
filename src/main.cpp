@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
     sgct::SharedData::instance()->setDecodeFunction(myDecodeFun);
     
     // Init the engine
-    if (!gEngine->init())
+    if (!gEngine->init(sgct::Engine::OpenGL_Compablity_Profile))
     {
         delete gEngine;
         return EXIT_FAILURE;
@@ -113,6 +113,10 @@ int main(int argc, char* argv[])
 
 void myInitOGLFun() {
     std::cout << "Init started.." << std::endl;
+    //Add Verdana size 14 to the FontManager using the system font path
+    if( !sgct_text::FontManager::instance()->addFont( "Verdana", "verdana.ttf" ) )
+        sgct_text::FontManager::instance()->getFont( "Verdana", 14 );
+    
     domeGame->init();
     std::cout << "Init DONE!" << std::endl;
 	curr_time.setVal(sgct::Engine::getTime());
@@ -121,6 +125,7 @@ void myInitOGLFun() {
 
 void myDrawFun()
 {
+    sgct_text::print( sgct_text::FontManager::instance()->getFont( "Verdana", 14 ), sgct_text::TOP_LEFT ,100, 140,"Hello");
 	domeGame->MVP = gEngine->getCurrentModelViewProjectionMatrix();
 	domeGame->render();
 	//box->draw();
@@ -146,6 +151,7 @@ void myPreSyncFun()
 
 void keyCallback(int key, int action)
 {
+    std::string player = "DOME_MASTER";
     if( gEngine->isMaster() )
     {
         switch( key )
@@ -184,7 +190,7 @@ void keyCallback(int key, int action)
 			case 'X':
 					box->Box_scale -= 0.1f;
 					if (action == SGCT_PRESS)
-						domeGame->addPlayer(std::string("DOME_MASTER"));
+						domeGame->addPlayer(player);
 				break;
 			case 'L':
 					std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << box->Box_scale << "\n";

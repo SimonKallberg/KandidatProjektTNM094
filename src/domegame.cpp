@@ -5,56 +5,160 @@ DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
 	std::cout << "DomeGame gjord" << std::endl;
 };
 
+float a = 0.0f;
 void DomeGame::render() const{
-	glUniform1i(TEX_loc, 0);
 
-	
-    
-	sgct::ShaderManager::instance()->bindShaderProgram("test");
-
-	glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &MVP[0][0]);
+	myScene->MVP = MVP;
 	myScene->render();
+
+	sgct::ShaderManager::instance()->bindShaderProgram("player");
+	glUniform1i(playershader.d_tex_loc, 0);
+	glUniform1i(playershader.b_tex_loc, 1);
+	glUniformMatrix4fv(playershader.MVP_loc, 1, GL_FALSE, &MVP[0][0]);
 	
-	Player::bindSprite();
-	for (int i = 0; i < players.size(); i++){
-		glm::mat4 trans = glm::translate(MVP * players[i]->getRotationMatrix() , glm::vec3(0, 0, -DOME_RADIUS));
-		glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &trans[0][0]);
-        players[i]->render();
+	DomeDrawable::bindSprite();
 
-    }
+	//std::cout << "x: " << a.x << "  y: " << a.y << "  z: " << a.z << std::endl;
+	for (int i = 0; i < N_LIGHTS; i++) {
+		glm::vec3 lightpos = glm::vec3(0.0f, 0.0f, 0.0f);
+		glUniform3fv(playershader.light_pos_loc[i], 1, &lightpos[0]);
+		glm::vec3 color(0, 0, 0);
+		glUniform3fv(playershader.light_color_loc[i], 1, &color[0]);
+	}
+		
 
-	Bullet::bindSprite();
-	for (int i = 0; i < bullets.size(); i++) {
-		glm::mat4 trans = glm::translate(MVP * bullets[i]->getRotationMatrix(), glm::vec3(0, 0, -DOME_RADIUS));
-		glUniformMatrix4fv(MVP_loc, 1, GL_FALSE, &trans[0][0]);
-		bullets[i]->render();
+	for (int i = 0; i < players.size(); i++) {
+		glm::vec3 i_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+
+		//glm::vec3 lightpos = players[i]->getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.2f));
+		//glUniform3fv(light_pos_loc[0], 1, &lightpos[0]);
+
+		int lightindex = 0;
+		for (int j = 0; lightindex < N_LIGHTS && j < projectiles.size(); j++) {
+			glm::vec3 j_pos = projectiles[j].getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+
+			if (glm::length(i_pos - j_pos) < 3.0f) { // render if light is close enough
+				glm::vec3 lightpos = projectiles[j].getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.2f));
+				glUniform3fv(playershader.light_pos_loc[lightindex], 1, &lightpos[0]);
+
+				glm::vec3 color = projectiles[j].getLightColor();
+				glUniform3fv(playershader.light_color_loc[lightindex], 1, &color[0]);
+
+				lightindex++;
+			}
+		}
+		
+		
+		renderPlayer(players[i]);
+	}
+
+	for (int i = 0; i < N_LIGHTS; i++) {
+		glm::vec3 lightpos = glm::vec3(0.0f, 0.0f, 0.0f);
+		glUniform3fv(playershader.light_pos_loc[i], 1, &lightpos[0]);
+		glm::vec3 color(0, 0, 0);
+		glUniform3fv(playershader.light_color_loc[i], 1, &color[0]);
+	}
+
+	for (int i = 0; i < players.size(); i++) {
+		glm::vec3 i_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+
+		//glm::vec3 lightpos = players[i]->getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.2f));
+		//glUniform3fv(light_pos_loc[0], 1, &lightpos[0]);
+
+		int lightindex = 0;
+		for (int j = 0; lightindex < N_LIGHTS && j < projectiles.size(); j++) {
+			glm::vec3 j_pos = projectiles[j].getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+
+			if (glm::length(i_pos - j_pos) < 3.0f) { // render if light is close enough
+				glm::vec3 lightpos = projectiles[j].getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.2f));
+				glUniform3fv(playershader.light_pos_loc[lightindex], 1, &lightpos[0]);
+
+				glm::vec3 color = projectiles[j].getLightColor();
+				glUniform3fv(playershader.light_color_loc[lightindex], 1, &color[0]);
+
+				lightindex++;
+			}
+		}
+
+
+		renderWeapon(players[i]);
+	}
+
+
+	sgct::ShaderManager::instance()->bindShaderProgram("projectile");
+	glUniform1i(projectileshader.d_tex_loc, 0);
+	glUniformMatrix4fv(projectileshader.MVP_loc, 1, GL_FALSE, &MVP[0][0]);
+
+	for (int i = 0; i < projectiles.size(); i++) {
+		glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -(DOME_RADIUS - 0.2f)));
+		glm::mat4 rot = projectiles[i].getRotationMatrix();
+		glm::mat4 scale = glm::scale(glm::mat4(), projectiles[i].getScale()*glm::vec3(1, 1, 1));
+
+		glm::mat4 playerMat = rot * trans * scale;
+		glUniformMatrix4fv(projectileshader.model_loc, 1, GL_FALSE, &playerMat[0][0]);
+		glm::vec4 color = projectiles[i].getColor();
+		glUniform4fv(projectileshader.color, 1, &color[0]);
+		projectiles[i].render();
 	}
 
 	glBindVertexArray(0);
 	sgct::ShaderManager::instance()->unBindShaderProgram();
+
 }
 
 void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
 	sgct::TextureManager::instance()->loadTexture("background", "../Images/background.png", true);
-	sgct::TextureManager::instance()->loadTexture("player", "../Images/player.png", true);
-	sgct::TextureManager::instance()->loadTexture("bullet", "../Images/bullet.jpg", true);
+	sgct::TextureManager::instance()->loadTexture("bullet", "../Images/WEAPON.png", true);
 	sgct::TextureManager::instance()->loadTexture("venus", "../Images/venus.jpg", true);
+	sgct::TextureManager::instance()->loadTexture("earth", "../Images/earth_texture.png", true);
+	sgct::TextureManager::instance()->loadTexture("testbump", "../Images/testbump.png", true);
+	sgct::TextureManager::instance()->loadTexture("spherebump", "../Images/spherebump.png", true);
+	sgct::TextureManager::instance()->loadTexture("NOBUMP", "../Images/nobump.png", true);
+	sgct::TextureManager::instance()->loadTexture("projectile", "../Images/projectile.png", true);
+	
+	for (int i = 1; i <= 10; i++)
+		sgct::TextureManager::instance()->loadTexture("player" + std::to_string(i), "../Images/avatar" + std::to_string(i) + ".png", true);
+	sgct::TextureManager::instance()->loadTexture("playerbump", "../Images/avatarbump2.png", true);
 
+	sgct::TextureManager::instance()->loadTexture("weapon1", "../Images/Weapon_1.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon1normal", "../Images/Weapon1_normalmap.png", true);
+
+	// PlayerShader
 	sgct::ShaderManager::instance()->addShaderProgram(
-		"test", "../test.vert", "../test.frag");
+		"player", "../player.vert", "../player.frag");
 
-	sgct::ShaderManager::instance()->bindShaderProgram("test");
-	MVP_loc = sgct::ShaderManager::instance()->getShaderProgram("test").getUniformLocation("MVP");
-	TEX_loc = sgct::ShaderManager::instance()->getShaderProgram("test").getUniformLocation("TEX");
+	sgct::ShaderManager::instance()->bindShaderProgram("player");
+	playershader.MVP_loc = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("MVP");
+	playershader.model_loc = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("model");
+	playershader.d_tex_loc = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("d_tex");
+	playershader.b_tex_loc = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("b_tex");
+
+	for (int i = 0; i < N_LIGHTS; i++) {
+		playershader.light_pos_loc[i] = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("pointLights[" + std::to_string(i) + "].position");
+		playershader.light_color_loc[i] = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("pointLights[" + std::to_string(i) + "].color");
+	}
+
+
+	// ProjectileShader
+	sgct::ShaderManager::instance()->addShaderProgram(
+		"projectile", "../projectile.vert", "../projectile.frag");
+
+	sgct::ShaderManager::instance()->bindShaderProgram("projectile");
+	projectileshader.MVP_loc = sgct::ShaderManager::instance()->getShaderProgram("projectile").getUniformLocation("MVP");
+	projectileshader.model_loc = sgct::ShaderManager::instance()->getShaderProgram("projectile").getUniformLocation("model");
+	projectileshader.d_tex_loc = sgct::ShaderManager::instance()->getShaderProgram("projectile").getUniformLocation("d_tex");
+	projectileshader.color = sgct::ShaderManager::instance()->getShaderProgram("projectile").getUniformLocation("color");
+
+
 	sgct::ShaderManager::instance()->unBindShaderProgram();
 
 	// Enable some openGL stuff
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glDisable( GL_LIGHTING );
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);
@@ -67,37 +171,70 @@ void DomeGame::init() {
 
 	std::cout << "johan was here xD" << std::endl;
 
-	Bullet::initSprite();
-	Player::initSprite();
+
+	myScene->initScene();
+
+	DomeDrawable::initSprite();
+
+	Weapon::init(&projectiles, &added_projectiles);
     
-    std::string test1 = "Ylva1";
-    std::string test2 = "Ylva2";
-    
-    //addPlayer(test1);
-    //addPlayer(test2);
 }
 
-void DomeGame::addPlayer(std::string &name) {
-    Player * newPlayer = new Player(name, &bullets);
-    players.push_back(newPlayer);
+void DomeGame::addPlayer(std::string &name, std::string weaponType, glm::quat pos) {
+    Player * newPlayer = new Player(name,std::string("player" + std::to_string(players.size()+1)),pos);
+	if(weaponType == "shotgun")
+		newPlayer->setWeapon(new Shotgun(newPlayer), "shotgun");
+	if (weaponType == "smg")
+		newPlayer->setWeapon(new SMG(newPlayer), "smg");
+	if (weaponType == "light")
+		newPlayer->setWeapon(new LightBallLauncher(newPlayer), "light");
+	players.push_back(newPlayer);
+	added_players.addVal(*newPlayer);
     std::cout << "Player created" << std::endl;
 }
 
+void DomeGame::renderPlayer(Player *p) const {
+	glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -DOME_RADIUS));
+	glm::mat4 rot = p->getRotationMatrix();
+	glm::mat4 scale = scale = glm::scale(glm::mat4(), p->getScale()*glm::vec3(1, 1, 1));
+
+	glm::mat4 playerMat = rot * trans * scale;
+	glUniformMatrix4fv(playershader.model_loc, 1, GL_FALSE, &playerMat[0][0]);
+	p->render();
+
+}
+
+void DomeGame::renderWeapon(Player *p) const {
+	Weapon* wp = p->getWeapon();
+
+	glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -(DOME_RADIUS - 0.1f)));
+	glm::mat4 rot = p->getRotationMatrix() *  wp->getRotationMatrix();
+	glm::mat4 scale = glm::scale(glm::mat4(), wp->getScale()*glm::vec3(1, 1, 1));
+
+	glm::mat4 weaponMat = rot * trans * scale;
+	glUniformMatrix4fv(playershader.model_loc, 1, GL_FALSE, &weaponMat[0][0]);
+	wp->render();
+
+}
+
 void DomeGame::update(float dt) {
+
+	myScene->update(dt);
+
 	for (int i = 0; i < players.size(); i++) {
 		//players[i]->update(dt * (1.0f - i*0.8f)); to make the second player much slower for testing
 		players[i]->update(dt);
+		players[i]->getWeapon()->update(dt,players[i]->c_shoot);
 	}
-	for (int i = 0; i < bullets.size(); i++) {
-
-		if (!bullets[i]->update(dt))
+	for (int i = 0; i < projectiles.size(); i++) {
+		if (!projectiles[i].update(dt))
 		{
-			bullets.erase(bullets.begin() + i);
+			projectiles.erase(projectiles.begin() + i);
+			removed_projectiles.addVal(i);
+			i--;
 		}
 	}
 
-    float sizeOfBullet = 0.2f;
-	float playerRadius = 0.5f;
 	for (int i = 0; i < players.size(); i++) {
 		for (int k = i + 1; k < players.size(); k++)
 		{
@@ -106,7 +243,7 @@ void DomeGame::update(float dt) {
 			glm::vec3 diff = p2_pos - p1_pos;
 
 			//If the players collide: apply knockbacks and place them outside eachothers radius
-			if (glm::length(diff) < 2 * playerRadius) // insert player radius * 2 radius here
+			if (glm::length(diff) < (players[i]->getScale() + players[k]->getScale())/2) // radius = scale/2
 			{
 				glm::vec3 p1_w_vel = players[i]->getWorldVelocity();
 				glm::vec3 p2_w_vel = players[k]->getWorldVelocity();
@@ -126,26 +263,31 @@ void DomeGame::update(float dt) {
 				players[k]->addWorldVelocity(p1_w_rel_vel);
 
 				// move players away from each others radius
-				glm::vec3 trans = n_diff *(2*playerRadius - glm::length(diff)) / DOME_RADIUS * 0.50f ; // 0.55f for extra margin
+				glm::vec3 trans = n_diff *((players[i]->getScale() + players[k]->getScale())/2 - glm::length(diff)) / DOME_RADIUS * 0.50f ; // 0.55f for extra margin
 				players[i]->addWorldTranslation(-trans);
 				players[k]->addWorldTranslation(trans);
 			}
 		}
 	}
 	for (int i = 0; i < players.size(); i++) {
-        for(int k = 0; k < bullets.size(); k++)
+        for(int k = 0; k < projectiles.size(); k++)
         {
-			glm::vec3 p_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
-			glm::vec3 b_pos = bullets[k]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
-			glm::vec3 diff = p_pos - b_pos;
-            //If the bullet hits: decrease & increase score
-            if(bullets[k]->getOwner() != players[i] && glm::length(diff) < sizeOfBullet + playerRadius) // insert player radius + bullet radius here
-            {
-				players[i]->addWorldVelocity(bullets[k]->getWorldVelocity() * 0.5f);
-                players[i]->decreaseScore();
-                bullets[k]->getOwner()->increaseScore();
-                bullets.erase(bullets.begin() + k);
-            }
+			if (projectiles[k].alive()) {
+				glm::vec3 p_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+				glm::vec3 b_pos = projectiles[k].getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+				glm::vec3 diff = p_pos - b_pos;
+				//If the bullet hits: decrease & increase score
+				if (projectiles[k].getOwner() != players[i] && glm::length(diff) < (projectiles[k].getScale() + players[i]->getScale()) / 2)
+				{
+					glm::vec3 n_diff = glm::normalize(diff);
+					glm::vec3 knockback = n_diff * glm::dot(projectiles[k].getWorldVelocity(), n_diff);
+
+					players[i]->addWorldVelocity(projectiles[k].getWorldVelocity() * projectiles[k].damage);
+					players[i]->decreaseScore();
+					projectiles[k].getOwner()->increaseScore();
+					projectiles[k].collide();
+				}
+			}
         }
 	}
 }

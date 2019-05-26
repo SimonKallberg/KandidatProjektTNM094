@@ -25,7 +25,7 @@ public:
 	void bindVAO() const;
 
 	// used to change the texture, used when the quad VAO is bound
-	void setTexture(std::string tex);
+	void setTexture(std::string tex, std::string bump = std::string(""));
     
     //Sets size of player
     void setSize(float s);
@@ -38,6 +38,7 @@ public:
     
     //Texture name
     std::string textureName;
+	std::string bumpTextureName;
     
 private:
     // Variables
@@ -48,6 +49,10 @@ private:
 	GLuint VAO = -1; // Vertex array object
 	GLuint VB = -1;  // Vertex buffer
 	GLuint TB = -1;  // Texture buffer
+	GLuint NB = -1;  // Normal buffer
+	GLuint TanB = -1;  // Tangent buffer
+	GLuint BitanB = -1;  // Bitangent buffer
+
 };
 
 #endif

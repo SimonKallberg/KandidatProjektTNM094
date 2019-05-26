@@ -1,4 +1,6 @@
 #include "./Player.hpp"
+#include "./Weapon.hpp"
+#include "./Projectile.hpp"
 #include "./Scene.hpp"
 #include <stdlib.h>
 #include <stdio.h>
@@ -16,21 +18,46 @@ public:
     
     void init();
     void render() const;
-    void addPlayer(std::string &name);
+    void addPlayer(std::string &name, std::string weaponType, glm::quat pos = glm::quat());
+	void renderPlayer(Player *p) const;
+	void renderWeapon(Player *p) const;
 	void update(float dt);
     
     size_t textureHandle;
     Scene * myScene;
-    std::vector<Player*> players;
-    std::vector<Bullet*> bullets;
+	
+	sgct::SharedVector<Player> added_players;
+	sgct::SharedVector<Projectile> added_projectiles;
+	sgct::SharedVector<int> removed_projectiles;
+
+	// needs to be Player* for the weapons to find their owner Player
+    std::vector<Player*> players; 
+    std::vector<Projectile> projectiles;
 
 	glm::mat4 MVP;
     
 private:
 	const float DOME_RADIUS = 7.4f;
 
-	GLint MVP_loc = -1;
-	GLint TEX_loc = -1;
+	const static int N_LIGHTS = 8; // needs to be consistent with playershader(f and v)
+	struct PlayerShader{
+		GLint MVP_loc = -1;
+		GLint model_loc = -1;
+		GLint d_tex_loc = -1;
+		GLint b_tex_loc = -1;
+		GLint light_pos_loc[N_LIGHTS];
+		GLint light_color_loc[N_LIGHTS];
+
+	} playershader;
+
+	struct ProjectileShader {
+		GLint MVP_loc = -1;
+		GLint model_loc = -1;
+		GLint d_tex_loc = -1;
+		GLint color = -1;
+
+	} projectileshader;
+
 };
 
 #endif // DOMEGAME

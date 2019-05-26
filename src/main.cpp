@@ -153,7 +153,7 @@ void myPreSyncFun()
 
 void keyCallback(int key, int action)
 {
-    std::string player = "DOME_MASTER";
+    std::string playerName = "DOME_MASTER";
     if( gEngine->isMaster() )
     {
         switch( key )
@@ -189,16 +189,16 @@ void keyCallback(int key, int action)
 			case 'Z':
 					box->Box_scale += 0.1f;
 					if (action == SGCT_PRESS)
-						domeGame->addPlayer(std::string("DOME_MASTER"), "smg");
+						domeGame->addPlayer(playerName, "smg");
 				break;
 			case 'X':
 					box->Box_scale -= 0.1f;
 					if (action == SGCT_PRESS)
-						domeGame->addPlayer(std::string("DOME_MASTER"), "shotgun");
+						domeGame->addPlayer(playerName, "shotgun");
 				break;
 			case 'C':
 					if (action == SGCT_PRESS)
-						domeGame->addPlayer(std::string("DOME_MASTER"), "light");
+						domeGame->addPlayer(playerName, "light");
 				break;
 			case 'L':
 					std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << box->Box_scale << "\n";

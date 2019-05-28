@@ -107,7 +107,7 @@ LightBall::LightBall(glm::quat pos, Player * in_owner)
 {
 	texture = "projectile";
 	lifetime = 2.0f;
-	scale = 0.4f;
+	scale = 0.1f;
 	propulsionSpeed = 1.0f;
 	sizeSpread = 0.0f;
 	directionSpread = 0.0f;

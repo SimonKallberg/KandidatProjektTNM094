@@ -14,8 +14,8 @@ public:
 	: playerName(name), DomeMovable(tex, pos)
 	{
 		weapon = nullptr;
-		slowdown = 0.2f;
-		scale = 1.0f;
+		slowdown = 0.4f;
+		scale = 0.4f;
 		bumpTexture = "playerbump";
 	};
 
@@ -40,7 +40,7 @@ private:
 
 	Weapon* weapon;
 	
-	float acceleration = 0.4f; // unit/s^2
+	float acceleration = 0.2f; // unit/s^2
 	float turn_speed = 3.0f; // radians/s
 
 	int score = 0;

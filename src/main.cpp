@@ -76,9 +76,6 @@ void getServerMsg(const char * msg, size_t len)
 
 int main(int argc, char* argv[])
 {
-	ServerHandler::setMessageCallback(getServerMsg);
-	ServerHandler::connect();
-
     // Allocate
     gEngine = new sgct::Engine(argc, argv);
 	domeGame = new DomeGame(gEngine);
@@ -121,6 +118,13 @@ void myInitOGLFun() {
     std::cout << "Init DONE!" << std::endl;
 	curr_time.setVal(sgct::Engine::getTime());
 
+	if (gEngine->isMaster()) {
+		std::cout << "Master node attemping connection to server.\n";;
+		ServerHandler::setMessageCallback(getServerMsg);
+		ServerHandler::connect();
+	}
+
+
 	boxtest::init();
 }
 
@@ -145,7 +149,7 @@ void myPreSyncFun()
 
 
 		//std::cout << 1/delta_time << "FPS\n";
-		//ServerHandler::service();
+		ServerHandler::service();
 		domeGame->update(delta_time);
 		
     }
@@ -233,6 +237,8 @@ void myEncodeFun()
 	for (int i = 0; i < domeGame->projectiles.size(); i++) {
 		domeGame->projectiles[i].writeData();
 	}
+
+	domeGame->myScene->writeData();
 }
 
 
@@ -283,7 +289,5 @@ void myDecodeFun()
 		domeGame->projectiles[i].readData();
 	}
 	
-	
-	//std::cout << "\nEND\n";
-
+	domeGame->myScene->readData();
 }

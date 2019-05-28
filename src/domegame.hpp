@@ -37,7 +37,7 @@ public:
 	glm::mat4 MVP;
     
 private:
-	const float DOME_RADIUS = 7.4f;
+	const float DOME_RADIUS = 5.4f; // where domedrawables are rendered
 
 	const static int N_LIGHTS = 8; // needs to be consistent with playershader(f and v)
 	struct PlayerShader{

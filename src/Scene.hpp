@@ -13,6 +13,9 @@ public:
 	// move objects around, orbits etc
 	void update(float dt);
 
+	void writeData();
+	void readData();
+
     void render() const;
 
 	void initScene();
@@ -37,42 +40,25 @@ private:
 
 	class Body {
 	public:
-		Body(ModelLoader *ml, Body *p = nullptr) {
+		Body(ModelLoader *ml) {
 			model = ml;
-			parent = p;
 		}
 
-		void render(glm::mat4 parentTransformation) {
-			glm::mat4 trans = parentTransformation * localTransformation;
-			for each  (Body b in subBodies)
-			{
-				b.render(trans);
-			}
+		void render(glm::mat4 parentTransformation) const;
 
-			trans *= selfTransformation;
-			glUniformMatrix4fv(sceneshader.model_loc, 1, GL_FALSE, &trans[0][0]);
-			glUniform3fv(sceneshader.ambient, 1, &ambient[0]);
-			if(model)
-				model->draw();
-		}
+		glm::vec3 getCentre() const;
 
-		glm::vec3 getCentre() const{
-			glm::vec4 centre;
-			centre = localTransformation * selfTransformation * glm::vec4(0,0,0,1);
-			Body * temp = parent;
-			while (temp) {
-				centre = temp->localTransformation * centre;
-				temp = temp->parent;
-			}
-			return glm::vec3(centre.x, centre.y, centre.z);
-		}
+		void writeData();
+		void readData();
+
+		void initParents(Body* par = nullptr);
 
 		ModelLoader *model;
 		glm::vec3 ambient = glm::vec3(0.1f, 0.1f, 0.1f);
 		glm::mat4 localTransformation; // affects this body and subbodies
 		glm::mat4 selfTransformation; // extra transformation applied for this object after the systemtransformation, does not affect subbodies
 		std::vector<Body> subBodies;
-		Body *parent; // for light positions backtrack
+		Body *parent = nullptr; // for light positions backtrack
 	};
 
 	std::vector<Body> systems;

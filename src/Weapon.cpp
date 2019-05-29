@@ -1,5 +1,7 @@
 #include"./Weapon.hpp"
 
+std::string empty_string1 = "";
+
 glm::mat4 Weapon::getRotationMatrix() {
 	return glm::toMat4(glm::quat(glm::vec3(-currentRecoil, 0, 0)) * getQuat());
 }
@@ -9,7 +11,7 @@ void Weapon::update(float dt, int c_shoot) {
 	chargedTime = c_shoot * (chargedTime + dt);
 
 	if (visualRecoilRecovery > 0.0001f)
-		currentRecoil = max(currentRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
+        currentRecoil = std::max(currentRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
 
 	if (reloadTimeLeft < 0.0f) {
 		if (chargeTime > 0.0001f)
@@ -51,7 +53,7 @@ void Weapon::readData() {
 
 //shotgun
 Shotgun::Shotgun(Player * in_owner)
-	: Weapon(std::string(), in_owner)
+	: Weapon(empty_string1, in_owner)
 {
 	texture = "bullet";
 	weaponSize = 0.5f;
@@ -97,7 +99,7 @@ void Shotgun::update(float dt, int c_shoot) {
 //smg
 
 SMG::SMG(Player * in_owner)
-	: Weapon(std::string(), in_owner)
+	: Weapon(empty_string1, in_owner)
 {
 	texture = "venus";
 	weaponSize = 0.4f;
@@ -138,7 +140,7 @@ void SMG::update(float dt, int c_shoot) {
 // LightBallLauncher
 
 LightBallLauncher::LightBallLauncher(Player * in_owner)
-	: Weapon(std::string(), in_owner)
+	: Weapon(empty_string1, in_owner)
 {
 	texture = "weapon1";
 	bumpTexture = "weapon1normal";

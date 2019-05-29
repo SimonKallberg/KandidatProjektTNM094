@@ -252,7 +252,8 @@ void myDecodeFun()
 	std::vector<Player> add_players = domeGame->added_players.getVal();
 	for (int i = 0; i < add_players.size(); i++) {
 		//std::cout << "0";
-		domeGame->addPlayer(add_players[i].getName(), add_players[i].weaponType, add_players[i].getQuat());
+        std::string player_name = add_players[i].getName();
+		domeGame->addPlayer(player_name, add_players[i].weaponType, add_players[i].getQuat());
 
 	}
 

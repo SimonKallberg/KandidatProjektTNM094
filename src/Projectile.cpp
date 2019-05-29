@@ -1,5 +1,7 @@
 #include "./Projectile.hpp"
 
+std::string empty_string = "";
+
 void Projectile::init() {
 	lifetimeLeft = lifetime;
 	deathtimeLeft = deathtime;
@@ -74,7 +76,7 @@ Player* Projectile::getOwner()
 //shotgun pellet
 
 ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner)
-	:  Projectile(std::string(), pos, in_owner)
+	:  Projectile(empty_string, pos, in_owner)
 {
 	texture = "venus";
 	lifetime = 0.5f;
@@ -90,7 +92,7 @@ ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner)
 //smground
 
 SMGRound::SMGRound(glm::quat pos, Player * in_owner)
-	: Projectile(std::string(), pos, in_owner)
+	: Projectile(empty_string, pos, in_owner)
 {
 	texture = "player2";
 	lifetime = 0.5f;
@@ -103,7 +105,7 @@ SMGRound::SMGRound(glm::quat pos, Player * in_owner)
 }
 
 LightBall::LightBall(glm::quat pos, Player * in_owner)
-	: Projectile(std::string(), pos, in_owner)
+	: Projectile(empty_string, pos, in_owner)
 {
 	texture = "projectile";
 	lifetime = 2.0f;

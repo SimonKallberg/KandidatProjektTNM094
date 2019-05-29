@@ -41,10 +41,10 @@ void Scene::initScene() {
 	temp->ambient = glm::vec3(2, 1, 1);
 	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(20.0f, 0.0f, -60.0f));
 	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(1.0f, 1.0f, 1.0f));
-	temp->subBodies.push_back(Body(earth, temp));
+	temp->subBodies.push_back(Body(earth));
 	
 	temp = &temp->subBodies[0];
-	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(50.0f, 0.0f, 0.0f));
+	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(-40.0f, 0.0f, 0.0f));
 	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(1.0f, 1.0f, 1.0f));
 	
 
@@ -53,19 +53,23 @@ void Scene::initScene() {
 
 	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(10.0f, 20.0f, -10.0f));
 
-	temp->subBodies.push_back(Body(venus, temp));
+	temp->subBodies.push_back(Body(venus));
 	temp->subBodies[0].localTransformation = glm::translate(glm::mat4(), glm::vec3(10.0f, 00.0f, 0.0f));
 	temp->subBodies[0].selfTransformation = glm::scale(glm::mat4(), 0.1f * glm::vec3(1.0f, 1.0f, 1.0f));
 	
-	temp->subBodies.push_back(Body(venus, temp));
+	temp->subBodies.push_back(Body(venus));
 	temp->subBodies[1].localTransformation = glm::translate(glm::mat4(), glm::vec3(-20.0f, 0.0f, -10.0f));
 	temp->subBodies[1].selfTransformation = glm::scale(glm::mat4(), 0.04f * glm::vec3(1.0f, 1.0f, 1.0f));
 
-	temp->subBodies.push_back(Body(venus, temp));
+	temp->subBodies.push_back(Body(venus));
 	temp->subBodies[2].localTransformation = glm::translate(glm::mat4(), glm::vec3(20.0f, 0.0f, -10.0f));
 	temp->subBodies[2].selfTransformation = glm::scale(glm::mat4(), 0.2f * glm::vec3(1.0f, 1.0f, 1.0f));
 
+	for (int i = 0; i < systems.size(); i++) {
+		systems[i].initParents();
+	}
 
+	std::cout << "SCENE INIT\n";
 }
 
 void Scene::update(float dt) {
@@ -84,6 +88,9 @@ void Scene::update(float dt) {
 	temp = &systems[1].subBodies[2];
 	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 30.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
 	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 2.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
+
+	temp = &systems[0];
+	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 1.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
 
 }
 
@@ -109,10 +116,89 @@ void Scene::render() const {
 	glUniform3fv(sceneshader.light_color_loc[0], 1, &color[0]);
 
 	glm::mat4 origin;
-	for each  (Body b in systems)
-	{
-		b.render(origin);
+	for (int i = 0; i < systems.size(); i++) {
+		systems[i].render(origin);
 	}
 	sgct::ShaderManager::instance()->unBindShaderProgram();
 
+}
+
+
+//bodies
+
+void Scene::Body::render(glm::mat4 parentTransformation) const {
+	glm::mat4 trans = parentTransformation * localTransformation;
+	for (int i = 0; i < subBodies.size(); i++) {
+		subBodies[i].render(trans);
+	}
+
+	trans *= selfTransformation;
+	glUniformMatrix4fv(sceneshader.model_loc, 1, GL_FALSE, &trans[0][0]);
+	glUniform3fv(sceneshader.ambient, 1, &ambient[0]);
+	if (model)
+		model->draw();
+}
+
+glm::vec3 Scene::Body::getCentre() const {
+	glm::vec4 centre;
+	centre = localTransformation * selfTransformation * glm::vec4(0, 0, 0, 1);
+	Body * temp = parent;
+	while (temp) {
+		centre = temp->localTransformation * centre;
+		temp = temp->parent;
+	}
+	return glm::vec3(centre.x, centre.y, centre.z);
+}
+
+void Scene::Body::writeData() {
+	sgct::SharedObject<glm::mat4> local;
+	local.setVal(localTransformation);
+	sgct::SharedObject<glm::mat4> self;
+	self.setVal(selfTransformation);
+
+	sgct::SharedData::instance()->writeObj(&local);
+	sgct::SharedData::instance()->writeObj(&self);
+
+	for (int i = 0; i < subBodies.size(); i++) {
+		subBodies[i].writeData();
+	}
+}
+
+void Scene::Body::readData() {
+	sgct::SharedObject<glm::mat4> local;
+	sgct::SharedData::instance()->readObj(&local);
+	sgct::SharedObject<glm::mat4> self;
+	sgct::SharedData::instance()->readObj(&self);
+
+	
+	localTransformation = local.getVal();
+	selfTransformation = self.getVal();
+	
+	for (int i = 0; i < subBodies.size(); i++) {
+		subBodies[i].readData();
+	}
+}
+
+void Scene::Body::initParents(Body* par) {
+	parent = par;
+	for (int i = 0; i < subBodies.size(); i++) {
+		subBodies[i].initParents(this);
+	}
+}
+
+
+
+
+//shareddata
+
+void Scene::writeData() {
+	for (int i = 0; i < systems.size(); i++) {
+		systems[i].writeData();
+	}
+}
+
+void Scene::readData() {
+	for (int i = 0; i < systems.size(); i++) {
+		systems[i].readData();
+	}
 }

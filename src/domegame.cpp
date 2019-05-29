@@ -38,7 +38,7 @@ void DomeGame::render() const{
 			glm::vec3 j_pos = projectiles[j].getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
 
 			if (glm::length(i_pos - j_pos) < 3.0f) { // render if light is close enough
-				glm::vec3 lightpos = projectiles[j].getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.2f));
+				glm::vec3 lightpos = projectiles[j].getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.1f));
 				glUniform3fv(playershader.light_pos_loc[lightindex], 1, &lightpos[0]);
 
 				glm::vec3 color = projectiles[j].getLightColor();
@@ -207,10 +207,11 @@ void DomeGame::renderPlayer(Player *p) const {
 
 void DomeGame::renderWeapon(Player *p) const {
 	Weapon* wp = p->getWeapon();
+	float pScale = p->getScale();
 
 	glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -(DOME_RADIUS - 0.1f)));
-	glm::mat4 rot = p->getRotationMatrix() *  wp->getRotationMatrix();
-	glm::mat4 scale = glm::scale(glm::mat4(), wp->getScale()*glm::vec3(1, 1, 1));
+	glm::mat4 rot = p->getRotationMatrix() * wp->getRotationMatrix();
+	glm::mat4 scale = glm::scale(glm::mat4(), pScale * wp->getScale()*glm::vec3(1, 1, 1));
 
 	glm::mat4 weaponMat = rot * trans * scale;
 	glUniformMatrix4fv(playershader.model_loc, 1, GL_FALSE, &weaponMat[0][0]);
@@ -244,7 +245,7 @@ void DomeGame::update(float dt) {
 			glm::vec3 diff = p2_pos - p1_pos;
 
 			//If the players collide: apply knockbacks and place them outside eachothers radius
-			if (glm::length(diff) < (players[i]->getScale() + players[k]->getScale())/2) // radius = scale/2
+			if (glm::length(diff) < (players[i]->getScale() + players[k]->getScale())/2.4f) // radius = scale/2
 			{
 				glm::vec3 p1_w_vel = players[i]->getWorldVelocity();
 				glm::vec3 p2_w_vel = players[k]->getWorldVelocity();
@@ -264,7 +265,7 @@ void DomeGame::update(float dt) {
 				players[k]->addWorldVelocity(p1_w_rel_vel);
 
 				// move players away from each others radius
-				glm::vec3 trans = n_diff *((players[i]->getScale() + players[k]->getScale())/2 - glm::length(diff)) / DOME_RADIUS * 0.50f ; // 0.55f for extra margin
+				glm::vec3 trans = n_diff *((players[i]->getScale() + players[k]->getScale())/2.4f - glm::length(diff)) / DOME_RADIUS * 0.50f ; // 0.55f for extra margin
 				players[i]->addWorldTranslation(-trans);
 				players[k]->addWorldTranslation(trans);
 			}
@@ -278,7 +279,7 @@ void DomeGame::update(float dt) {
 				glm::vec3 b_pos = projectiles[k].getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
 				glm::vec3 diff = p_pos - b_pos;
 				//If the bullet hits: decrease & increase score
-				if (projectiles[k].getOwner() != players[i] && glm::length(diff) < (projectiles[k].getScale() + players[i]->getScale()) / 2)
+				if (projectiles[k].getOwner() != players[i] && glm::length(diff) < (projectiles[k].getScale() + players[i]->getScale()) / 2.2f)
 				{
 					glm::vec3 n_diff = glm::normalize(diff);
 					glm::vec3 knockback = n_diff * glm::dot(projectiles[k].getWorldVelocity(), n_diff);

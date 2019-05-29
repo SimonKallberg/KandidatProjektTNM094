@@ -1,4 +1,6 @@
 #include "libwebsockets.h"
+#include <fstream>
+
 
 #ifndef Serverhandler
 #define Serverhandler
@@ -90,8 +92,27 @@ namespace ServerHandler
 
 		struct lws_client_connect_info ccinfo = { 0 };
 		ccinfo.context = context;
-		ccinfo.address = "localhost";
-		ccinfo.port = 80;
+
+		std::ifstream ifs("../server_ip.txt", std::ifstream::in);
+		if (!ifs) {
+			std::cout << "Cannot open ../server_ip.txt. Defaulting to localhost:80\n";
+			ccinfo.address = "localhost";
+			ccinfo.port = 80;
+		}
+		else {
+			std::cout << "Found ../server_ip.txt...\n";
+
+			char ip[128] = "failed";
+			ifs >> ip;
+			ccinfo.address = ip;
+
+			int port = -1;
+			ifs >> port;
+			ccinfo.port = port;
+
+			std::cout << "Attempting connection to: " << ip << ":" << port << "\n";
+		}
+
 		ccinfo.path = "/";
 		ccinfo.host = lws_canonical_hostname(context);
 		ccinfo.origin = "origin";

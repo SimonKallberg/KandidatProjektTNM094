@@ -128,7 +128,7 @@ void ModelLoader::initTangents() {
 		bitangents.push_back(B);
 
 	}
-	std::cout << "TANGENT INIT";
+	std::cout << "TANGENT INIT\n";
 }
 
 bool ModelLoader::loadOBJ(const std::string &meshName, float sx, float sy, float sz) {

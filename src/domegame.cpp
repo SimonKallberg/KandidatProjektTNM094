@@ -118,7 +118,7 @@ void DomeGame::init() {
 	sgct::TextureManager::instance()->loadTexture("NOBUMP", "../Images/nobump.png", true);
 	sgct::TextureManager::instance()->loadTexture("projectile", "../Images/projectile.png", true);
 	
-	for (int i = 1; i <= 10; i++)
+	for (int i = 0; i <= 9; i++)
 		sgct::TextureManager::instance()->loadTexture("player" + std::to_string(i), "../Images/avatar" + std::to_string(i) + ".png", true);
 	sgct::TextureManager::instance()->loadTexture("playerbump", "../Images/avatarbump2.png", true);
 
@@ -191,7 +191,7 @@ void DomeGame::addPlayer(std::string &name, std::string weaponType, glm::quat po
 		newPlayer->setWeapon(new LightBallLauncher(newPlayer), "light");
 	players.push_back(newPlayer);
 	added_players.addVal(*newPlayer);
-    std::cout << "Player created" << std::endl;
+    std::cout << "Player" << name << " created" << std::endl;
 }
 
 void DomeGame::renderPlayer(Player *p) const {
@@ -227,6 +227,10 @@ void DomeGame::update(float dt) {
 		//players[i]->update(dt * (1.0f - i*0.8f)); to make the second player much slower for testing
 		players[i]->update(dt);
 		players[i]->getWeapon()->update(dt,players[i]->c_shoot);
+		glm::vec3 p_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+		if (p_pos.z > 2.0f) {
+			players[i]->addWorldVelocity(0.01f * glm::vec3(0, 0, -1.0f));
+		}
 	}
 	for (int i = 0; i < projectiles.size(); i++) {
 		if (!projectiles[i].update(dt))

@@ -181,7 +181,8 @@ void DomeGame::init() {
 }
 
 void DomeGame::addPlayer(std::string &name, std::string weaponType, glm::quat pos) {
-    Player * newPlayer = new Player(name,std::string("player" + std::to_string(players.size()+1)),pos);
+    std::string texName = "player" + std::to_string(players.size()+1);
+    Player * newPlayer = new Player(name, texName,pos);
 	if(weaponType == "shotgun")
 		newPlayer->setWeapon(new Shotgun(newPlayer), "shotgun");
 	if (weaponType == "smg")

@@ -1,7 +1,8 @@
 #include "./domegame.hpp"
 
-DomeGame::DomeGame(sgct::Engine * gEngine) {		//Constructor
-	myScene = new Scene();
+DomeGame::DomeGame(sgct::Engine * gEngine, std::string rootDir_in) {		//Constructor
+    rootDir = rootDir_in;
+    myScene = new Scene(rootDir);
 	std::cout << "DomeGame gjord" << std::endl;
 };
 
@@ -109,25 +110,25 @@ void DomeGame::render() const{
 void DomeGame::init() {
 	sgct::TextureManager::instance()->setAnisotropicFilterSize(8.0f);	
 	sgct::TextureManager::instance()->setCompression(sgct::TextureManager::S3TC_DXT);
-	sgct::TextureManager::instance()->loadTexture("background", "../Images/background.png", true);
-	sgct::TextureManager::instance()->loadTexture("bullet", "../Images/WEAPON.png", true);
-	sgct::TextureManager::instance()->loadTexture("venus", "../Images/venus.jpg", true);
-	sgct::TextureManager::instance()->loadTexture("earth", "../Images/earth_texture.png", true);
-	sgct::TextureManager::instance()->loadTexture("testbump", "../Images/testbump.png", true);
-	sgct::TextureManager::instance()->loadTexture("spherebump", "../Images/spherebump.png", true);
-	sgct::TextureManager::instance()->loadTexture("NOBUMP", "../Images/nobump.png", true);
-	sgct::TextureManager::instance()->loadTexture("projectile", "../Images/projectile.png", true);
+	sgct::TextureManager::instance()->loadTexture("background", rootDir + "/Images/background.png", true);
+	sgct::TextureManager::instance()->loadTexture("bullet", rootDir + "/Images/WEAPON.png", true);
+	sgct::TextureManager::instance()->loadTexture("venus", rootDir + "/Images/venus.jpg", true);
+	sgct::TextureManager::instance()->loadTexture("earth", rootDir + "/Images/earth_texture.png", true);
+	sgct::TextureManager::instance()->loadTexture("testbump", rootDir + "/Images/testbump.png", true);
+	sgct::TextureManager::instance()->loadTexture("spherebump", rootDir + "/Images/spherebump.png", true);
+	sgct::TextureManager::instance()->loadTexture("NOBUMP", rootDir + "/Images/nobump.png", true);
+	sgct::TextureManager::instance()->loadTexture("projectile", rootDir + "/Images/projectile.png", true);
 	
 	for (int i = 0; i <= 9; i++)
-		sgct::TextureManager::instance()->loadTexture("player" + std::to_string(i), "../Images/avatar" + std::to_string(i) + ".png", true);
-	sgct::TextureManager::instance()->loadTexture("playerbump", "../Images/avatarbump2.png", true);
+		sgct::TextureManager::instance()->loadTexture("player" + std::to_string(i), rootDir + "/Images/avatar" + std::to_string(i) + ".png", true);
+	sgct::TextureManager::instance()->loadTexture("playerbump", rootDir + "/Images/avatarbump2.png", true);
 
-	sgct::TextureManager::instance()->loadTexture("weapon1", "../Images/Weapon_1.png", true);
-	sgct::TextureManager::instance()->loadTexture("weapon1normal", "../Images/Weapon1_normalmap.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon1", rootDir + "/Images/Weapon_1.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon1normal", rootDir + "/Images/Weapon1_normalmap.png", true);
 
 	// PlayerShader
 	sgct::ShaderManager::instance()->addShaderProgram(
-		"player", "../player.vert", "../player.frag");
+		"player", rootDir + "/player.vert", rootDir + "/player.frag");
 
 	sgct::ShaderManager::instance()->bindShaderProgram("player");
 	playershader.MVP_loc = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("MVP");
@@ -143,7 +144,7 @@ void DomeGame::init() {
 
 	// ProjectileShader
 	sgct::ShaderManager::instance()->addShaderProgram(
-		"projectile", "../projectile.vert", "../projectile.frag");
+		"projectile", rootDir + "/projectile.vert", rootDir + "/projectile.frag");
 
 	sgct::ShaderManager::instance()->bindShaderProgram("projectile");
 	projectileshader.MVP_loc = sgct::ShaderManager::instance()->getShaderProgram("projectile").getUniformLocation("MVP");

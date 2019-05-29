@@ -9,7 +9,7 @@
 #include <string>
 
 #include "./ServerHandler.hpp"
-#include "./boxtest.hpp"
+//#include "./boxtest.hpp"
 #include "./Quad.hpp"
 #include "./Scene.hpp"
 #include "./Player.hpp"
@@ -19,8 +19,8 @@
 sgct::Engine * gEngine;
 DomeGame * domeGame;
 
-boxtest * box;
-sgct::SharedObject<boxtest> s_box;
+//boxtest * box;
+//sgct::SharedObject<boxtest> s_box;
 
 void myDrawFun();
 void myPreSyncFun();
@@ -76,13 +76,38 @@ void getServerMsg(const char * msg, size_t len)
 	}
 }
 
+//Ensures compability for file paths on both mac and windows
+std::string findRootDir(std::string rootDir)
+{
+    std::ifstream ifs;
+    ifs.open(rootDir + "/config.h");
+    std::cout << rootDir << std::endl;
+    
+    while( (ifs.rdstate() & std::ifstream::failbit ) != 0 )
+    {
+        rootDir = rootDir.substr(0, rootDir.find_last_of("\\/"));
+        ifs.open(rootDir + "/config.h");
+        std::cout << rootDir << std::endl;
+        if(rootDir == "")
+        {
+            std::cout << "Couldn't find root directory!" << std::endl;
+            break;
+        }
+        
+    }
+    return rootDir;
+}
+
 int main(int argc, char* argv[])
 {
+    //Find root directory for the project
+    std::string rootDir = findRootDir(argv[0]);
+    
     // Allocate
     gEngine = new sgct::Engine(argc, argv);
-	domeGame = new DomeGame(gEngine);
+	domeGame = new DomeGame(gEngine, rootDir);
 
-	box = new boxtest();
+	//box = new boxtest();
 
     // Bind your functions
 	gEngine->setInitOGLFunction(myInitOGLFun);
@@ -93,7 +118,7 @@ int main(int argc, char* argv[])
     sgct::SharedData::instance()->setDecodeFunction(myDecodeFun);
     
     // Init the engine
-    if (!gEngine->init(sgct::Engine::OpenGL_Compablity_Profile))
+    if (!gEngine->init(sgct::Engine::OpenGL_3_3_Core_Profile))
     {
         delete gEngine;
         return EXIT_FAILURE;
@@ -125,15 +150,13 @@ void myInitOGLFun() {
 		ServerHandler::setMessageCallback(getServerMsg);
 		ServerHandler::connect();
 	}
-
-
-	boxtest::init();
+	//boxtest::init();
 }
 
 
 void myDrawFun()
 {
-	sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 14), sgct_text::TOP_LEFT, gEngine->getCurrentModelViewProjectionMatrix(), "hej");
+	//sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 14), sgct_text::TOP_LEFT, gEngine->getCurrentModelViewProjectionMatrix(), "hej");
 	domeGame->MVP = gEngine->getCurrentModelViewProjectionMatrix();// *glm::rotate(glm::mat4(), 1.0f, glm::vec3(1, 0, 0));
 	domeGame->render();
 	//s_box.getVal().draw();
@@ -169,36 +192,36 @@ void keyCallback(int key, int action)
 						domeGame->players[0]->c_left = 1;
 					if (action == SGCT_RELEASE)
 						domeGame->players[0]->c_left = 0;
-					box->Box_x -= 0.2f;
+					//box->Box_x -= 0.2f;
                 break;
             case 'D':
                 if(action == SGCT_PRESS)
                     domeGame->players[0]->c_right = 1;
                 if (action == SGCT_RELEASE)
                     domeGame->players[0]->c_right = 0;
-					box->Box_x += 0.2f;
+					//box->Box_x += 0.2f;
                 break;
             case 'W':
                     //domeGame->players[0]->setPosition(0.0f, STEPLENGTH);
-					box->Box_z -= 0.2f;
+					//box->Box_z -= 0.2f;
 				break;
             case 'S':
                     //domeGame->players[0]->setPosition(0.0f, -STEPLENGTH);
-					box->Box_z += 0.2f;
+					//box->Box_z += 0.2f;
                 break;
 			case SGCT_KEY_SPACE:
-					box->Box_y += 0.2f;
+					//box->Box_y += 0.2f;
 				break;
 			case SGCT_KEY_LCTRL:
-					box->Box_y -= 0.2f;
+					//box->Box_y -= 0.2f;
 				break;
 			case 'Z':
-					box->Box_scale += 0.1f;
+					//box->Box_scale += 0.1f;
 					if (action == SGCT_PRESS)
 						domeGame->addPlayer(playerName, "smg");
 				break;
 			case 'X':
-					box->Box_scale -= 0.1f;
+					//box->Box_scale -= 0.1f;
 					if (action == SGCT_PRESS)
 						domeGame->addPlayer(playerName, "shotgun");
 				break;
@@ -207,7 +230,7 @@ void keyCallback(int key, int action)
 						domeGame->addPlayer(playerName, "light");
 				break;
 			case 'L':
-					std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << box->Box_scale << "\n";
+					//std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << //box->Box_scale << "\n";
 				break;
             case 'K':
 				if (action == SGCT_PRESS)

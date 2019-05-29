@@ -6,7 +6,9 @@ uniform vec4 color;
 
 uniform sampler2D d_tex;
 
+out vec4 out_fragColor;
+
 void main()
 {
-	gl_FragColor = color * texture(d_tex, uv.st);
+    out_fragColor = color * texture(d_tex, uv.st);
 }

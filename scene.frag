@@ -6,7 +6,6 @@ in vec3 tangentFragPos;
 #define NR_POINT_LIGHTS 2  
 in struct PointLight {    
     vec3 position;
-
     vec3 color;
 } tangentLights[NR_POINT_LIGHTS];
 
@@ -14,7 +13,7 @@ uniform vec3 ambient = vec3(0.1, 0.1, 0.1);
 
 uniform sampler2D d_tex;
 uniform sampler2D b_tex;
-uniform sampler2D s_tex;
+//uniform sampler2D s_tex;
 
 // constants
 vec3 viewPosition = vec3(0.0, 0.0, 0.0); //dome centre
@@ -23,6 +22,8 @@ vec3 viewPosition = vec3(0.0, 0.0, 0.0); //dome centre
 float const_Att = 1.0;
 float lin_Att = 0.01;
 float quadr_Att = 0.0002;
+
+out vec4 out_fragColor;
 
 void main()
 {
@@ -45,5 +46,5 @@ void main()
 		fragColor += attenuation * tangentLights[i].color * (texColor.rgb *  diffuse);
 
 	}
-	gl_FragColor = vec4(fragColor, texColor.a);
+	out_fragColor = vec4(fragColor, texColor.a);
 }

@@ -8,7 +8,7 @@
 class Scene{
 public:
     // Constructor
-    Scene();
+    Scene(std::string rootDir_in);
 
 	// move objects around, orbits etc
 	void update(float dt);
@@ -24,6 +24,7 @@ public:
 
 private:
 	
+    std::string rootDir = "";
 	const static int N_LIGHTS = 2; // needs to be consistent with sceneshader(f and v)
 	static struct SceneShader {
 		GLint MVP_loc;

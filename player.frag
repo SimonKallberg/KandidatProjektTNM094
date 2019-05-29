@@ -22,6 +22,8 @@ float const_Att = 1.0;
 float lin_Att = 0.0;
 float quadr_Att = 100;
 
+out vec4 out_fragColor;
+
 void main()
 {
 	// convert the rgb value from bumpmap to a vec3(x,y,z) in tangent space
@@ -44,5 +46,5 @@ void main()
 		fragColor += tangentLights[i].color * attenuation * (texColor.rgb *  diffuse);
 
 	}
-	gl_FragColor = vec4(fragColor, texColor.a);
+	out_fragColor = vec4(fragColor, texColor.a);
 }

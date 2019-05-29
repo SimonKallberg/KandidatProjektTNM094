@@ -4,7 +4,9 @@
 Scene::SceneShader Scene::sceneshader = Scene::SceneShader();
 
 // Constructor
-Scene::Scene(){
+Scene::Scene(std::string rootDir_in)
+{
+    rootDir = rootDir_in;
 	std::cout << "scene gjord" << std::endl;
     //background = new Quad("background", 2.5f, 1.5f);
 
@@ -12,7 +14,7 @@ Scene::Scene(){
 
 void Scene::initScene() {
 	sgct::ShaderManager::instance()->addShaderProgram(
-		"scene", "../scene.vert", "../scene.frag");
+		"scene", rootDir + "/scene.vert", rootDir + "/scene.frag");
 
 	sgct::ShaderManager::instance()->bindShaderProgram("scene");
 	sceneshader.MVP_loc = sgct::ShaderManager::instance()->getShaderProgram("scene").getUniformLocation("MVP");
@@ -22,6 +24,7 @@ void Scene::initScene() {
 	sceneshader.s_tex_loc = sgct::ShaderManager::instance()->getShaderProgram("scene").getUniformLocation("s_tex");
 	sceneshader.ambient = sgct::ShaderManager::instance()->getShaderProgram("scene").getUniformLocation("ambient");
 
+    
 	for (int i = 0; i < N_LIGHTS; i++) {
 		sceneshader.light_pos_loc[i] = sgct::ShaderManager::instance()->getShaderProgram("scene").getUniformLocation("pointLights[" + std::to_string(i) + "].position");
 		sceneshader.light_color_loc[i] = sgct::ShaderManager::instance()->getShaderProgram("scene").getUniformLocation("pointLights[" + std::to_string(i) + "].color");
@@ -30,8 +33,8 @@ void Scene::initScene() {
 
 	sceneshader.s_tex_loc = sgct::ShaderManager::instance()->getShaderProgram("scene").getUniformLocation("s_tex");
 
-	ModelLoader * earth = new ModelLoader("../Objects/lowpoly_earth", "earth");
-	ModelLoader * venus = new ModelLoader("../Objects/sharednormalsphere", "venus");
+	ModelLoader * earth = new ModelLoader( rootDir + "/Objects/lowpoly_earth", "earth");
+	ModelLoader * venus = new ModelLoader(rootDir + "/Objects/sharednormalsphere", "venus");
 	venus->bumpTextureName = "spherebump";
 
 	Body * temp;
@@ -70,6 +73,11 @@ void Scene::initScene() {
 	}
 
 	std::cout << "SCENE INIT\n";
+    
+    std::cout << sceneshader.ambient << " " << sceneshader.b_tex_loc << " " << sceneshader.d_tex_loc << " "
+    << sceneshader.light_color_loc << " " << sceneshader.light_pos_loc << " " << sceneshader.model_loc << " "
+    << sceneshader.MVP_loc << " " << sceneshader.s_tex_loc << std::endl;
+    
 }
 
 void Scene::update(float dt) {

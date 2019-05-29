@@ -14,7 +14,7 @@
 class DomeGame{
 public:
     // Constructor
-    DomeGame(sgct::Engine * gEngine);
+    DomeGame(sgct::Engine * gEngine, std::string in_rootDir);
     
     void init();
     void render() const;
@@ -38,6 +38,7 @@ public:
     
 private:
 	const float DOME_RADIUS = 5.4f; // where domedrawables are rendered
+    std::string rootDir = "";
 
 	const static int N_LIGHTS = 8; // needs to be consistent with playershader(f and v)
 	struct PlayerShader{

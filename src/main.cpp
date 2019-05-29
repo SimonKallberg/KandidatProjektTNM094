@@ -41,12 +41,14 @@ void getServerMsg(const char * msg, size_t len)
 	std::istringstream strm(msg);
 	char msgType = 'N';
 	strm >> msgType;
-	if (msgType == 'P') // player added
+	if (msgType == 'P') // player added P 
 	{
 		std::string name;
+		std::string weapon;
 		strm >> name;
+		strm >> weapon;
 		std::cout << "Player " + name + " added:\n";
-		domeGame->addPlayer(name, "shotgun");
+		domeGame->addPlayer(name, weapon);
 	}
 	else if (msgType == 'C') // controls were sent for one player, structure: CIBV, for: [ *CONTROLS*, playerindex, button, value ]
 	{
@@ -131,8 +133,8 @@ void myInitOGLFun() {
 
 void myDrawFun()
 {
-    sgct_text::print( sgct_text::FontManager::instance()->getFont( "Verdana", 14 ), sgct_text::TOP_LEFT ,100, 140,"Hello");
-	domeGame->MVP = gEngine->getCurrentModelViewProjectionMatrix();
+	sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 14), sgct_text::TOP_LEFT, gEngine->getCurrentModelViewProjectionMatrix(), "hej");
+	domeGame->MVP = gEngine->getCurrentModelViewProjectionMatrix();// *glm::rotate(glm::mat4(), 1.0f, glm::vec3(1, 0, 0));
 	domeGame->render();
 	//s_box.getVal().draw();
 }

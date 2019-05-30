@@ -11,7 +11,7 @@ void Weapon::update(float dt, int c_shoot) {
 	chargedTime = c_shoot * (chargedTime + dt);
 
 	if (visualRecoilRecovery > 0.0001f)
-        currentRecoil = std::max(currentRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
+        currentRecoil = fmax(currentRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
 
 	if (reloadTimeLeft < 0.0f) {
 		if (chargeTime > 0.0001f)

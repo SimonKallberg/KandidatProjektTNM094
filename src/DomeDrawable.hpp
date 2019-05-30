@@ -17,6 +17,7 @@ public:
 	DomeDrawable() = delete;
 	DomeDrawable(std::string &tex, glm::quat pos = glm::quat()) : texture(tex), position(pos) {};
 
+    //Public member functions
     //Apply a translation from the xyz world to the rotational position. Orthogonal part to dome(on current pos) is ignored. The parallel part is in rotation units(rads).
 	void addWorldTranslation(glm::vec3 w_trans);
     void setPosition(glm::quat pos);

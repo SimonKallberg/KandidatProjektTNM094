@@ -19,6 +19,7 @@ public:
     //Destructor
 	~ModelLoader();
 
+    //Public member functions
     void draw(float scale = 1, glm::vec3 pos = glm::vec3(0, 0, 0)) const;
 	glm::vec3 getMaxVertexValues();
 	glm::vec3 getMinVertexValues();

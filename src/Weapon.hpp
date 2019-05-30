@@ -12,6 +12,7 @@ public:
 	Weapon(std::string &tex, Player* in_owner)
 		: DomeDrawable(tex, glm::quat()), owner(in_owner) {}
 
+    //Public member functions
 	void writeData();
 	void readData();
     glm::mat4 getRotationMatrix();

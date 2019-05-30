@@ -13,7 +13,7 @@ public:
 	Projectile(std::string &tex, glm::quat pos, Player * in_owner)
 		: DomeMovable(tex, pos), owner(in_owner) {}
 
-	
+	//Public member functions
 	void init(); // Sets velocites and spreads
 	void collide();
 	bool alive() const; // For collision test

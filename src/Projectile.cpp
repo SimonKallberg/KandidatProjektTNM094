@@ -27,6 +27,21 @@ void Projectile::collide() {
 	color = deathColor;
 }
 
+bool Projectile::alive() const { 
+    if (lifetimeLeft > 0)
+        return true;
+    else
+        return false;
+}
+
+glm::vec4 Projectile::getColor() const {
+    return glm::vec4(color, alpha);
+}
+
+glm::vec3 Projectile::getLightColor() const {
+    return color * alpha;
+}
+
 bool Projectile::update(float dt){
 	
 	
@@ -50,31 +65,12 @@ bool Projectile::update(float dt){
     return true;
 }
 
-bool Projectile::alive() const{
-	if (lifetimeLeft > 0)
-		return true;
-	else
-		return false;
-}
-
-glm::vec4 Projectile::getColor() const {
-	return glm::vec4(color, alpha);
-}
-glm::vec3 Projectile::getLightColor() const {
-	return color * alpha;
-}
-
-
 Player* Projectile::getOwner()
 {
     return owner;
 }
 
-
-
-
-//shotgun pellet
-
+//Shotgun pellet
 ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner)
 	:  Projectile(empty_string, pos, in_owner)
 {
@@ -89,8 +85,7 @@ ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner)
 }
 
 
-//smground
-
+//SMGRound
 SMGRound::SMGRound(glm::quat pos, Player * in_owner)
 	: Projectile(empty_string, pos, in_owner)
 {
@@ -104,6 +99,7 @@ SMGRound::SMGRound(glm::quat pos, Player * in_owner)
 	Projectile::init();
 }
 
+//LightBall
 LightBall::LightBall(glm::quat pos, Player * in_owner)
 	: Projectile(empty_string, pos, in_owner)
 {

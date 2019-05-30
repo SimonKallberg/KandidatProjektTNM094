@@ -322,7 +322,7 @@ std::string DomeGame::getScoreboard() {
         playerScoreList[i].playerName = players[i]->playerName;
         playerScoreList[i].score = players[i]->score;
     }
-	sort(playerScoreList.begin(), playerScoreList.end()); 
+    sort(playerScoreList.begin(), playerScoreList.end(), std::greater<playerScore>()); 
     
     int playerSize = playerScoreList.size();
     int printAmount = std::fmin(playerSize, 10);
@@ -346,7 +346,4 @@ std::string DomeGame::getScoreboard() {
     return totalScore;
 }
 
-bool operator<(const DomeGame::playerScore &a, const DomeGame::playerScore &b)
-{
-    return a.score > b.score;
-}
+

@@ -22,13 +22,16 @@ void Player::update(float dt) {
 	DomeMovable::update(dt);
 }
 
-void Player::decreaseScore(){
-    score -= 1;
-    std::cout << "The player" << playerName << " has score " <<  score << std::endl;
+void Player::takeDamage(float dmg){
+	health -= dmg;
 }
 
-void Player::increaseScore(){
-    score += 1;
+bool Player::isAlive() {
+	return alive;
+}
+
+void Player::increaseScore(int points){
+    score += points;
     std::cout << "The player" << playerName << " has score " <<  score << std::endl;
 }
 

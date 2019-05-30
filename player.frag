@@ -12,10 +12,11 @@ in struct PointLight {
 
 uniform sampler2D d_tex;
 uniform sampler2D b_tex;
+uniform vec3 ambient;
 
 // constants
 vec3 viewPosition = vec3(0.0, 0.0, 0.0); //dome centre
-vec3 ambient = vec3(0.5, 0.5, 0.5);
+
 
 // attenuation constants
 float const_Att = 1.0;

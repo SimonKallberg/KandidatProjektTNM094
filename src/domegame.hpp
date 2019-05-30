@@ -32,6 +32,7 @@ public:
     
     void init();
     void render() const;
+	void printScoreboard() const;
     void addPlayer(std::string &name, std::string weaponType, glm::quat pos = glm::quat());
 	void renderPlayer(Player *p) const;
 	void renderWeapon(Player *p) const;

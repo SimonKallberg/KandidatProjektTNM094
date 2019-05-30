@@ -7,11 +7,12 @@ DomeGame::DomeGame(sgct::Engine * gEngine, std::string rootDir_in) {		//Construc
 	std::cout << "DomeGame gjord" << std::endl;
 };
 
-float a = 0.0f;
 void DomeGame::render() const{
 
+	printScoreboard();
+
 	myScene->MVP = MVP;
-	//myScene->render();
+	myScene->render();
 
 	sgct::ShaderManager::instance()->bindShaderProgram("player");
 	glUniform1i(playershader.d_tex_loc, 0);
@@ -108,15 +109,16 @@ void DomeGame::render() const{
 	}
     
 	glBindVertexArray(0);
-    
-    //Print highscore
 	sgct::ShaderManager::instance()->unBindShaderProgram();
-    glm::mat4 scoreMat = MVP * glm::rotate(glm::mat4(), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f))
-    * glm::translate(glm::mat4(), glm::vec3(0.0f, 13.0f, -20.0f))
-    * glm::scale(glm::mat4(), glm::vec3(1.0f));
-    sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 30), sgct_text::TOP_LEFT, scoreMat,  "HIGHSCORE");
-    sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 14), sgct_text::TOP_LEFT, scoreMat, scoreboard.c_str());
 
+}
+
+void DomeGame::printScoreboard() const {
+	glm::mat4 scoreMat = MVP * glm::rotate(glm::mat4(), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f))
+		* glm::translate(glm::mat4(), glm::vec3(0.0f, 13.0f, -20.0f))
+		* glm::scale(glm::mat4(), glm::vec3(1.0f));
+	sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 30), sgct_text::TOP_LEFT, scoreMat, "HIGHSCORE");
+	sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 14), sgct_text::TOP_LEFT, scoreMat, scoreboard.c_str());
 }
 
 void DomeGame::init() {
@@ -318,8 +320,14 @@ void DomeGame::update(float dt) {
 					if (players[i]->isAlive()) {
 						players[i]->addWorldVelocity(projectiles[k].getWorldVelocity() * projectiles[k].knockback);
 						players[i]->takeDamage(projectiles[k].damage);
-						projectiles[k].getOwner()->increaseScore(projectiles[k].damage);
-						std::cout << "collide alive\n";
+
+						float points = projectiles[k].damage;
+
+						//bonus points for a kill
+						if (!players[i]->isAlive())
+							points += 100;
+
+						projectiles[k].getOwner()->increaseScore(points);
 					}
 					
 					projectiles[k].collide();

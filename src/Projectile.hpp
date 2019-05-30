@@ -28,8 +28,6 @@ public:
 
 	float damage = 0;
 	float knockback = 0;
-
-	float damage = 1;
     
 protected:
 	

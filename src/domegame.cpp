@@ -1,5 +1,6 @@
 #include "./domegame.hpp"
 
+
 DomeGame::DomeGame(sgct::Engine * gEngine, std::string rootDir_in) {		//Constructor
     rootDir = rootDir_in;
     myScene = new Scene(rootDir);
@@ -101,10 +102,12 @@ void DomeGame::render() const{
 		projectiles[i].render();
 	}
     
-    
-
 	glBindVertexArray(0);
 	sgct::ShaderManager::instance()->unBindShaderProgram();
+    glm::mat4 scoreMat = MVP * glm::rotate(glm::mat4(), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f))
+    * glm::translate(glm::mat4(), glm::vec3(0.0f, 10.0f, -20.0f))
+    * glm::scale(glm::mat4(), glm::vec3(1.0f));
+    sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 14), sgct_text::TOP_LEFT, scoreMat, scoreboard.c_str());
 
 }
 
@@ -300,7 +303,7 @@ void DomeGame::update(float dt) {
         }
 	}
     
-    
+    scoreboard = getScoreboard();
 }
 
 std::string DomeGame::getScoreboard() {
@@ -316,13 +319,24 @@ std::string DomeGame::getScoreboard() {
     }
     sort(playerScoreList.begin(), playerScoreList.end());
     
-    for(int i = 0; i < playerScoreList.size(); i++)
-    {
-        totalScore += playerScoreList[i].playerName + " " + std::to_string(playerScoreList[i].playerScore) + " \n";
-    }
-    totalScore += "\n";
+    int playerSize = playerScoreList.size();
+    int printAmount = std::min(playerSize, 10);
     
-    //std::cout << totalScore;
+    //totalScore += "HIGHSCORE \n";
+    
+    std::stringstream scoreStream;
+    
+    scoreStream << "HIGHSCORE \n";
+    
+    for(int i = 0; i < printAmount ; i++)
+    {
+        scoreStream << std::left << std::setfill(' ') << std::setw(10) << std::fixed << std::to_string(playerScoreList[i].playerScore);
+        scoreStream << playerScoreList[i].playerName << " \n";
+        
+    }
+    scoreStream << "\n";
+    
+    totalScore = scoreStream.str();
     
     return totalScore;
 }

@@ -244,6 +244,9 @@ void keyCallback(int key, int action)
 
 void myEncodeFun()
 {
+    sgct::SharedString s_score = domeGame->scoreboard;
+    sgct::SharedData::instance()->writeString(&s_score);
+    
 	sgct::SharedData::instance()->writeVector(&domeGame->added_players);
 	domeGame->added_players.clear();
 
@@ -269,6 +272,11 @@ void myEncodeFun()
 
 void myDecodeFun()
 {
+    sgct::SharedString s_score;
+    sgct::SharedData::instance()->readString(&s_score);
+    
+    domeGame->scoreboard = s_score.getVal();
+    
 	//std::cout << "\n0 ADDPLAYER:\n";
 
 	sgct::SharedData::instance()->readVector(&domeGame->added_players);

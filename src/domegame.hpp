@@ -7,6 +7,9 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
 
 #ifndef DOMEGAME
 #define DOMEGAME

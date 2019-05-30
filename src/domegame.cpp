@@ -103,10 +103,13 @@ void DomeGame::render() const{
 	}
     
 	glBindVertexArray(0);
+    
+    //Print highscore
 	sgct::ShaderManager::instance()->unBindShaderProgram();
     glm::mat4 scoreMat = MVP * glm::rotate(glm::mat4(), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f))
-    * glm::translate(glm::mat4(), glm::vec3(0.0f, 10.0f, -20.0f))
+    * glm::translate(glm::mat4(), glm::vec3(0.0f, 13.0f, -20.0f))
     * glm::scale(glm::mat4(), glm::vec3(1.0f));
+    sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 30), sgct_text::TOP_LEFT, scoreMat,  "HIGHSCORE");
     sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 14), sgct_text::TOP_LEFT, scoreMat, scoreboard.c_str());
 
 }
@@ -322,19 +325,19 @@ std::string DomeGame::getScoreboard() {
     int playerSize = playerScoreList.size();
     int printAmount = std::min(playerSize, 10);
     
-    //totalScore += "HIGHSCORE \n";
-    
     std::stringstream scoreStream;
     
-    scoreStream << "HIGHSCORE \n";
+    scoreStream << std::endl;
+    
     
     for(int i = 0; i < printAmount ; i++)
     {
-        scoreStream << std::left << std::setfill(' ') << std::setw(10) << std::fixed << std::to_string(playerScoreList[i].playerScore);
-        scoreStream << playerScoreList[i].playerName << " \n";
+        
+        scoreStream << std::left << std::setfill(' ') << std::setw(10) << playerScoreList[i].playerScore;
+        scoreStream << std::left << std::setfill(' ') << std::setw(30) << playerScoreList[i].playerName << std::endl;
         
     }
-    scoreStream << "\n";
+    scoreStream << std::endl;
     
     totalScore = scoreStream.str();
     

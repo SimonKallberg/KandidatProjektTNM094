@@ -150,6 +150,11 @@ void DomeGame::init() {
 	sgct::TextureManager::instance()->loadTexture("weapon1", rootDir + "/Images/Weapon_1.png", true);
 	sgct::TextureManager::instance()->loadTexture("weapon1normal", rootDir + "/Images/Weapon1_normalmap.png", true);
 
+	sgct::TextureManager::instance()->loadTexture("weapon2_left", rootDir + "/Images/weapon2_left.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon2normal_left", rootDir + "/Images/Weapon2_normalmap_left.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon2_right", rootDir + "/Images/weapon2_right.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon2normal_right", rootDir + "/Images/Weapon2_normalmap_right.png", true);
+
 	// PlayerShader
 	sgct::ShaderManager::instance()->addShaderProgram(
 		"player", rootDir + "/player.vert", rootDir + "/player.frag");
@@ -211,7 +216,7 @@ void DomeGame::addPlayer(std::string &name, std::string weaponType, glm::quat po
 	if (weaponType == "smg")
 		newPlayer->setWeapon(new SMG(newPlayer), "smg");
 	if (weaponType == "light")
-		newPlayer->setWeapon(new LightBallLauncher(newPlayer), "light");
+		newPlayer->setWeapon(new PopGuns(newPlayer), "light");
 
 	std::cout << "Player " << name << " created with id: " << players.size() << " and weapon: " << weaponType << std::endl;
 
@@ -241,6 +246,16 @@ void DomeGame::renderWeapon(Player *p) const {
 	glm::mat4 weaponMat = rot * trans * scale;
 	glUniformMatrix4fv(playershader.model_loc, 1, GL_FALSE, &weaponMat[0][0]);
 	wp->render();
+
+	if (wp->doubleWeapon) {
+		glm::mat4 rot = p->getRotationMatrix() * wp->getSecondWeaponRotationMatrix();
+		glm::mat4 weaponMat = rot * trans * scale;
+		glUniformMatrix4fv(playershader.model_loc, 1, GL_FALSE, &weaponMat[0][0]);
+
+		wp->switchWeaponTexture();
+		wp->render();
+		wp->switchWeaponTexture();
+	}
 
 }
 

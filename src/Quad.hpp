@@ -15,27 +15,16 @@ public:
     Quad(const std::string& texture, float w, float h);
     Quad(const std::string& texture, float s);
 
-	// creates Vertex array, positions and texture coords.
-	void init();
+    //Public member functions
+	void init(); // creates Vertex array, positions and texture coords.
+    void render() const;  // Handles the drawing of an object
+	void bindVAO() const; // bind the vertex array object, done once before drawing all players
+	void setTexture(std::string tex, std::string bump = std::string("")); // used to change the texture, used when the quad VAO is bound
+    void setSize(float s); //Sets size of player
+    float getSize() const; //Returns size of player
+    void display() const; //Displays information of player
     
-    // Handles the drawing of an object
-    void render() const;
-
-	// bind the vertex array object, done once before drawing all players
-	void bindVAO() const;
-
-	// used to change the texture, used when the quad VAO is bound
-	void setTexture(std::string tex, std::string bump = std::string(""));
-    
-    //Sets size of player
-    void setSize(float s);
-    
-    //Returns size of player
-    float getSize() const;
-    
-    //Displays information of player
-    void display() const;
-    
+    //Public member variables
     //Texture name
     std::string textureName;
 	std::string bumpTextureName;
@@ -45,7 +34,6 @@ private:
     float size;
     float width;
     float height;
-
 	GLuint VAO = -1; // Vertex array object
 	GLuint VB = -1;  // Vertex buffer
 	GLuint TB = -1;  // Texture buffer

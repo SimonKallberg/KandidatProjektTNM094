@@ -245,9 +245,11 @@ void DomeGame::update(float dt) {
 		//players[i]->update(dt * (1.0f - i*0.8f)); to make the second player much slower for testing
 		players[i]->update(dt);
 		players[i]->getWeapon()->update(dt,players[i]->c_shoot);
-		glm::vec3 p_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
-		if (p_pos.z > 2.0f) {
-			players[i]->addWorldVelocity(0.01f * glm::vec3(0, 0, -1.0f));
+		glm::vec3 p_pos = players[i]->getQuat() * glm::vec3(0, 0, -1.0f);
+		glm::vec3 dome_dir = glm::vec3(0, sin(1.0f), -cos(1.0f));
+		float dotval = glm::dot(p_pos, dome_dir);
+		if (dotval < 0.4f) {
+			players[i]->addWorldVelocity(dome_dir * 0.2f * (0.4f - dotval + 0.1f));
 		}
 	}
 	for (int i = 0; i < projectiles.size(); i++) {
@@ -332,7 +334,7 @@ std::string DomeGame::getScoreboard() {
         playerScoreList[i].playerName = players[i]->playerName;
         playerScoreList[i].score = players[i]->score;
     }
-	sort(playerScoreList.begin(), playerScoreList.end()); 
+    sort(playerScoreList.begin(), playerScoreList.end(), std::greater<playerScore>()); 
     
     int playerSize = playerScoreList.size();
     int printAmount = std::fmin(playerSize, 10);
@@ -356,7 +358,4 @@ std::string DomeGame::getScoreboard() {
     return totalScore;
 }
 
-bool operator<(const DomeGame::playerScore &a, const DomeGame::playerScore &b)
-{
-    return a.score > b.score;
-}
+

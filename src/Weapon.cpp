@@ -1,9 +1,41 @@
 #include"./Weapon.hpp"
-
+//Initializing variables
 std::string empty_string1 = "";
+std::vector<Projectile>* Weapon::projectiles = nullptr;
+sgct::SharedVector<Projectile>* Weapon::added_projectiles = nullptr;
+
+void Weapon::writeData() {
+    DomeDrawable::writeData();
+    
+    sgct::SharedFloat s_rec = currentRecoil;
+    sgct::SharedData::instance()->writeFloat(&s_rec);
+}
+
+void Weapon::readData() {
+    DomeDrawable::readData();
+    
+    sgct::SharedFloat s_rec;
+    sgct::SharedData::instance()->readFloat(&s_rec);
+    currentRecoil = s_rec.getVal();
+}
 
 glm::mat4 Weapon::getRotationMatrix() {
 	return glm::toMat4(glm::quat(glm::vec3(-currentRecoil, 0, 0)) * getQuat());
+}
+
+//Static function
+void Weapon::init(std::vector<Projectile> *list, sgct::SharedVector<Projectile> *add_list) {
+    projectiles = list;
+    added_projectiles = add_list;
+}
+
+//Virtual functions
+void Shotgun::shoot() {
+    glm::quat p_pos = owner->getQuat() * projectileOffset;
+    for (int i = 0; i < pellets; i++) {
+        projectiles->push_back(ShotgunPellet(p_pos, owner));
+        added_projectiles->addVal(ShotgunPellet(p_pos, owner));
+    }
 }
 
 void Weapon::update(float dt, int c_shoot) {
@@ -25,31 +57,6 @@ void Weapon::update(float dt, int c_shoot) {
 		}
 	}
 }
-
-std::vector<Projectile>* Weapon::projectiles = nullptr;
-sgct::SharedVector<Projectile>* Weapon::added_projectiles = nullptr;
-void Weapon::init(std::vector<Projectile> *list, sgct::SharedVector<Projectile> *add_list) {
-	projectiles = list;
-	added_projectiles = add_list;
-}
-
-
-
-void Weapon::writeData() {
-	DomeDrawable::writeData();
-
-	sgct::SharedFloat s_rec = currentRecoil;
-	sgct::SharedData::instance()->writeFloat(&s_rec);
-}
-
-void Weapon::readData() {
-	DomeDrawable::readData();
-
-	sgct::SharedFloat s_rec;
-	sgct::SharedData::instance()->readFloat(&s_rec);
-	currentRecoil = s_rec.getVal();
-}
-
 
 //shotgun
 Shotgun::Shotgun(Player * in_owner)
@@ -82,13 +89,7 @@ Shotgun::Shotgun(Player * in_owner)
 	pellets = 20;
 }
 
-void Shotgun::shoot() {
-	glm::quat p_pos = owner->getQuat() * projectileOffset;
-	for (int i = 0; i < pellets; i++) {
-		projectiles->push_back(ShotgunPellet(p_pos, owner));
-		added_projectiles->addVal(ShotgunPellet(p_pos, owner));
-	}
-}
+
 
 void Shotgun::update(float dt, int c_shoot) {
 	Weapon::update(dt, c_shoot);

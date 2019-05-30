@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
     sgct::SharedData::instance()->setDecodeFunction(myDecodeFun);
     
     // Init the engine
-    if (!gEngine->init(sgct::Engine::OpenGL_Compablity_Profile))
+    if (!gEngine->init(sgct::Engine::OpenGL_3_3_Core_Profile))
     {
         delete gEngine;
         return EXIT_FAILURE;

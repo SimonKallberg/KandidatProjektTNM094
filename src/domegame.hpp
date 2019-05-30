@@ -21,6 +21,10 @@ public:
     struct playerScore {
         std::string playerName = "";
         int score = 0;
+        bool operator>(const DomeGame::playerScore &b) const
+        {
+            return score > b.score;
+        }
     };
     
     // Constructor

@@ -1,6 +1,5 @@
 #include "./Scene.hpp"
 
-
 Scene::SceneShader Scene::sceneshader = Scene::SceneShader();
 
 // Constructor
@@ -111,6 +110,18 @@ void Scene::update(float dt) {
 
 }
 
+//shareddata
+void Scene::writeData() {
+    for (int i = 0; i < systems.size(); i++) {
+        systems[i].writeData();
+    }
+}
+
+void Scene::readData() {
+    for (int i = 0; i < systems.size(); i++) {
+        systems[i].readData();
+    }
+}
 
 // Draws the scene in dome or normal desktop mode
 void Scene::render() const {
@@ -143,9 +154,7 @@ void Scene::render() const {
 
 }
 
-
 //bodies
-
 void Scene::Body::render(glm::mat4 parentTransformation) const {
 	glm::mat4 trans = parentTransformation * localTransformation;
 	for (int i = 0; i < subBodies.size(); i++) {
@@ -159,29 +168,18 @@ void Scene::Body::render(glm::mat4 parentTransformation) const {
 		model->draw();
 }
 
-glm::vec3 Scene::Body::getCentre() const {
-	glm::vec4 centre;
-	centre = localTransformation * selfTransformation * glm::vec4(0, 0, 0, 1);
-	Body * temp = parent;
-	while (temp) {
-		centre = temp->localTransformation * centre;
-		temp = temp->parent;
-	}
-	return glm::vec3(centre.x, centre.y, centre.z);
-}
-
 void Scene::Body::writeData() {
-	sgct::SharedObject<glm::mat4> local;
-	local.setVal(localTransformation);
-	sgct::SharedObject<glm::mat4> self;
-	self.setVal(selfTransformation);
-
-	sgct::SharedData::instance()->writeObj(&local);
-	sgct::SharedData::instance()->writeObj(&self);
-
-	for (int i = 0; i < subBodies.size(); i++) {
-		subBodies[i].writeData();
-	}
+    sgct::SharedObject<glm::mat4> local;
+    local.setVal(localTransformation);
+    sgct::SharedObject<glm::mat4> self;
+    self.setVal(selfTransformation);
+    
+    sgct::SharedData::instance()->writeObj(&local);
+    sgct::SharedData::instance()->writeObj(&self);
+    
+    for (int i = 0; i < subBodies.size(); i++) {
+        subBodies[i].writeData();
+    }
 }
 
 void Scene::Body::readData() {
@@ -206,19 +204,20 @@ void Scene::Body::initParents(Body* par) {
 	}
 }
 
-
-
-
-//shareddata
-
-void Scene::writeData() {
-	for (int i = 0; i < systems.size(); i++) {
-		systems[i].writeData();
-	}
+glm::vec3 Scene::Body::getCentre() const {
+    glm::vec4 centre;
+    centre = localTransformation * selfTransformation * glm::vec4(0, 0, 0, 1);
+    Body * temp = parent;
+    while (temp) {
+        centre = temp->localTransformation * centre;
+        temp = temp->parent;
+    }
+    return glm::vec3(centre.x, centre.y, centre.z);
 }
 
-void Scene::readData() {
-	for (int i = 0; i < systems.size(); i++) {
-		systems[i].readData();
-	}
-}
+
+
+
+
+
+

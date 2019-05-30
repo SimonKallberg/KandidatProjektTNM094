@@ -36,6 +36,7 @@ public:
     //Displays information of player
     void display() const;
     
+    //Public member variables
     //Texture name
     std::string textureName;
 	std::string bumpTextureName;
@@ -45,7 +46,6 @@ private:
     float size;
     float width;
     float height;
-
 	GLuint VAO = -1; // Vertex array object
 	GLuint VB = -1;  // Vertex buffer
 	GLuint TB = -1;  // Texture buffer

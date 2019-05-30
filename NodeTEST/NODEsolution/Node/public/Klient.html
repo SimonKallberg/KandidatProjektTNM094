@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+
+<html lang="sv">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="description" content="Awario- a game for the dome in Visualiseringscentrumet Norröping">
+    <meta name="author" content="Group H">
+    <meta charset="utf-8" />
+    <title>AWario</title>
+
+    <link rel="stylesheet" href="StyleSheet.css">
+
+</head>
+<body>
+        <script>
+            //Variable
+            var name;
+            //connecting to socket ws:...
+            var socket = new WebSocket('ws://192.168.43.177/');
+            
+            
+            //orientation 
+            function openFullScreen() {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.mozRequestFullScreen) { /* Firefox */
+                    document.mozRequestFullScreen();
+                } else if (document.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                    document.webkitRequestFullscreen();
+                } else if (document.msRequestFullscreen) { /* IE/Edge */
+                    document.msRequestFullscreen();
+                }
+            }
+      
+            function lockScreen() {
+                openFullScreen();
+
+                //rotation funkar inte på datorn!!!
+                var orientation = screen.msOrientation || screen.mozOrientation || (screen.orientation || {}).type;
+                screen.orientation.lock("landscape-primary");
+                
+                document.getElementById("startView").style.visibility = "hidden";
+                document.getElementById("nameView").style.visibility = "visible";
+            }
+           
+            //standard thigs delete???
+            socket.onopen = function (event) {
+                console.log('Connection is open ...');
+            };
+            socket.onerror = function (err) {
+                console.log('err: ', err);
+            }
+            socket.onclose = function () {
+                document.getElementById("StartView").style.visibility = "visible";
+                document.getElementById("nameView").style.visibility = "hidden";
+                document.getElementById("weaponView").style.visibility = "hidden";
+                document.getElementById("gameView").style.visibility = "hidden";
+                console.log("Connection is closed...");
+            }
+
+            //Messege recived from socket 
+            socket.onmessage = function (event) {
+                arg = event.data.split(' ');
+                //Change background depending on the players id
+                //When the game is ending do something
+                if (arg[0] == "changeBackground") {
+                    url = "url(Images/Avatars/avatar" + arg[1] + ".png)";
+                    document.getElementById("gameView").style.backgroundImage = url;
+                }
+                else if (arg[0] == "end") {
+                    //do something
+                }
+            };
+                
+            //Save name and make change view from name to weapon
+            function nameFun() {
+                openFullScreen();
+                name = document.getElementById("nameField").value.trim();
+                //check the input name.
+                if (name.toLowerCase().includes("bajs") || true == name.toLowerCase().includes("kuk")) {
+                    document.getElementById("nameField").placeholder = "Va, det där är inte ditt namn!";
+                    document.getElementById("nameField").value = "";
+                }
+                else if (!(name == null || name == "" || name == "Name" || name == "Skriv in ditt namn" || name == "Oj det där var inte ditt namn!" || name == "Va fan det där är inte ditt namn!" || name.length < 3) ){
+                    document.getElementById("nameView").style.visibility = "hidden";
+                    document.getElementById("weaponView").style.visibility = "visible";
+                }
+                else {
+                    document.getElementById("nameField").placeholder = "Oj det där var inte ditt namn!";
+                    document.getElementById("nameField").value = "";
+                }
+            }
+            function runScript(e) {
+                //See notes about 'which' and 'key'
+                if (e.keyCode == 13) {
+                    nameFun();
+                    return false;
+                }
+            }
+
+            //save vepon and change view from vepon to game
+            function weaponFun(arg) {
+                socket.send("info "+ name + " " + arg); 
+                document.getElementById("weaponView").style.visibility = "hidden";
+                document.getElementById("gameView").style.visibility = "visible";
+            }
+                
+            //Send a messege arg that is called from the playbuttons
+            function message(arg) {
+                socket.send("message "+arg);
+            }
+    </script>
+
+    <!--Start Game-->
+    <div id="startView">
+        <button id="startButton" onclick="lockScreen()">Starta</button>
+    </div>
+
+    <!--Choose Name-->
+    <div id="nameView">
+        <div class="nameText">
+            Name:
+        </div>
+        <input id="nameField" type="text" name="name" placeholder="Skriv in ditt namn" onkeypress="return runScript(event)";>
+        <button id="nameButton" onclick="nameFun()"> Nästa </button>
+        
+    </div>
+
+    <!--Choose vepon-->
+    <div id="weaponView">
+        <div class="nameText">
+            Choose a weapon
+        </div>
+        <div id="weaponBox">
+            <div class="Weapon" onclick="weaponFun(1)">
+                vapen 1
+            </div>
+            <div class="Weapon" onclick="weaponFun(2)">
+                vapen 2
+            </div>
+            <div class="Weapon" onclick="weaponFun(3)">
+                vapen 3
+            </div>
+        </div>
+    </div>
+
+    <!--Game Viwe-->
+    <div id="gameView">
+        <div id="leftBox">
+            <div class="Button" id="fire" ontouchstart="message('F1')" ontouchend="message('F0')">
+            </div>
+
+        </div>
+        <div id="rightBox">
+            <div class="Button" id="right" ontouchstart="message('R1')" ontouchend="message('R0')">
+
+            </div>
+
+            <div class="Button" id="left" ontouchstart="message('L1')" ontouchend="message('L0')">
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -335,7 +335,7 @@ std::string DomeGame::getScoreboard() {
     for(int i = 0; i < printAmount ; i++)
     {
         
-        scoreStream << std::left << std::setfill(' ') << std::setw(10) << playerScoreList[i].playerScore;
+        scoreStream << std::left << std::setfill(' ') << std::setw(10) << playerScoreList[i].score;
         scoreStream << std::left << std::setfill(' ') << std::setw(30) << playerScoreList[i].playerName << std::endl;
         
     }

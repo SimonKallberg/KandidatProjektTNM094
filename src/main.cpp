@@ -47,7 +47,6 @@ void getServerMsg(const char * msg, size_t len)
 		std::string weapon;
 		strm >> name;
 		strm >> weapon;
-		std::cout << "Player " + name + " added:\n";
 		domeGame->addPlayer(name, weapon);
 	}
 	else if (msgType == 'C') // controls were sent for one player, structure: CIBV, for: [ *CONTROLS*, playerindex, button, value ]
@@ -118,7 +117,7 @@ int main(int argc, char* argv[])
     sgct::SharedData::instance()->setDecodeFunction(myDecodeFun);
     
     // Init the engine
-    if (!gEngine->init(sgct::Engine::OpenGL_3_3_Core_Profile))
+    if (!gEngine->init(sgct::Engine::OpenGL_Compablity_Profile))
     {
         delete gEngine;
         return EXIT_FAILURE;

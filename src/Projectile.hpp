@@ -24,7 +24,8 @@ public:
 	glm::vec3 getLightColor() const;
 	
     Player* getOwner();
-	float damage = 1;
+	float damage = 0;
+	float knockback = 0;
 
 protected:
 	

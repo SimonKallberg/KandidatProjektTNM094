@@ -66,6 +66,7 @@ private:
 		GLint b_tex_loc = -1;
 		GLint light_pos_loc[N_LIGHTS];
 		GLint light_color_loc[N_LIGHTS];
+		GLint ambient = -1;
 
 	} playershader;
 

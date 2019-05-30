@@ -12,10 +12,11 @@ in struct PointLight {
 
 uniform sampler2D d_tex;
 uniform sampler2D b_tex;
+uniform vec4 ambient;
 
 // constants
 vec3 viewPosition = vec3(0.0, 0.0, 0.0); //dome centre
-vec3 ambient = vec3(0.5, 0.5, 0.5);
+
 
 // attenuation constants
 float const_Att = 1.0;
@@ -30,7 +31,7 @@ void main()
 	vec3 norm = texture(b_tex,uv.st).rgb;
 	norm = normalize(norm * 2.0 - 1.0);
 	vec4 texColor = texture(d_tex, uv.st); //rgba = vec4(.05,0.5,0.5,rgba.a);
-	vec3 fragColor = ambient * texColor.rgb;
+	vec3 fragColor = ambient.rgb * texColor.rgb;
 
 
 	for(int i = 0; i < NR_POINT_LIGHTS; i++){
@@ -46,5 +47,5 @@ void main()
 		fragColor += tangentLights[i].color * attenuation * (texColor.rgb *  diffuse);
 
 	}
-	out_fragColor = vec4(fragColor, texColor.a);
+	out_fragColor = vec4(fragColor, texColor.a * ambient.a);
 }

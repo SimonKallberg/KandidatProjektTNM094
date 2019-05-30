@@ -101,6 +101,10 @@ SMGRound::SMGRound(glm::quat pos, Player * in_owner)
 	sizeSpread = 0.01f;
 	directionSpread = 0.05f;
 	propulsionSpread = 0.1f;
+
+	damage = 5.0f;
+	knockback = 0.02f;
+
 	Projectile::init();
 }
 
@@ -116,7 +120,8 @@ LightBall::LightBall(glm::quat pos, Player * in_owner)
 	propulsionSpread = 0.0f;
 	slowdown = 0.8f;
 
-	damage = 0.6f;
+	damage = 80.0f;
+	knockback = 0.5f;
 
 	deathColor = glm::vec3(2.0f, 1.0f, 0.0f);
 	deathtime = 2.0f;

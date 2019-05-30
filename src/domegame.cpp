@@ -11,7 +11,7 @@ float a = 0.0f;
 void DomeGame::render() const{
 
 	myScene->MVP = MVP;
-	myScene->render();
+	//myScene->render();
 
 	sgct::ShaderManager::instance()->bindShaderProgram("player");
 	glUniform1i(playershader.d_tex_loc, 0);
@@ -50,6 +50,9 @@ void DomeGame::render() const{
 			}
 		}
 		
+		glm::vec4 ambient = players[i]->getAmbient();
+		glUniform4fv(playershader.ambient, 1, &ambient[0]);
+
 		renderPlayer(players[i]);
 	}
 
@@ -81,6 +84,8 @@ void DomeGame::render() const{
 			}
 		}
 
+		glm::vec4 ambient = players[i]->getAmbient();
+		glUniform4fv(playershader.ambient, 1, &ambient[0]);
 
 		renderWeapon(players[i]);
 	}
@@ -142,6 +147,7 @@ void DomeGame::init() {
 	playershader.model_loc = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("model");
 	playershader.d_tex_loc = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("d_tex");
 	playershader.b_tex_loc = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("b_tex");
+	playershader.ambient = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("ambient");
 
 	for (int i = 0; i < N_LIGHTS; i++) {
 		playershader.light_pos_loc[i] = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("pointLights[" + std::to_string(i) + "].position");
@@ -177,9 +183,6 @@ void DomeGame::init() {
 	glFrontFace(GL_CCW);
 	glEnable(GL_DEPTH_TEST);
 
-	std::cout << "johan was here xD" << std::endl;
-
-
 	myScene->initScene();
 
 	DomeDrawable::initSprite();
@@ -189,7 +192,7 @@ void DomeGame::init() {
 }
 
 void DomeGame::addPlayer(std::string &name, std::string weaponType, glm::quat pos) {
-    std::string texName = "player" + std::to_string(players.size()+1);
+    std::string texName = "player" + std::to_string(players.size());
     Player * newPlayer = new Player(name, texName,pos);
 	if(weaponType == "shotgun")
 		newPlayer->setWeapon(new Shotgun(newPlayer), "shotgun");
@@ -197,9 +200,11 @@ void DomeGame::addPlayer(std::string &name, std::string weaponType, glm::quat po
 		newPlayer->setWeapon(new SMG(newPlayer), "smg");
 	if (weaponType == "light")
 		newPlayer->setWeapon(new LightBallLauncher(newPlayer), "light");
+
+	std::cout << "Player " << name << " created with id: " << players.size() << " and weapon: " << weaponType << std::endl;
+
 	players.push_back(newPlayer);
 	added_players.addVal(*newPlayer);
-    std::cout << "Player" << name << " created" << std::endl;
 }
 
 void DomeGame::renderPlayer(Player *p) const {
@@ -296,12 +301,15 @@ void DomeGame::update(float dt) {
 				//If the bullet hits: decrease & increase score
 				if (projectiles[k].getOwner() != players[i] && glm::length(diff) < (projectiles[k].getScale() + players[i]->getScale()) / 2.2f)
 				{
-					glm::vec3 n_diff = glm::normalize(diff);
-					glm::vec3 knockback = n_diff * glm::dot(projectiles[k].getWorldVelocity(), n_diff);
+					//alt knockback version
+					//glm::vec3 n_diff = glm::normalize(diff);
+					//glm::vec3 knockback = n_diff * glm::dot(projectiles[k].getWorldVelocity(), n_diff);
 
 					if (players[i]->isAlive()) {
-						players[i]->addWorldVelocity(projectiles[k].getWorldVelocity() * projectiles[k].damage);
+						players[i]->addWorldVelocity(projectiles[k].getWorldVelocity() * projectiles[k].knockback);
+						players[i]->takeDamage(projectiles[k].damage);
 						projectiles[k].getOwner()->increaseScore(projectiles[k].damage);
+						std::cout << "collide alive\n";
 					}
 					
 					projectiles[k].collide();

@@ -1,2 +1,2 @@
 # KandidatProjektTNM094
-Kandidatarbete MTHEJ
+Kandidatarbete MT

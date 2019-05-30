@@ -10,6 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <algorithm> 
 
 #ifndef DOMEGAME
 #define DOMEGAME
@@ -19,7 +20,7 @@ public:
     
     struct playerScore {
         std::string playerName = "";
-        int playerScore = 0;
+        int score = 0;
     };
     
     // Constructor

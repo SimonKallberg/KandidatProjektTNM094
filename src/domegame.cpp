@@ -294,9 +294,11 @@ void DomeGame::update(float dt) {
 					glm::vec3 n_diff = glm::normalize(diff);
 					glm::vec3 knockback = n_diff * glm::dot(projectiles[k].getWorldVelocity(), n_diff);
 
-					players[i]->addWorldVelocity(projectiles[k].getWorldVelocity() * projectiles[k].damage);
-					players[i]->decreaseScore();
-					projectiles[k].getOwner()->increaseScore();
+					if (players[i]->isAlive()) {
+						players[i]->addWorldVelocity(projectiles[k].getWorldVelocity() * projectiles[k].damage);
+						projectiles[k].getOwner()->increaseScore(projectiles[k].damage);
+					}
+					
 					projectiles[k].collide();
 				}
 			}
@@ -315,12 +317,12 @@ std::string DomeGame::getScoreboard() {
     {
         playerScoreList.push_back(playerScore());
         playerScoreList[i].playerName = players[i]->playerName;
-        playerScoreList[i].playerScore = players[i]->score;
+        playerScoreList[i].score = players[i]->score;
     }
-    sort(playerScoreList.begin(), playerScoreList.end());
+	sort(playerScoreList.begin(), playerScoreList.end()); 
     
     int playerSize = playerScoreList.size();
-    int printAmount = std::min(playerSize, 10);
+    int printAmount = min(playerSize, 10);
     
     //totalScore += "HIGHSCORE \n";
     
@@ -330,7 +332,7 @@ std::string DomeGame::getScoreboard() {
     
     for(int i = 0; i < printAmount ; i++)
     {
-        scoreStream << std::left << std::setfill(' ') << std::setw(10) << std::fixed << std::to_string(playerScoreList[i].playerScore);
+        scoreStream << std::left << std::setfill(' ') << std::setw(10) << std::fixed << std::to_string(playerScoreList[i].score);
         scoreStream << playerScoreList[i].playerName << " \n";
         
     }
@@ -343,5 +345,5 @@ std::string DomeGame::getScoreboard() {
 
 bool operator<(const DomeGame::playerScore &a, const DomeGame::playerScore &b)
 {
-    return a.playerScore > b.playerScore;
+    return a.score > b.score;
 }

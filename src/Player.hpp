@@ -27,9 +27,10 @@ public:
     
 	void update(float dt);
 
-    void decreaseScore();
+	bool isAlive();
+    void takeDamage(float dmg);
     
-    void increaseScore();
+    void increaseScore(int points);
 
 	// controls, 1 for pressed, 0 if it's not
 	int c_left = 0;
@@ -40,6 +41,8 @@ public:
     std::string playerName;
 
 private:
+	float health;
+	bool alive;
 
 	Weapon* weapon;
 	

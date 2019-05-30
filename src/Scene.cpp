@@ -1,6 +1,5 @@
 #include "./Scene.hpp"
 
-
 Scene::SceneShader Scene::sceneshader = Scene::SceneShader();
 
 // Constructor
@@ -36,8 +35,13 @@ void Scene::initScene() {
 	ModelLoader * earth = new ModelLoader( rootDir + "/Objects/lowpoly_earth", "earth");
 	ModelLoader * venus = new ModelLoader(rootDir + "/Objects/sharednormalsphere", "venus");
 	ModelLoader * background = new ModelLoader(rootDir + "/Objects/sphere", "venus");
-	
-	venus->bumpTextureName = "spherebump";
+	ModelLoader * lava = new ModelLoader(rootDir + "/Objects/lowpoly_lavaplanet", "lava");
+	ModelLoader * pink = new ModelLoader(rootDir + "/Objects/lowpoly_pinkplanet", "pink");
+	ModelLoader * dark = new ModelLoader(rootDir + "/Objects/lowpoly_darkplanet", "dark");
+	ModelLoader * moon = new ModelLoader(rootDir + "/Objects/lowpoly_moon", "moon");
+
+
+	lava->bumpTextureName = "spherebump";
 
 	Body * temp;
 
@@ -46,35 +50,29 @@ void Scene::initScene() {
 	systems[0].selfTransformation = glm::scale(glm::mat4(), 80.0f * glm::vec3(1.0f, 1.0f, 1.0f));
 	systems[0].ambient = glm::vec3(0.1f, 0.0f, 0.6f);
 
-	systems.push_back(Body(venus));
+	systems.push_back(Body(earth));
 	temp = &systems[1];
-	temp->ambient = glm::vec3(2, 1, 1);
-	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(20.0f, 0.0f, -60.0f));
-	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(1.0f, 1.0f, 1.0f));
-	temp->subBodies.push_back(Body(earth));
-	
+	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(30.0f, 20.0f, -60.0f));
+	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(1.0f));
+
+	temp->subBodies.push_back(Body(moon));
 	temp = &temp->subBodies[0];
-	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(-40.0f, 0.0f, 0.0f));
-	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(1.0f, 1.0f, 1.0f));
-	
+	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(-20.0f, 0.0f, 0.0f));
+	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(3.0f));
 
-	systems.push_back(Body(nullptr));
+	systems.push_back(Body(pink));
 	temp = &systems[2];
+	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(-30.0f, 20.0f, 60.0f));
+	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.8f));
 
-	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(10.0f, 20.0f, -10.0f));
+	temp->subBodies.push_back(Body(dark));
+	temp->subBodies[0].localTransformation = glm::translate(glm::mat4(), glm::vec3(-10.0f, 0.0f, -3.0f));
+	temp->subBodies[0].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.6f));
 
-	temp->subBodies.push_back(Body(venus));
-	temp->subBodies[0].localTransformation = glm::translate(glm::mat4(), glm::vec3(10.0f, 00.0f, 0.0f));
-	temp->subBodies[0].selfTransformation = glm::scale(glm::mat4(), 0.1f * glm::vec3(1.0f, 1.0f, 1.0f));
-	
-	temp->subBodies.push_back(Body(venus));
-	temp->subBodies[1].localTransformation = glm::translate(glm::mat4(), glm::vec3(-20.0f, 0.0f, -10.0f));
-	temp->subBodies[1].selfTransformation = glm::scale(glm::mat4(), 0.04f * glm::vec3(1.0f, 1.0f, 1.0f));
-
-	temp->subBodies.push_back(Body(venus));
-	temp->subBodies[2].localTransformation = glm::translate(glm::mat4(), glm::vec3(20.0f, 0.0f, -10.0f));
-	temp->subBodies[2].selfTransformation = glm::scale(glm::mat4(), 0.2f * glm::vec3(1.0f, 1.0f, 1.0f));
-
+	systems.push_back(Body(lava));
+	systems[3].ambient = glm::vec3(0.7f, 0.7f, 0.7f);
+	systems[3].localTransformation = glm::translate(glm::mat4(), glm::vec3(00.0f, 15.0f, -5.0f));
+	systems[3].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.3f));
 	
 
 
@@ -89,28 +87,41 @@ void Scene::update(float dt) {
 	Body * temp;
 
 	temp = &systems[1];
-	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 10.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
+	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 60.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
+	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
 
 	temp = &systems[1].subBodies[0];
-	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 10.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
-	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 10.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
+	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
+	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
+
+	temp = &systems[2];
+	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 60.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
+	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
+
 
 	temp = &systems[2].subBodies[0];
-	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 50.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
-	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 10.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
+	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 10.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
+	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
 
-	temp = &systems[2].subBodies[1];
-	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
-	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 1.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
+	temp = &systems[3];
+//	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 70.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
+	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 30.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
 
-	temp = &systems[2].subBodies[2];
-	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 30.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
-	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 2.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
-
-	
 
 }
 
+//shareddata
+void Scene::writeData() {
+    for (int i = 0; i < systems.size(); i++) {
+        systems[i].writeData();
+    }
+}
+
+void Scene::readData() {
+    for (int i = 0; i < systems.size(); i++) {
+        systems[i].readData();
+    }
+}
 
 // Draws the scene in dome or normal desktop mode
 void Scene::render() const {
@@ -143,9 +154,7 @@ void Scene::render() const {
 
 }
 
-
 //bodies
-
 void Scene::Body::render(glm::mat4 parentTransformation) const {
 	glm::mat4 trans = parentTransformation * localTransformation;
 	for (int i = 0; i < subBodies.size(); i++) {
@@ -159,29 +168,18 @@ void Scene::Body::render(glm::mat4 parentTransformation) const {
 		model->draw();
 }
 
-glm::vec3 Scene::Body::getCentre() const {
-	glm::vec4 centre;
-	centre = localTransformation * selfTransformation * glm::vec4(0, 0, 0, 1);
-	Body * temp = parent;
-	while (temp) {
-		centre = temp->localTransformation * centre;
-		temp = temp->parent;
-	}
-	return glm::vec3(centre.x, centre.y, centre.z);
-}
-
 void Scene::Body::writeData() {
-	sgct::SharedObject<glm::mat4> local;
-	local.setVal(localTransformation);
-	sgct::SharedObject<glm::mat4> self;
-	self.setVal(selfTransformation);
-
-	sgct::SharedData::instance()->writeObj(&local);
-	sgct::SharedData::instance()->writeObj(&self);
-
-	for (int i = 0; i < subBodies.size(); i++) {
-		subBodies[i].writeData();
-	}
+    sgct::SharedObject<glm::mat4> local;
+    local.setVal(localTransformation);
+    sgct::SharedObject<glm::mat4> self;
+    self.setVal(selfTransformation);
+    
+    sgct::SharedData::instance()->writeObj(&local);
+    sgct::SharedData::instance()->writeObj(&self);
+    
+    for (int i = 0; i < subBodies.size(); i++) {
+        subBodies[i].writeData();
+    }
 }
 
 void Scene::Body::readData() {
@@ -206,19 +204,20 @@ void Scene::Body::initParents(Body* par) {
 	}
 }
 
-
-
-
-//shareddata
-
-void Scene::writeData() {
-	for (int i = 0; i < systems.size(); i++) {
-		systems[i].writeData();
-	}
+glm::vec3 Scene::Body::getCentre() const {
+    glm::vec4 centre;
+    centre = localTransformation * selfTransformation * glm::vec4(0, 0, 0, 1);
+    Body * temp = parent;
+    while (temp) {
+        centre = temp->localTransformation * centre;
+        temp = temp->parent;
+    }
+    return glm::vec3(centre.x, centre.y, centre.z);
 }
 
-void Scene::readData() {
-	for (int i = 0; i < systems.size(); i++) {
-		systems[i].readData();
-	}
-}
+
+
+
+
+
+

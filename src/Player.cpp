@@ -22,7 +22,7 @@ void Player::update(float dt) {
 	DomeMovable::update(dt);
 }
 
-void Player::takeDamage(float dmg){
+void Player::takeDamage(int dmg){
 	health -= dmg;
 }
 

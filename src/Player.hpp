@@ -28,7 +28,7 @@ public:
 	void update(float dt);
 
 	bool isAlive();
-    void takeDamage(float dmg);
+    void takeDamage(int dmg);
     
     void increaseScore(int points);
 
@@ -41,7 +41,7 @@ public:
     std::string playerName;
 
 private:
-	float health;
+	int health;
 	bool alive;
 
 	Weapon* weapon;

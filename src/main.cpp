@@ -156,9 +156,9 @@ void myInitOGLFun() {
 
 void myDrawFun()
 {
-	//sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 14), sgct_text::TOP_LEFT, gEngine->getCurrentModelViewProjectionMatrix(), "hej");
+    
 	domeGame->MVP = gEngine->getCurrentModelViewProjectionMatrix();// *glm::rotate(glm::mat4(), 1.0f, glm::vec3(1, 0, 0));
-	domeGame->render();
+    domeGame->render();
 	//s_box.getVal().draw();
 }
 

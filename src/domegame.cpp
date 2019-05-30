@@ -49,7 +49,6 @@ void DomeGame::render() const{
 			}
 		}
 		
-		
 		renderPlayer(players[i]);
 	}
 
@@ -101,6 +100,8 @@ void DomeGame::render() const{
 		glUniform4fv(projectileshader.color, 1, &color[0]);
 		projectiles[i].render();
 	}
+    
+    
 
 	glBindVertexArray(0);
 	sgct::ShaderManager::instance()->unBindShaderProgram();
@@ -198,7 +199,7 @@ void DomeGame::addPlayer(std::string &name, std::string weaponType, glm::quat po
 void DomeGame::renderPlayer(Player *p) const {
 	glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -DOME_RADIUS));
 	glm::mat4 rot = p->getRotationMatrix();
-	glm::mat4 scale = scale = glm::scale(glm::mat4(), p->getScale()*glm::vec3(1, 1, 1));
+	glm::mat4 scale = glm::scale(glm::mat4(), p->getScale()*glm::vec3(1, 1, 1));
 
 	glm::mat4 playerMat = rot * trans * scale;
 	glUniformMatrix4fv(playershader.model_loc, 1, GL_FALSE, &playerMat[0][0]);
@@ -276,6 +277,7 @@ void DomeGame::update(float dt) {
 			}
 		}
 	}
+    
 	for (int i = 0; i < players.size(); i++) {
         for(int k = 0; k < projectiles.size(); k++)
         {
@@ -297,4 +299,35 @@ void DomeGame::update(float dt) {
 			}
         }
 	}
+    
+    
+}
+
+std::string DomeGame::getScoreboard() {
+    
+    std::vector<playerScore> playerScoreList;
+    std::string totalScore = "";
+    
+    for(int i = 0; i < players.size(); i++)
+    {
+        playerScoreList.push_back(playerScore());
+        playerScoreList[i].playerName = players[i]->playerName;
+        playerScoreList[i].playerScore = players[i]->score;
+    }
+    sort(playerScoreList.begin(), playerScoreList.end());
+    
+    for(int i = 0; i < playerScoreList.size(); i++)
+    {
+        totalScore += playerScoreList[i].playerName + " " + std::to_string(playerScoreList[i].playerScore) + " \n";
+    }
+    totalScore += "\n";
+    
+    //std::cout << totalScore;
+    
+    return totalScore;
+}
+
+bool operator<(const DomeGame::playerScore &a, const DomeGame::playerScore &b)
+{
+    return a.playerScore > b.playerScore;
 }

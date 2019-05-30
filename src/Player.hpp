@@ -35,6 +35,9 @@ public:
 	int c_left = 0;
 	int c_right = 0;
 	int c_shoot = 0;
+    
+    int score = 0;
+    std::string playerName;
 
 private:
 
@@ -42,9 +45,6 @@ private:
 	
 	float acceleration = 0.2f; // unit/s^2
 	float turn_speed = 3.0f; // radians/s
-
-	int score = 0;
-	std::string playerName;
    
 };
 

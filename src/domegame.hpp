@@ -13,6 +13,12 @@
 
 class DomeGame{
 public:
+    
+    struct playerScore {
+        std::string playerName = "";
+        int playerScore = 0;
+    };
+    
     // Constructor
     DomeGame(sgct::Engine * gEngine, std::string in_rootDir);
     
@@ -22,6 +28,8 @@ public:
 	void renderPlayer(Player *p) const;
 	void renderWeapon(Player *p) const;
 	void update(float dt);
+    
+    std::string getScoreboard();
     
     size_t textureHandle;
     Scene * myScene;
@@ -35,6 +43,8 @@ public:
     std::vector<Projectile> projectiles;
 
 	glm::mat4 MVP;
+    
+    std::string scoreboard = "";
     
 private:
 	const float DOME_RADIUS = 5.4f; // where domedrawables are rendered

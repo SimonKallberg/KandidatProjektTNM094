@@ -8,7 +8,7 @@
 #include <glm/common.hpp>
 #include "./sgct.h"
 #include "./Quad.hpp"
-
+#include <algorithm>
 
 class DomeDrawable {
 public:

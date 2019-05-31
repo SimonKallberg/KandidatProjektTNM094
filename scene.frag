@@ -20,7 +20,7 @@ vec3 viewPosition = vec3(0.0, 0.0, 0.0); //dome centre
 // attenuation constants
 float const_Att = 1.0;
 float lin_Att = 0.01;
-float quadr_Att = 0.0002;
+float quadr_Att = 0.0008;
 
 out vec4 out_fragColor;
 

@@ -23,6 +23,8 @@ public:
 
 private:
 
+	float lighttimer = 0;
+
     //Private class Body
 	class Body {
 	public:

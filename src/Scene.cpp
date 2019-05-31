@@ -52,7 +52,7 @@ void Scene::initScene() {
 	// place background first for the render loop not to apply light from sources
 	systems.push_back(Body(background));
 	systems[0].selfTransformation = glm::scale(glm::mat4(), 80.0f * glm::vec3(1.0f, 1.0f, 1.0f));
-	systems[0].ambient = glm::vec3(0.1f, 0.0f, 0.6f);
+	systems[0].ambient = glm::vec3(0.1f, 0.0f, 0.4f);
 
 	systems.push_back(Body(earth));
 	temp = &systems[1];
@@ -74,8 +74,7 @@ void Scene::initScene() {
 	temp->subBodies[0].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.6f));
 
 	systems.push_back(Body(lava));
-	systems[3].ambient = glm::vec3(0.7f, 0.7f, 0.7f);
-	systems[3].localTransformation = glm::translate(glm::mat4(), glm::vec3(00.0f, 15.0f, -5.0f));
+	systems[3].localTransformation = glm::translate(glm::mat4(), glm::vec3(0.0f, 15.0f, -5.0f));
 	systems[3].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.3f));
 	
 
@@ -88,6 +87,8 @@ void Scene::initScene() {
 }
 
 void Scene::update(float dt) {
+	lighttimer += dt/2.0f;
+
 	Body * temp;
 
 	temp = &systems[1];
@@ -111,7 +112,7 @@ void Scene::update(float dt) {
 //	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 70.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
 	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 30.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
 
-
+	systems[3].ambient = glm::vec3(0.7f + 0.2f*cos(lighttimer), 0.4f, 0.4f);
 }
 
 //shareddata
@@ -146,10 +147,21 @@ void Scene::render() const {
 
 	systems[0].render(origin);
 	
+
+	// dome center lighting
 	glm::vec3 lightpos = systems[0].getCentre();
-	glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec3 color = glm::vec3(0.1f);
 	glUniform3fv(sceneshader.light_pos_loc[0], 1, &lightpos[0]);
 	glUniform3fv(sceneshader.light_color_loc[0], 1, &color[0]);
+
+
+	// lava planet lighting
+	lightpos = systems[3].getCentre();
+	color = (0.8f + 0.2f*cos(lighttimer)) * glm::vec3(1.0f, 0.0f, 0.0f) + (0.45f - 0.15f*cos(lighttimer)) * glm::vec3(0.0f, 1.0f, 1.0f);
+	glUniform3fv(sceneshader.light_pos_loc[1], 1, &lightpos[0]);
+	glUniform3fv(sceneshader.light_color_loc[1], 1, &color[0]);
+
+
 
 	for (int i = 1; i < systems.size(); i++) {
 		systems[i].render(origin);

@@ -12,7 +12,7 @@ void DomeGame::render() const{
 	printScoreboard();
 
 	myScene->MVP = MVP;
-	myScene->render();
+	//myScene->render();
 
 	sgct::ShaderManager::instance()->bindShaderProgram("player");
 	glUniform1i(playershader.d_tex_loc, 0);
@@ -343,9 +343,11 @@ void DomeGame::update(float dt) {
 							points += 100;
 
 						projectiles[k].getOwner()->increaseScore(points);
+
+						projectiles[k].collide();
 					}
 					
-					projectiles[k].collide();
+					
 				}
 			}
         }

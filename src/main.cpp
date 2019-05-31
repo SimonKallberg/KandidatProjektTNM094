@@ -41,15 +41,7 @@ void getServerMsg(const char * msg, size_t len)
 	std::istringstream strm(msg);
 	char msgType = 'N';
 	strm >> msgType;
-	if (msgType == 'P') // player added P 
-	{
-		std::string name;
-		std::string weapon;
-		strm >> name;
-		strm >> weapon;
-		domeGame->addPlayer(name, weapon);
-	}
-	else if (msgType == 'C') // controls were sent for one player, structure: CIBV, for: [ *CONTROLS*, playerindex, button, value ]
+	if (msgType == 'C') // controls were sent for one player, structure: CIBV, for: [ *CONTROLS*, playerindex, button, value ]
 	{
 		int playerIndex;
 		strm >> playerIndex;
@@ -72,6 +64,22 @@ void getServerMsg(const char * msg, size_t len)
 				domeGame->players[playerIndex]->c_shoot = value;
 				break;
 		}
+	}
+	else if (msgType == 'P') // player added P 
+	{
+		std::string name;
+		std::string weapon;
+		strm >> name;
+		strm >> weapon;
+		domeGame->addPlayer(name, weapon);
+	}
+	else if (msgType == 'U') // Update Weapon 
+	{
+		int id;
+		std::string weapon;
+		strm >> id;
+		strm >> weapon;
+		domeGame->players[id]->setWeapon(Weapon::makeWeapon(weapon, domeGame->players[id]), weapon);
 	}
 }
 
@@ -227,6 +235,10 @@ void keyCallback(int key, int action)
 			case 'C':
 					if (action == SGCT_PRESS)
 						domeGame->addPlayer(playerName, "light");
+				break;
+			case 'V':
+				if (action == SGCT_PRESS)
+					domeGame->addPlayer(playerName, "popgun");
 				break;
 			case 'L':
 					//std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << //box->Box_scale << "\n";

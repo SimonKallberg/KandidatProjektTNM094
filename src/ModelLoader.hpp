@@ -35,6 +35,7 @@ public:
     //Textures
 	std::string textureName;
 	std::string bumpTextureName = "NOBUMP";
+	std::string specularTextureName = "NOSPEC";
 
 private:
 

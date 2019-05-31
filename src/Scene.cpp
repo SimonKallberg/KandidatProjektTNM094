@@ -32,16 +32,20 @@ void Scene::initScene() {
 
 	sceneshader.s_tex_loc = sgct::ShaderManager::instance()->getShaderProgram("scene").getUniformLocation("s_tex");
 
-	ModelLoader * earth = new ModelLoader( rootDir + "/Objects/lowpoly_earth", "earth");
+	ModelLoader * earth = new ModelLoader( rootDir + "/Objects/lowpoly_earth", "earth");		
 	ModelLoader * venus = new ModelLoader(rootDir + "/Objects/sharednormalsphere", "venus");
 	ModelLoader * background = new ModelLoader(rootDir + "/Objects/sphere", "venus");
-	ModelLoader * lava = new ModelLoader(rootDir + "/Objects/lowpoly_lavaplanet", "lava");
-	ModelLoader * pink = new ModelLoader(rootDir + "/Objects/lowpoly_pinkplanet", "pink");
-	ModelLoader * dark = new ModelLoader(rootDir + "/Objects/lowpoly_darkplanet", "dark");
+	ModelLoader * lava = new ModelLoader(rootDir + "/Objects/lowpoly_lavaplanet", "lava");		
+	ModelLoader * pink = new ModelLoader(rootDir + "/Objects/lowpoly_pinkplanet", "pink");		
+	ModelLoader * dark = new ModelLoader(rootDir + "/Objects/lowpoly_darkplanet", "dark");		
 	ModelLoader * moon = new ModelLoader(rootDir + "/Objects/lowpoly_moon", "moon");
 
+	earth->specularTextureName = "earthlava_spec";
+	lava->specularTextureName = "earthlava_spec";
+	pink->specularTextureName = "darkpink_spec";
+	dark->specularTextureName = "darkpink_spec";
 
-	lava->bumpTextureName = "spherebump";
+	//lava->bumpTextureName = "spherebump";
 
 	Body * temp;
 

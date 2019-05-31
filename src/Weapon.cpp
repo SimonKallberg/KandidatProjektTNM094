@@ -29,6 +29,20 @@ void Weapon::init(std::vector<Projectile> *list, sgct::SharedVector<Projectile> 
 	added_projectiles = add_list;
 }
 
+Weapon* Weapon::makeWeapon(std::string wType, Player* own) {
+	if (wType == "shotgun")
+		return new Shotgun(own);
+	if (wType == "smg")
+		return new SMG(own);
+	if (wType == "light")
+		return new LightBallLauncher(own);
+	if (wType == "popgun")
+		return new PopGuns(own);
+	if (wType == "rifle")
+		return new SMG(own);
+}
+
+
 //Virtual functions
 void Shotgun::shoot() {
 	glm::quat p_pos = owner->getQuat() * projectileOffset;
@@ -240,8 +254,8 @@ void PopGuns::shoot() {
 	else
 		p_pos = owner->getQuat() * leftProjectileOffset;
 
-	projectiles->push_back(LightBall(p_pos, owner));
-	added_projectiles->addVal(LightBall(p_pos, owner));
+	projectiles->push_back(PopBall(p_pos, owner));
+	added_projectiles->addVal(PopBall(p_pos, owner));
 
 	shootRight = !shootRight;
 }

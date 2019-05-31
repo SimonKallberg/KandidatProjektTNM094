@@ -76,4 +76,13 @@ public:
 	LightBall() = delete;
 	LightBall(glm::quat pos, Player * in_owner);
 };
+
+class PopBall : public Projectile {
+public:
+	//constructors
+	PopBall() = delete;
+	PopBall(glm::quat pos, Player * in_owner);
+
+	bool update(float dt);
+};
 #endif 

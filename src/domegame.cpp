@@ -12,7 +12,7 @@ void DomeGame::render() const{
 	printScoreboard();
 
 	myScene->MVP = MVP;
-	//myScene->render();
+	myScene->render();
 
 	sgct::ShaderManager::instance()->bindShaderProgram("player");
 	glUniform1i(playershader.d_tex_loc, 0);
@@ -135,9 +135,13 @@ void DomeGame::init() {
 	sgct::TextureManager::instance()->loadTexture("pink", rootDir + "/Images/pinkplanet_texture.png", true);
 	sgct::TextureManager::instance()->loadTexture("moon", rootDir + "/Images/moontexture.png", true);
 
+
+	sgct::TextureManager::instance()->loadTexture("NOBUMP", rootDir + "/Images/NOBUMP.png", true);
+	sgct::TextureManager::instance()->loadTexture("NOSPEC", rootDir + "/Images/specular.png", true);
+	sgct::TextureManager::instance()->loadTexture("darkpink_spec", rootDir + "/Images/specular_dark_pink.png", true);
+	sgct::TextureManager::instance()->loadTexture("earthlava_spec", rootDir + "/Images/specular_earth_lava.png", true);
 	sgct::TextureManager::instance()->loadTexture("testbump", rootDir + "/Images/testbump.png", true);
 	sgct::TextureManager::instance()->loadTexture("spherebump", rootDir + "/Images/spherebump.png", true);
-	sgct::TextureManager::instance()->loadTexture("NOBUMP", rootDir + "/Images/nobump.png", true);
 	sgct::TextureManager::instance()->loadTexture("bumpy", rootDir + "/Images/bumpy.png", true);
 	sgct::TextureManager::instance()->loadTexture("projectile", rootDir + "/Images/projectile.png", true);
 
@@ -211,18 +215,16 @@ void DomeGame::init() {
 void DomeGame::addPlayer(std::string &name, std::string weaponType, glm::quat pos) {
     std::string texName = "player" + std::to_string(players.size());
     Player * newPlayer = new Player(name, texName,pos);
-	if(weaponType == "shotgun")
-		newPlayer->setWeapon(new Shotgun(newPlayer), "shotgun");
-	if (weaponType == "smg")
-		newPlayer->setWeapon(new SMG(newPlayer), "smg");
-	if (weaponType == "light")
-		newPlayer->setWeapon(new PopGuns(newPlayer), "light");
+	
+	newPlayer->setWeapon(Weapon::makeWeapon(weaponType, newPlayer), weaponType);
 
 	std::cout << "Player " << name << " created with id: " << players.size() << " and weapon: " << weaponType << std::endl;
 
 	players.push_back(newPlayer);
 	added_players.addVal(*newPlayer);
 }
+
+
 
 void DomeGame::renderPlayer(Player *p) const {
 	glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -DOME_RADIUS));

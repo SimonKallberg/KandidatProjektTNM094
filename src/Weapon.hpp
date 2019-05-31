@@ -12,6 +12,8 @@ public:
 	Weapon(std::string &tex, Player* in_owner)
 		: DomeDrawable(tex, glm::quat()), owner(in_owner) {}
 
+	static Weapon* makeWeapon(std::string wType, Player* own);
+
     //Public member functions
 	void writeData();
 	void readData();

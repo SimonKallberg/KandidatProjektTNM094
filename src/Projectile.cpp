@@ -123,3 +123,35 @@ LightBall::LightBall(glm::quat pos, Player * in_owner)
 	deathtime = 2.0f;
 	Projectile::init();
 }
+
+//PopBall
+PopBall::PopBall(glm::quat pos, Player * in_owner)
+	: Projectile(empty_string, pos, in_owner)
+{
+	texture = "projectile";
+	lifetime = 2.0f;
+	scale = 0.1f;
+	propulsionSpeed = 1.0f;
+	sizeSpread = 0.0f;
+	directionSpread = 0.0f;
+	propulsionSpread = 0.0f;
+	slowdown = 0.2f;
+
+	damage = 80.0f;
+	knockback = 0.5f;
+
+	deathColor = glm::vec3(2.0f, 1.0f, 0.0f);
+	deathtime = 2.0f;
+	Projectile::init();
+}
+
+bool PopBall::update(float dt) {
+	direction += 0.05f;
+
+	up_vel += dt * 0.8f * cos(direction);
+	right_vel += dt * 0.8f * sin(direction);
+
+	std::cout << "ya got here";
+
+	return Projectile::update(dt);
+}

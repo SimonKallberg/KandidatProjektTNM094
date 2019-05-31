@@ -32,6 +32,9 @@ void ModelLoader::draw(float scale, glm::vec3 pos) const {
     // bind bumpmap texture to texture slot 1
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(bumpTextureName));
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(specularTextureName));
     
     for (unsigned int i = 0; i < vertices.size() - 2; i += 3) {
         

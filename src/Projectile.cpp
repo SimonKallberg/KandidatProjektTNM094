@@ -176,8 +176,8 @@ RifleBullet::RifleBullet(glm::quat pos, Player * in_owner)
 	propulsionSpread = 0.0f;
 	slowdown = 0.8f;
 
-	damage = 60.0f;
-	knockback = 0.6f;
+	damage = 40.0f;
+	knockback = 0.3f;
 
 	color = glm::vec3(0.5f, 0.5f, 0.8f);
 	deathColor = glm::vec3(0.2f, 0.0f, 0.4f);

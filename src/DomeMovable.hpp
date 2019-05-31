@@ -20,9 +20,7 @@ public:
     //Velocities
 	void addWorldVelocity(glm::vec3 w_vel); // Apply a velocity from the xyz world to the local velocity. Orthogonal part to dome is ignored
     glm::vec3 getWorldVelocity();// In rotational units, but aligned with the XYZ world
-
-	//Update function. Moves the Movable by it's current velocities and slowdown
-	void update(float dt);
+	void update(float dt); //Update function. Moves the Movable by it's current velocities and slowdown
 
 protected:
 

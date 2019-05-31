@@ -7,11 +7,12 @@ DomeGame::DomeGame(sgct::Engine * gEngine, std::string rootDir_in) {		//Construc
 	std::cout << "DomeGame gjord" << std::endl;
 };
 
-float a = 0.0f;
 void DomeGame::render() const{
 
+	printScoreboard();
+
 	myScene->MVP = MVP;
-	myScene->render();
+	//myScene->render();
 
 	sgct::ShaderManager::instance()->bindShaderProgram("player");
 	glUniform1i(playershader.d_tex_loc, 0);
@@ -50,6 +51,9 @@ void DomeGame::render() const{
 			}
 		}
 		
+		glm::vec4 ambient = players[i]->getAmbient();
+		glUniform4fv(playershader.ambient, 1, &ambient[0]);
+
 		renderPlayer(players[i]);
 	}
 
@@ -81,6 +85,8 @@ void DomeGame::render() const{
 			}
 		}
 
+		glm::vec4 ambient = players[i]->getAmbient();
+		glUniform4fv(playershader.ambient, 1, &ambient[0]);
 
 		renderWeapon(players[i]);
 	}
@@ -103,15 +109,16 @@ void DomeGame::render() const{
 	}
     
 	glBindVertexArray(0);
-    
-    //Print highscore
 	sgct::ShaderManager::instance()->unBindShaderProgram();
-    glm::mat4 scoreMat = MVP * glm::rotate(glm::mat4(), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f))
-    * glm::translate(glm::mat4(), glm::vec3(0.0f, 13.0f, -20.0f))
-    * glm::scale(glm::mat4(), glm::vec3(1.0f));
-    sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 30), sgct_text::TOP_LEFT, scoreMat,  "HIGHSCORE");
-    sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 14), sgct_text::TOP_LEFT, scoreMat, scoreboard.c_str());
 
+}
+
+void DomeGame::printScoreboard() const {
+	glm::mat4 scoreMat = MVP * glm::rotate(glm::mat4(), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f))
+		* glm::translate(glm::mat4(), glm::vec3(0.0f, 13.0f, -20.0f))
+		* glm::scale(glm::mat4(), glm::vec3(1.0f));
+	sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 30), sgct_text::TOP_LEFT, scoreMat, "HIGHSCORE");
+	sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 14), sgct_text::TOP_LEFT, scoreMat, scoreboard.c_str());
 }
 
 void DomeGame::init() {
@@ -120,11 +127,21 @@ void DomeGame::init() {
 	sgct::TextureManager::instance()->loadTexture("background", rootDir + "/Images/background.png", true);
 	sgct::TextureManager::instance()->loadTexture("bullet", rootDir + "/Images/WEAPON.png", true);
 	sgct::TextureManager::instance()->loadTexture("venus", rootDir + "/Images/venus.jpg", true);
+
+
 	sgct::TextureManager::instance()->loadTexture("earth", rootDir + "/Images/earth_texture.png", true);
+	sgct::TextureManager::instance()->loadTexture("lava", rootDir + "/Images/lavaplanet_texture.png", true);
+	sgct::TextureManager::instance()->loadTexture("dark", rootDir + "/Images/darkplanet_texture.png", true);
+	sgct::TextureManager::instance()->loadTexture("pink", rootDir + "/Images/pinkplanet_texture.png", true);
+	sgct::TextureManager::instance()->loadTexture("moon", rootDir + "/Images/moontexture.png", true);
+
 	sgct::TextureManager::instance()->loadTexture("testbump", rootDir + "/Images/testbump.png", true);
 	sgct::TextureManager::instance()->loadTexture("spherebump", rootDir + "/Images/spherebump.png", true);
 	sgct::TextureManager::instance()->loadTexture("NOBUMP", rootDir + "/Images/nobump.png", true);
+	sgct::TextureManager::instance()->loadTexture("bumpy", rootDir + "/Images/bumpy.png", true);
 	sgct::TextureManager::instance()->loadTexture("projectile", rootDir + "/Images/projectile.png", true);
+
+
 	
 	for (int i = 0; i <= 9; i++)
 		sgct::TextureManager::instance()->loadTexture("player" + std::to_string(i), rootDir + "/Images/avatar" + std::to_string(i) + ".png", true);
@@ -132,6 +149,11 @@ void DomeGame::init() {
 
 	sgct::TextureManager::instance()->loadTexture("weapon1", rootDir + "/Images/Weapon_1.png", true);
 	sgct::TextureManager::instance()->loadTexture("weapon1normal", rootDir + "/Images/Weapon1_normalmap.png", true);
+
+	sgct::TextureManager::instance()->loadTexture("weapon2_left", rootDir + "/Images/weapon2_left.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon2normal_left", rootDir + "/Images/Weapon2_normalmap_left.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon2_right", rootDir + "/Images/weapon2_right.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon2normal_right", rootDir + "/Images/Weapon2_normalmap_right.png", true);
 
 	// PlayerShader
 	sgct::ShaderManager::instance()->addShaderProgram(
@@ -142,6 +164,7 @@ void DomeGame::init() {
 	playershader.model_loc = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("model");
 	playershader.d_tex_loc = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("d_tex");
 	playershader.b_tex_loc = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("b_tex");
+	playershader.ambient = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("ambient");
 
 	for (int i = 0; i < N_LIGHTS; i++) {
 		playershader.light_pos_loc[i] = sgct::ShaderManager::instance()->getShaderProgram("player").getUniformLocation("pointLights[" + std::to_string(i) + "].position");
@@ -177,9 +200,6 @@ void DomeGame::init() {
 	glFrontFace(GL_CCW);
 	glEnable(GL_DEPTH_TEST);
 
-	std::cout << "johan was here xD" << std::endl;
-
-
 	myScene->initScene();
 
 	DomeDrawable::initSprite();
@@ -189,17 +209,19 @@ void DomeGame::init() {
 }
 
 void DomeGame::addPlayer(std::string &name, std::string weaponType, glm::quat pos) {
-    std::string texName = "player" + std::to_string(players.size()+1);
+    std::string texName = "player" + std::to_string(players.size());
     Player * newPlayer = new Player(name, texName,pos);
 	if(weaponType == "shotgun")
 		newPlayer->setWeapon(new Shotgun(newPlayer), "shotgun");
 	if (weaponType == "smg")
 		newPlayer->setWeapon(new SMG(newPlayer), "smg");
 	if (weaponType == "light")
-		newPlayer->setWeapon(new LightBallLauncher(newPlayer), "light");
+		newPlayer->setWeapon(new PopGuns(newPlayer), "light");
+
+	std::cout << "Player " << name << " created with id: " << players.size() << " and weapon: " << weaponType << std::endl;
+
 	players.push_back(newPlayer);
 	added_players.addVal(*newPlayer);
-    std::cout << "Player" << name << " created" << std::endl;
 }
 
 void DomeGame::renderPlayer(Player *p) const {
@@ -224,6 +246,16 @@ void DomeGame::renderWeapon(Player *p) const {
 	glm::mat4 weaponMat = rot * trans * scale;
 	glUniformMatrix4fv(playershader.model_loc, 1, GL_FALSE, &weaponMat[0][0]);
 	wp->render();
+
+	if (wp->doubleWeapon) {
+		glm::mat4 rot = p->getRotationMatrix() * wp->getSecondWeaponRotationMatrix();
+		glm::mat4 weaponMat = rot * trans * scale;
+		glUniformMatrix4fv(playershader.model_loc, 1, GL_FALSE, &weaponMat[0][0]);
+
+		wp->switchWeaponTexture();
+		wp->render();
+		wp->switchWeaponTexture();
+	}
 
 }
 
@@ -296,15 +328,26 @@ void DomeGame::update(float dt) {
 				//If the bullet hits: decrease & increase score
 				if (projectiles[k].getOwner() != players[i] && glm::length(diff) < (projectiles[k].getScale() + players[i]->getScale()) / 2.2f)
 				{
-					glm::vec3 n_diff = glm::normalize(diff);
-					glm::vec3 knockback = n_diff * glm::dot(projectiles[k].getWorldVelocity(), n_diff);
+					//alt knockback version
+					//glm::vec3 n_diff = glm::normalize(diff);
+					//glm::vec3 knockback = n_diff * glm::dot(projectiles[k].getWorldVelocity(), n_diff);
 
 					if (players[i]->isAlive()) {
-						players[i]->addWorldVelocity(projectiles[k].getWorldVelocity() * projectiles[k].damage);
-						projectiles[k].getOwner()->increaseScore(projectiles[k].damage);
+						players[i]->addWorldVelocity(projectiles[k].getWorldVelocity() * projectiles[k].knockback);
+						players[i]->takeDamage(projectiles[k].damage);
+
+						float points = projectiles[k].damage;
+
+						//bonus points for a kill
+						if (!players[i]->isAlive())
+							points += 100;
+
+						projectiles[k].getOwner()->increaseScore(points);
+
+						projectiles[k].collide();
 					}
 					
-					projectiles[k].collide();
+					
 				}
 			}
         }

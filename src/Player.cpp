@@ -17,13 +17,39 @@ void Player::setWeapon(Weapon* wp, std::string type) {
 
 void Player::update(float dt) {
 	direction += dt * turn_speed * (c_right - c_left);
-	up_vel += dt * acceleration * cos(direction);
-	right_vel += dt * acceleration * sin(direction);
+
+	if (alive) {
+		up_vel += dt * acceleration * cos(direction);
+		right_vel += dt * acceleration * sin(direction);
+
+		if (health < 100)
+			health += dt * 10;
+	} else {
+		up_vel += dt * acceleration * cos(direction) * deathSpeedFactor;
+		right_vel += dt * acceleration * sin(direction) * deathSpeedFactor;
+
+		deathtimer += dt;
+
+		if (deathtimer > 5.0f) {
+			alive = true;
+			health = 100;
+		}
+	}
+
+	flashtimer += dt;
+		
 	DomeMovable::update(dt);
 }
 
-void Player::takeDamage(int dmg){
+void Player::takeDamage(float dmg){
 	health -= dmg;
+
+	if (health <= 0.0f) {
+		alive = false;
+		deathtimer = 0.0f;
+		score -= 100;
+	}
+	std::cout << "health: " << health << "  alive:" << alive << "\n";
 }
 
 bool Player::isAlive() {
@@ -33,6 +59,21 @@ bool Player::isAlive() {
 void Player::increaseScore(int points){
     score += points;
     std::cout << "The player" << playerName << " has score " <<  score << std::endl;
+}
+
+
+glm::vec4 Player::getAmbient() {
+	glm::vec3 ambient = glm::vec3(0.6f);
+	float alpha;
+	if (alive) {
+		alpha = 1;
+		float redadd = (100 - health) / 100.0f * ( 0.6f + 0.4 * sin(flashtimer * (100 ) / 10.0f) );
+		ambient += glm::vec3(redadd, -redadd, -redadd);
+	} else {
+		alpha = 0.6f + 0.2f * cos(flashtimer * 20.0f);
+	}
+		
+	return glm::vec4(ambient, alpha);
 }
 
 

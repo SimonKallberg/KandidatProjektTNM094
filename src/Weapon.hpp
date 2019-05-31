@@ -17,6 +17,10 @@ public:
 	void readData();
     glm::mat4 getRotationMatrix();
 
+	//for Double-Weapons
+	virtual glm::mat4 getSecondWeaponRotationMatrix() { return glm::mat4(); };
+	virtual void switchWeaponTexture() { };
+
 	//Static functions
     // init: used to set the projectile list pointer
 	static void init(std::vector<Projectile> *list,sgct::SharedVector<Projectile> *add_list);
@@ -24,6 +28,8 @@ public:
     //Virtual functions
     virtual void shoot() = 0;
     virtual void update(float dt, int c_shoot);
+
+	bool doubleWeapon = false;
 
 protected:
     
@@ -41,13 +47,6 @@ protected:
 	float reloadTimeLeft = 0.0f; // time left until weapon can shoot again
 	float reloadTime = 1.0f; // reload time between shots
 
-	//Weapon offset
-	float weaponOffsetUp = 0.0f; // pos quat is used as the weapon offset relative to player when rendering
-	float weaponOffsetRight = 0.0f;
-    
-    //Projectile offset
-	float projectileOffsetUp = 0.0f;
-	float projectileOffsetRight = 0.0f;
 	glm::quat projectileOffset;
 
     //Weapon size
@@ -92,5 +91,30 @@ public:
 	void update(float dt, int c_shoot);
 	void shoot();
 };
+
+class PopGuns : public Weapon {
+public:
+	//Constructors
+	PopGuns() = delete;
+	PopGuns(Player* in_owner);
+
+	void update(float dt, int c_shoot);
+	void shoot();
+
+	glm::mat4 getSecondWeaponRotationMatrix();
+	void switchWeaponTexture();
+
+	std::string leftWeaponTexture;
+	std::string rightWeaponTexture;
+	std::string leftWeaponBumpTexture;
+	std::string rightWeaponBumpTexture;
+
+	glm::quat leftPosition;
+	glm::quat leftProjectileOffset;
+
+	// bool to alternate which weapon shoots
+	bool shootRight = true;
+};
+
 
 #endif

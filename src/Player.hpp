@@ -24,11 +24,13 @@ public:
 
 	Weapon * getWeapon() const;
 	void setWeapon(Weapon* wp, std::string type);
+
+	glm::vec4 getAmbient();
     
 	void update(float dt);
 
 	bool isAlive();
-    void takeDamage(int dmg);
+    void takeDamage(float dmg);
     
     void increaseScore(int points);
 
@@ -41,13 +43,22 @@ public:
     std::string playerName;
 
 private:
-	int health;
-	bool alive;
+	// health and a bool to quicky check if it's below 0
+	float health = 100;
+	bool alive = true;
+
+	// used for flashing effects (basically a gameclock but unique to the player)
+	float flashtimer = 0;
+
+	// timer used to return to life after death
+	float deathtimer = 0;
 
 	Weapon* weapon;
 	
 	float acceleration = 0.2f; // unit/s^2
 	float turn_speed = 3.0f; // radians/s
+
+	float deathSpeedFactor = 2.0f;
    
 };
 

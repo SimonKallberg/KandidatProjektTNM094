@@ -25,7 +25,9 @@ public:
 	
     //Public member variables
     Player* getOwner();
-	float damage = 1;
+
+	float damage = 0;
+	float knockback = 0;
     
 protected:
 	

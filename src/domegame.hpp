@@ -32,6 +32,7 @@ public:
     
     void init();
     void render() const;
+	void printScoreboard() const;
     void addPlayer(std::string &name, std::string weaponType, glm::quat pos = glm::quat());
 	void renderPlayer(Player *p) const;
 	void renderWeapon(Player *p) const;
@@ -66,6 +67,7 @@ private:
 		GLint b_tex_loc = -1;
 		GLint light_pos_loc[N_LIGHTS];
 		GLint light_color_loc[N_LIGHTS];
+		GLint ambient = -1;
 
 	} playershader;
 

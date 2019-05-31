@@ -5,18 +5,18 @@ std::vector<Projectile>* Weapon::projectiles = nullptr;
 sgct::SharedVector<Projectile>* Weapon::added_projectiles = nullptr;
 
 void Weapon::writeData() {
-    DomeDrawable::writeData();
-    
-    sgct::SharedFloat s_rec = currentRecoil;
-    sgct::SharedData::instance()->writeFloat(&s_rec);
+	DomeDrawable::writeData();
+
+	sgct::SharedFloat s_rec = currentRecoil;
+	sgct::SharedData::instance()->writeFloat(&s_rec);
 }
 
 void Weapon::readData() {
-    DomeDrawable::readData();
-    
-    sgct::SharedFloat s_rec;
-    sgct::SharedData::instance()->readFloat(&s_rec);
-    currentRecoil = s_rec.getVal();
+	DomeDrawable::readData();
+
+	sgct::SharedFloat s_rec;
+	sgct::SharedData::instance()->readFloat(&s_rec);
+	currentRecoil = s_rec.getVal();
 }
 
 glm::mat4 Weapon::getRotationMatrix() {
@@ -25,36 +25,42 @@ glm::mat4 Weapon::getRotationMatrix() {
 
 //Static function
 void Weapon::init(std::vector<Projectile> *list, sgct::SharedVector<Projectile> *add_list) {
-    projectiles = list;
-    added_projectiles = add_list;
+	projectiles = list;
+	added_projectiles = add_list;
 }
 
 //Virtual functions
 void Shotgun::shoot() {
-    glm::quat p_pos = owner->getQuat() * projectileOffset;
-    for (int i = 0; i < pellets; i++) {
-        projectiles->push_back(ShotgunPellet(p_pos, owner));
-        added_projectiles->addVal(ShotgunPellet(p_pos, owner));
-    }
+	glm::quat p_pos = owner->getQuat() * projectileOffset;
+	for (int i = 0; i < pellets; i++) {
+		projectiles->push_back(ShotgunPellet(p_pos, owner));
+		added_projectiles->addVal(ShotgunPellet(p_pos, owner));
+	}
 }
 
 void Weapon::update(float dt, int c_shoot) {
 	reloadTimeLeft -= dt;
-	chargedTime = c_shoot * (chargedTime + dt);
 
-	if (visualRecoilRecovery > 0.0001f)
-        currentRecoil = fmax(currentRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
+	if(owner->isAlive()){
+		chargedTime = c_shoot * (chargedTime + dt);
 
-	if (reloadTimeLeft < 0.0f) {
-		if (chargeTime > 0.0001f)
-			scale = weaponSize + weaponBloatSize * chargedTime / chargeTime;
+		if (visualRecoilRecovery > 0.0001f)
+			currentRecoil = fmax(currentRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
 
-		if (chargedTime > chargeTime) {
-			shoot();
-			reloadTimeLeft = reloadTime;
-			scale = weaponSize;
-			currentRecoil = visualRecoil;
+		if (reloadTimeLeft < 0.0f) {
+			if (chargeTime > 0.0001f)
+				scale = weaponSize + weaponBloatSize * chargedTime / chargeTime;
+
+			if (chargedTime > chargeTime) {
+				shoot();
+				reloadTimeLeft = reloadTime;
+				scale = weaponSize;
+				currentRecoil = visualRecoil;
+			}
 		}
+	} else {
+		currentRecoil = 0;
+		scale = weaponSize;
 	}
 }
 

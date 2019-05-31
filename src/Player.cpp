@@ -47,6 +47,7 @@ void Player::takeDamage(float dmg){
 	if (health <= 0.0f) {
 		alive = false;
 		deathtimer = 0.0f;
+		score -= 100;
 	}
 	std::cout << "health: " << health << "  alive:" << alive << "\n";
 }

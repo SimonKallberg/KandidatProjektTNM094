@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
-
+#include <mmsystem.h>
 #include "./ServerHandler.hpp"
 //#include "./boxtest.hpp"
 #include "./Quad.hpp"
@@ -158,6 +158,7 @@ void myInitOGLFun() {
 		ServerHandler::connect();
 	}
 	//boxtest::init();
+	PlaySound("../DOMEMUSICtest.wav", NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 }
 
 

@@ -117,12 +117,19 @@ void Scene::update(float dt) {
 
 //shareddata
 void Scene::writeData() {
+	sgct::SharedFloat s_timer = lighttimer;
+	sgct::SharedData::instance()->writeFloat(&s_timer);
+
     for (int i = 0; i < systems.size(); i++) {
         systems[i].writeData();
     }
 }
 
 void Scene::readData() {
+	sgct::SharedFloat s_timer;
+	sgct::SharedData::instance()->readFloat(&s_timer);
+	lighttimer = s_timer.getVal();
+
     for (int i = 0; i < systems.size(); i++) {
         systems[i].readData();
     }
@@ -189,9 +196,12 @@ void Scene::Body::writeData() {
     local.setVal(localTransformation);
     sgct::SharedObject<glm::mat4> self;
     self.setVal(selfTransformation);
+	sgct::SharedObject<glm::vec3> s_ambient;
+	s_ambient.setVal(ambient);
     
     sgct::SharedData::instance()->writeObj(&local);
     sgct::SharedData::instance()->writeObj(&self);
+	sgct::SharedData::instance()->writeObj(&s_ambient);
     
     for (int i = 0; i < subBodies.size(); i++) {
         subBodies[i].writeData();
@@ -204,9 +214,12 @@ void Scene::Body::readData() {
 	sgct::SharedObject<glm::mat4> self;
 	sgct::SharedData::instance()->readObj(&self);
 
+	sgct::SharedObject<glm::vec3> s_ambient;
+	sgct::SharedData::instance()->readObj(&s_ambient);
 	
 	localTransformation = local.getVal();
 	selfTransformation = self.getVal();
+	ambient = s_ambient.getVal();
 	
 	for (int i = 0; i < subBodies.size(); i++) {
 		subBodies[i].readData();

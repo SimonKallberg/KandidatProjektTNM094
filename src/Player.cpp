@@ -77,5 +77,33 @@ glm::vec4 Player::getAmbient() {
 }
 
 
+void Player::writeData() {
+	sgct::SharedFloat s_flash = flashtimer;
+	sgct::SharedData::instance()->writeFloat(&s_flash);
+
+	sgct::SharedFloat s_health = health;
+	sgct::SharedData::instance()->writeFloat(&s_health);
+
+	sgct::SharedBool s_alive = alive;
+	sgct::SharedData::instance()->writeBool(&s_alive);
+
+	DomeDrawable::writeData();
+}
+
+void Player::readData() {
+	sgct::SharedFloat s_flash;
+	sgct::SharedData::instance()->readFloat(&s_flash);
+	flashtimer = s_flash.getVal();
+
+	sgct::SharedFloat s_health;
+	sgct::SharedData::instance()->readFloat(&s_health);
+	health = s_health.getVal();
+
+	sgct::SharedBool s_alive;
+	sgct::SharedData::instance()->readBool(&s_alive);
+	alive = s_alive.getVal();
+
+	DomeDrawable::readData();
+}
 
 

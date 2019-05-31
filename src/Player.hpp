@@ -42,6 +42,9 @@ public:
     int score = 0;
     std::string playerName;
 
+	void writeData();
+	void readData();
+
 private:
 	// health and a bool to quicky check if it's below 0
 	float health = 100;

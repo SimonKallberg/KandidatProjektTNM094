@@ -159,6 +159,9 @@ void DomeGame::init() {
 	sgct::TextureManager::instance()->loadTexture("weapon2_right", rootDir + "/Images/weapon2_right.png", true);
 	sgct::TextureManager::instance()->loadTexture("weapon2normal_right", rootDir + "/Images/Weapon2_normalmap_right.png", true);
 
+	sgct::TextureManager::instance()->loadTexture("weapon3", rootDir + "/Images/Weapon3.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon3normal", rootDir + "/Images/Weapon3_normalmap.png", true);
+
 	// PlayerShader
 	sgct::ShaderManager::instance()->addShaderProgram(
 		"player", rootDir + "/player.vert", rootDir + "/player.frag");

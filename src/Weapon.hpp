@@ -41,10 +41,6 @@ protected:
 
 	Player* owner;
 
-    //Charge time
-	float chargedTime = 0.0f; // how long the fire button has been held down
-	float chargeTime = 0.0f; // how long it needs to be held down to start shooting
-	
     //Reload time
 	float reloadTimeLeft = 0.0f; // time left until weapon can shoot again
 	float reloadTime = 1.0f; // reload time between shots
@@ -57,7 +53,7 @@ protected:
 
     //Recoil
 	float visualRecoil = 0.0f; // how far the weapon rocks back a shot is fired
-	float visualRecoilRecovery = 0.0f; // the time it takes to revert to default positon fromr recoil
+	float visualRecoilRecovery = reloadTime; // the time it takes to revert to default positon fromr recoil
 	float currentRecoil = 0.0f;
 	
 };
@@ -70,8 +66,6 @@ public:
     
 	void update(float dt, int c_shoot);
 	void shoot();
-protected:
-	int pellets;
 };
 
 class SMG : public Weapon {
@@ -116,6 +110,16 @@ public:
 
 	// bool to alternate which weapon shoots
 	bool shootRight = true;
+};
+
+class Rifle : public Weapon {
+public:
+	//Constructors
+	Rifle() = delete;
+	Rifle(Player* in_owner);
+
+	void update(float dt, int c_shoot);
+	void shoot();
 };
 
 

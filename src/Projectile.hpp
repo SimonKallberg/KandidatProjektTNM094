@@ -28,6 +28,9 @@ public:
 
 	float damage = 0;
 	float knockback = 0;
+
+	void writeData();
+	void readData();
     
 protected:
 	
@@ -44,8 +47,8 @@ protected:
 	float lifetime = 1.0f; // total seconds to live
 
     // Deathtime
-	float deathtime = 1.0f;
-	float deathtimeLeft = 1.0f;
+	float deathtime = 0.2f;
+	float deathtimeLeft = deathtime;
 
     //Colors
 	glm::vec3 color = glm::vec3(1, 1, 1);
@@ -56,12 +59,7 @@ protected:
     Player *owner = nullptr;
 };
 
-class ShotgunPellet : public Projectile {
-public:
-    //Constructors
-	ShotgunPellet() = delete;
-	ShotgunPellet(glm::quat pos, Player * in_owner);
-};
+
 
 class SMGRound : public Projectile {
 public:
@@ -77,12 +75,27 @@ public:
 	LightBall(glm::quat pos, Player * in_owner);
 };
 
+
+
+
 class PopBall : public Projectile {
 public:
 	//constructors
 	PopBall() = delete;
 	PopBall(glm::quat pos, Player * in_owner);
+};
 
-	bool update(float dt);
+class ShotgunPellet : public Projectile {
+public:
+	//Constructors
+	ShotgunPellet() = delete;
+	ShotgunPellet(glm::quat pos, Player * in_owner, float diradd);
+};
+
+class RifleBullet : public Projectile {
+public:
+	//Constructors
+	RifleBullet() = delete;
+	RifleBullet(glm::quat pos, Player * in_owner);
 };
 #endif 

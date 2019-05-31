@@ -5,7 +5,6 @@ std::string empty_string = "";
 void Projectile::init() {
 	lifetimeLeft = lifetime;
 	deathtimeLeft = deathtime;
-	direction = 0;
 
 	//proplsion spread
 	propulsionSpeed += ((float)rand() / RAND_MAX - 0.5f) * propulsionSpread;
@@ -39,7 +38,7 @@ glm::vec4 Projectile::getColor() const {
 }
 
 glm::vec3 Projectile::getLightColor() const {
-    return color * alpha;
+	return color * 0.5f *alpha;
 }
 
 bool Projectile::update(float dt){
@@ -70,19 +69,6 @@ Player* Projectile::getOwner()
     return owner;
 }
 
-//Shotgun pellet
-ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner)
-	:  Projectile(empty_string, pos, in_owner)
-{
-	texture = "venus";
-	lifetime = 0.5f;
-	scale = 0.1f;
-	propulsionSpeed = 1.0f;
-	sizeSpread = 0.05f;
-	directionSpread = 0.6f;
-	propulsionSpread = 0.5f;
-	Projectile::init();
-}
 
 
 //SMGRound
@@ -124,34 +110,105 @@ LightBall::LightBall(glm::quat pos, Player * in_owner)
 	Projectile::init();
 }
 
+
+
+
+
+
+//Shotgun pellet
+ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner, float diradd)
+	:  Projectile(empty_string, pos, in_owner)
+{
+	texture = "projectile";
+	lifetime = 0.4f;
+	scale = 0.1f;
+	propulsionSpeed = 1.0f;
+	sizeSpread = 0.00f;
+	directionSpread = 0.0f;
+	propulsionSpread = 0.0f;
+
+	direction = diradd;
+
+	damage = 40.0f;
+	knockback = 0.4f;
+
+	color = glm::vec3(0.8f, 0.5f, 0.5f);
+	deathColor = glm::vec3(0.4f, 0.2f, 0.0f);
+
+	slowdown = 0.2f;
+	Projectile::init();
+}
+
+
 //PopBall
 PopBall::PopBall(glm::quat pos, Player * in_owner)
 	: Projectile(empty_string, pos, in_owner)
 {
 	texture = "projectile";
-	lifetime = 2.0f;
+	lifetime = 1.0f;
 	scale = 0.1f;
 	propulsionSpeed = 1.0f;
 	sizeSpread = 0.0f;
 	directionSpread = 0.0f;
 	propulsionSpread = 0.0f;
-	slowdown = 0.2f;
+	slowdown = 0.5f;
 
-	damage = 80.0f;
-	knockback = 0.5f;
+	damage = 20.0f;
+	knockback = 0.2f;
 
-	deathColor = glm::vec3(2.0f, 1.0f, 0.0f);
-	deathtime = 2.0f;
+	color = glm::vec3(0.4f, 0.8f, 0.5f);
+	deathColor = glm::vec3(0.2f, 0.4f, 0.0f);
+
+	deathtime = 0.1f;
 	Projectile::init();
 }
 
-bool PopBall::update(float dt) {
-	direction += 0.05f;
+// Rifle
+RifleBullet::RifleBullet(glm::quat pos, Player * in_owner)
+	: Projectile(empty_string, pos, in_owner)
+{
+	texture = "projectile";
+	lifetime = 1.0f;
+	scale = 0.2f;
+	propulsionSpeed = 1.4f;
+	sizeSpread = 0.0f;
+	directionSpread = 0.0f;
+	propulsionSpread = 0.0f;
+	slowdown = 0.8f;
 
-	up_vel += dt * 0.8f * cos(direction);
-	right_vel += dt * 0.8f * sin(direction);
+	damage = 60.0f;
+	knockback = 0.6f;
 
-	std::cout << "ya got here";
+	color = glm::vec3(0.5f, 0.5f, 0.8f);
+	deathColor = glm::vec3(0.2f, 0.0f, 0.4f);
 
-	return Projectile::update(dt);
+	deathtime = 0.2f;
+	Projectile::init();
+}
+
+
+
+
+
+void Projectile::writeData() {
+	
+	sgct::SharedFloat s_alpha = alpha;
+	sgct::SharedData::instance()->writeFloat(&s_alpha);
+
+	sgct::SharedObject<glm::vec3> s_color;
+	s_color.setVal(color);
+	sgct::SharedData::instance()->writeObj(&s_color);
+
+	DomeDrawable::writeData();
+}
+
+void Projectile::readData() {
+	sgct::SharedFloat s_alpha;
+	sgct::SharedData::instance()->readFloat(&s_alpha);
+
+	sgct::SharedObject<glm::vec3> s_color;
+	sgct::SharedData::instance()->readObj(&s_color);
+	color = s_color.getVal();
+
+	DomeDrawable::readData();
 }

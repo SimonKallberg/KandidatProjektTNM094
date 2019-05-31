@@ -4,21 +4,6 @@ std::string empty_string1 = "";
 std::vector<Projectile>* Weapon::projectiles = nullptr;
 sgct::SharedVector<Projectile>* Weapon::added_projectiles = nullptr;
 
-void Weapon::writeData() {
-	DomeDrawable::writeData();
-
-	sgct::SharedFloat s_rec = currentRecoil;
-	sgct::SharedData::instance()->writeFloat(&s_rec);
-}
-
-void Weapon::readData() {
-	DomeDrawable::readData();
-
-	sgct::SharedFloat s_rec;
-	sgct::SharedData::instance()->readFloat(&s_rec);
-	currentRecoil = s_rec.getVal();
-}
-
 glm::mat4 Weapon::getRotationMatrix() {
 	return glm::toMat4(glm::quat(glm::vec3(-currentRecoil, 0, 0)) * getQuat());
 }
@@ -32,87 +17,43 @@ void Weapon::init(std::vector<Projectile> *list, sgct::SharedVector<Projectile> 
 Weapon* Weapon::makeWeapon(std::string wType, Player* own) {
 	if (wType == "shotgun")
 		return new Shotgun(own);
+	if (wType == "popgun")
+		return new PopGuns(own);
+	if (wType == "rifle")
+		return new Rifle(own);
+
+	// testweapons
 	if (wType == "smg")
 		return new SMG(own);
 	if (wType == "light")
 		return new LightBallLauncher(own);
-	if (wType == "popgun")
-		return new PopGuns(own);
-	if (wType == "rifle")
-		return new SMG(own);
 }
 
 
-//Virtual functions
-void Shotgun::shoot() {
-	glm::quat p_pos = owner->getQuat() * projectileOffset;
-	for (int i = 0; i < pellets; i++) {
-		projectiles->push_back(ShotgunPellet(p_pos, owner));
-		added_projectiles->addVal(ShotgunPellet(p_pos, owner));
-	}
-}
+
 
 void Weapon::update(float dt, int c_shoot) {
 	reloadTimeLeft -= dt;
 
 	if(owner->isAlive()){
-		chargedTime = c_shoot * (chargedTime + dt);
-
+		
 		if (visualRecoilRecovery > 0.0001f)
 			currentRecoil = fmax(currentRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
 
-		if (reloadTimeLeft < 0.0f) {
-			if (chargeTime > 0.0001f)
-				scale = weaponSize + weaponBloatSize * chargedTime / chargeTime;
+		std::cout << currentRecoil << "\n";
 
-			if (chargedTime > chargeTime) {
-				shoot();
-				reloadTimeLeft = reloadTime;
-				scale = weaponSize;
-				currentRecoil = visualRecoil;
-			}
+		scale = weaponSize + weaponBloatSize * (1 - fmax(reloadTimeLeft / reloadTime,0));
+
+		if (reloadTimeLeft < 0.0f && c_shoot == 1) {
+			shoot();
+			reloadTimeLeft = reloadTime;
+			scale = weaponSize;
+			currentRecoil = visualRecoil;
 		}
 	} else {
 		currentRecoil = 0;
 		scale = weaponSize;
 	}
-}
-
-//shotgun
-Shotgun::Shotgun(Player * in_owner)
-	: Weapon(empty_string1, in_owner)
-{
-	texture = "bullet";
-	weaponSize = 0.5f;
-	weaponBloatSize = 0.2f;
-
-	visualRecoil = 0.05f;
-	visualRecoilRecovery = 1.0f;
-
-	float weaponOffsetUp = 0.05f;
-	float weaponOffsetRight = 0.05f;
-	float projectileOffsetUp = 0.1f;
-	float projectileOffsetRight = 0.05f;
-
-	//offset
-	position *= glm::quat(owner->getScale() * weaponOffsetUp * glm::vec3(1.0f, 0.0f, 0.0f));
-	position *= glm::quat(owner->getScale() * weaponOffsetRight * glm::vec3(0.0f, -1.0f, 0.0f));
-
-	projectileOffset *= glm::quat(owner->getScale() * projectileOffsetUp * glm::vec3(1.0f, 0.0f, 0.0f));
-	projectileOffset *= glm::quat(owner->getScale() * projectileOffsetRight * glm::vec3(0.0f, -1.0f, 0.0f));
-
-	scale = weaponSize; // relative to player
-
-	reloadTime = 0.5f;
-	chargeTime = 0.5f;
-
-	pellets = 20;
-}
-
-
-
-void Shotgun::update(float dt, int c_shoot) {
-	Weapon::update(dt, c_shoot);
 }
 
 
@@ -144,7 +85,6 @@ SMG::SMG(Player * in_owner)
 	scale = weaponSize; // relative to player
 
 	reloadTime = 0.02f;
-	chargeTime = 0.5f;
 }
 
 void SMG::shoot() {
@@ -186,11 +126,10 @@ LightBallLauncher::LightBallLauncher(Player * in_owner)
 	scale = weaponSize; // relative to player
 
 	reloadTime = 1.0f;
-	chargeTime = 0.0f;
 }
 
 void LightBallLauncher::shoot() {
-	glm::quat p_pos = owner->getQuat() * projectileOffset; std::cout << owner->getQuat().x << " ,  " << owner->getQuat().y << " ,  " << owner->getQuat().z << " ,  " << "\n";
+	glm::quat p_pos = owner->getQuat() * projectileOffset;
 	projectiles->push_back(LightBall(p_pos, owner));
 	added_projectiles->addVal(LightBall(p_pos, owner));
 }
@@ -201,8 +140,33 @@ void LightBallLauncher::update(float dt, int c_shoot) {
 }
 
 
-// Pop guns
+void Weapon::writeData() {
+	sgct::SharedFloat s_recoil = currentRecoil;
+	sgct::SharedData::instance()->writeFloat(&s_recoil);
 
+	DomeDrawable::writeData();
+}
+
+void Weapon::readData() {
+	sgct::SharedFloat s_recoil;
+	sgct::SharedData::instance()->readFloat(&s_recoil);
+
+	currentRecoil = s_recoil.getVal();
+
+	DomeDrawable::readData();
+}
+
+
+
+
+
+
+
+
+// real weapons
+
+
+// Pop guns
 
 PopGuns::PopGuns(Player * in_owner)
 	: Weapon(empty_string1, in_owner)
@@ -243,8 +207,7 @@ PopGuns::PopGuns(Player * in_owner)
 
 	scale = weaponSize; // relative to player
 
-	reloadTime = 0.4f;
-	chargeTime = 0.0f;
+	reloadTime = 0.2f;
 }
 
 void PopGuns::shoot() {
@@ -279,3 +242,91 @@ void PopGuns::switchWeaponTexture() {
 	}
 		
 }
+
+
+
+//shotgun
+Shotgun::Shotgun(Player * in_owner)
+	: Weapon(empty_string1, in_owner)
+{
+	texture = "weapon1";
+	bumpTexture = "weapon1normal";
+	weaponSize = 0.8f;
+	weaponBloatSize = 0.1f;
+
+	visualRecoil = 0.01f;
+	visualRecoilRecovery = 0.1f;
+
+	float weaponOffsetUp = 0.00f;
+	float weaponOffsetRight = 0.08f;
+	float projectileOffsetUp = 0.06f;
+	float projectileOffsetRight = 0.08f;
+
+	//offset
+	position *= glm::quat(owner->getScale() * weaponOffsetUp * glm::vec3(1.0f, 0.0f, 0.0f));
+	position *= glm::quat(owner->getScale() * weaponOffsetRight * glm::vec3(0.0f, -1.0f, 0.0f));
+
+	projectileOffset *= glm::quat(owner->getScale() * projectileOffsetUp * glm::vec3(1.0f, 0.0f, 0.0f));
+	projectileOffset *= glm::quat(owner->getScale() * projectileOffsetRight * glm::vec3(0.0f, -1.0f, 0.0f));
+
+	scale = weaponSize; // relative to player
+
+	reloadTime = 1.0f;
+}
+
+void Shotgun::shoot() {
+	glm::quat p_pos = owner->getQuat() * projectileOffset;
+	for (int i = -2; i <= 2; i++) {
+		projectiles->push_back(ShotgunPellet(p_pos, owner, i*0.2f));
+		added_projectiles->addVal(ShotgunPellet(p_pos, owner, i*0.2f));
+	}
+}
+
+void Shotgun::update(float dt, int c_shoot) {
+	Weapon::update(dt, c_shoot);
+}
+
+
+
+// rifle
+Rifle::Rifle(Player * in_owner)
+	: Weapon(empty_string1, in_owner)
+{
+	texture = "weapon3";
+	bumpTexture = "weapon3normal";
+	weaponSize = 1.0f;
+	weaponBloatSize = 0.1f;
+
+	visualRecoil = 0.01f;
+	visualRecoilRecovery = 0.2f;
+
+	float weaponOffsetUp = 0.14f;
+	float weaponOffsetRight = 0.00f;
+	float projectileOffsetUp = 0.18f;
+	float projectileOffsetRight = 0.00f;
+
+	//offset
+	position *= glm::quat(owner->getScale() * weaponOffsetUp * glm::vec3(1.0f, 0.0f, 0.0f));
+	position *= glm::quat(owner->getScale() * weaponOffsetRight * glm::vec3(0.0f, -1.0f, 0.0f));
+
+	projectileOffset *= glm::quat(owner->getScale() * projectileOffsetUp * glm::vec3(1.0f, 0.0f, 0.0f));
+	projectileOffset *= glm::quat(owner->getScale() * projectileOffsetRight * glm::vec3(0.0f, -1.0f, 0.0f));
+
+	scale = weaponSize; // relative to player
+
+	reloadTime = 0.8f;
+}
+
+void Rifle::shoot() {
+	glm::quat p_pos = owner->getQuat() * projectileOffset;
+	projectiles->push_back(RifleBullet(p_pos, owner));
+	added_projectiles->addVal(RifleBullet(p_pos, owner));
+}
+
+
+void Rifle::update(float dt, int c_shoot) {
+	Weapon::update(dt, c_shoot);
+}
+
+
+

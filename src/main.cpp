@@ -225,7 +225,7 @@ void keyCallback(int key, int action)
 			case 'Z':
 					//box->Box_scale += 0.1f;
 					if (action == SGCT_PRESS)
-						domeGame->addPlayer(playerName, "smg");
+						domeGame->addPlayer(playerName, "rifle");
 				break;
 			case 'X':
 					//box->Box_scale -= 0.1f;

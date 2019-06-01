@@ -9,10 +9,12 @@ DomeGame::DomeGame(sgct::Engine * gEngine, std::string rootDir_in) {		//Construc
 
 void DomeGame::render() const{
 
+	float projectile_light_reach = 0.8f;
+
 	printScoreboard();
 
 	myScene->MVP = MVP;
-	myScene->render();
+	//myScene->render();
 
 	sgct::ShaderManager::instance()->bindShaderProgram("player");
 	glUniform1i(playershader.d_tex_loc, 0);
@@ -40,7 +42,7 @@ void DomeGame::render() const{
 		for (int j = 0; lightindex < N_LIGHTS && j < projectiles.size(); j++) {
 			glm::vec3 j_pos = projectiles[j].getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
 
-			if (glm::length(i_pos - j_pos) < 3.0f) { // render if light is close enough
+			if (glm::length(i_pos - j_pos) < projectile_light_reach) { // render if light is close enough
 				glm::vec3 lightpos = projectiles[j].getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.1f));
 				glUniform3fv(playershader.light_pos_loc[lightindex], 1, &lightpos[0]);
 
@@ -74,7 +76,7 @@ void DomeGame::render() const{
 		for (int j = 0; lightindex < N_LIGHTS && j < projectiles.size(); j++) {
 			glm::vec3 j_pos = projectiles[j].getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
 
-			if (glm::length(i_pos - j_pos) < 3.0f) { // render if light is close enough
+			if (glm::length(i_pos - j_pos) < projectile_light_reach) { // render if light is close enough
 				glm::vec3 lightpos = projectiles[j].getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.2f));
 				glUniform3fv(playershader.light_pos_loc[lightindex], 1, &lightpos[0]);
 
@@ -111,6 +113,7 @@ void DomeGame::render() const{
 	glBindVertexArray(0);
 	sgct::ShaderManager::instance()->unBindShaderProgram();
 
+	//myScene->renderDangerzone();
 }
 
 void DomeGame::printScoreboard() const {
@@ -145,9 +148,11 @@ void DomeGame::init() {
 	sgct::TextureManager::instance()->loadTexture("bumpy", rootDir + "/Images/bumpy.png", true);
 	sgct::TextureManager::instance()->loadTexture("projectile", rootDir + "/Images/projectile.png", true);
 
+	sgct::TextureManager::instance()->loadTexture("dangerzone", rootDir + "/Images/dangerzone.png", true);
+
 
 	
-	for (int i = 0; i <= 9; i++)
+	for (int i = 0; i <= 29; i++)
 		sgct::TextureManager::instance()->loadTexture("player" + std::to_string(i), rootDir + "/Images/avatar" + std::to_string(i) + ".png", true);
 	sgct::TextureManager::instance()->loadTexture("playerbump", rootDir + "/Images/avatarbump2.png", true);
 
@@ -216,7 +221,7 @@ void DomeGame::init() {
 }
 
 void DomeGame::addPlayer(std::string &name, std::string weaponType, glm::quat pos) {
-    std::string texName = "player" + std::to_string(players.size());
+    std::string texName = "player" + std::to_string(players.size() % 29);
     Player * newPlayer = new Player(name, texName,pos);
 	
 	newPlayer->setWeapon(Weapon::makeWeapon(weaponType, newPlayer), weaponType);
@@ -273,10 +278,10 @@ void DomeGame::update(float dt) {
 		players[i]->update(dt);
 		players[i]->getWeapon()->update(dt,players[i]->c_shoot);
 		glm::vec3 p_pos = players[i]->getQuat() * glm::vec3(0, 0, -1.0f);
-		glm::vec3 dome_dir = glm::vec3(0, sin(1.0f), -cos(1.0f));
+		glm::vec3 dome_dir = glm::vec3(0, sin(0.6f), -cos(0.6f));
 		float dotval = glm::dot(p_pos, dome_dir);
-		if (dotval < 0.4f) {
-			players[i]->addWorldVelocity(dome_dir * 0.2f * (0.4f - dotval + 0.1f));
+		if (dotval < 0.6f) {
+			players[i]->addWorldVelocity(dome_dir * 0.1f * (0.6f - dotval + 0.1f));
 		}
 	}
 	for (int i = 0; i < projectiles.size(); i++) {

@@ -47,6 +47,12 @@ public:
 	sgct::SharedVector<Projectile> added_projectiles;
 	sgct::SharedVector<int> removed_projectiles;
 
+	struct weaponInfo {
+		int id = -1;
+		std::string weaponType = "";
+	};
+	sgct::SharedVector<weaponInfo> changed_weapons;
+
 	// needs to be Player* for the weapons to find their owner Player
     std::vector<Player*> players; 
     std::vector<Projectile> projectiles;

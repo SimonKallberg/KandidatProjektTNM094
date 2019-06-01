@@ -55,6 +55,8 @@ protected:
 	float visualRecoil = 0.0f; // how far the weapon rocks back a shot is fired
 	float visualRecoilRecovery = reloadTime; // the time it takes to revert to default positon fromr recoil
 	float currentRecoil = 0.0f;
+
+	float selfKnockback = 0;
 	
 };
 

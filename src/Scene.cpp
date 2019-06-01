@@ -40,6 +40,8 @@ void Scene::initScene() {
 	ModelLoader * dark = new ModelLoader(rootDir + "/Objects/lowpoly_darkplanet", "dark");		
 	ModelLoader * moon = new ModelLoader(rootDir + "/Objects/lowpoly_moon", "moon");
 
+	ModelLoader * dangerzone = new ModelLoader(rootDir + "/Objects/sphere", "dangerzone");
+
 	earth->specularTextureName = "earthlava_spec";
 	lava->specularTextureName = "earthlava_spec";
 	pink->specularTextureName = "darkpink_spec";
@@ -54,8 +56,13 @@ void Scene::initScene() {
 	systems[0].selfTransformation = glm::scale(glm::mat4(), 80.0f * glm::vec3(1.0f, 1.0f, 1.0f));
 	systems[0].ambient = glm::vec3(0.1f, 0.0f, 0.4f);
 
+	// and dangerzone
+	systems.push_back(Body(dangerzone));
+	systems[1].selfTransformation = glm::scale(glm::mat4(), 4.0f * glm::vec3(1.0f, 1.0f, 1.0f))
+								  * glm::rotate(glm::mat4(), 0.8f, glm::vec3(-1.0f, 0.0f, 0.0f));
+
 	systems.push_back(Body(earth));
-	temp = &systems[1];
+	temp = &systems[2];
 	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(30.0f, 20.0f, -60.0f));
 	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(1.0f));
 
@@ -65,7 +72,7 @@ void Scene::initScene() {
 	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(3.0f));
 
 	systems.push_back(Body(pink));
-	temp = &systems[2];
+	temp = &systems[3];
 	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(-30.0f, 20.0f, 60.0f));
 	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.8f));
 
@@ -74,8 +81,8 @@ void Scene::initScene() {
 	temp->subBodies[0].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.6f));
 
 	systems.push_back(Body(lava));
-	systems[3].localTransformation = glm::translate(glm::mat4(), glm::vec3(0.0f, 15.0f, -5.0f));
-	systems[3].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.3f));
+	systems[4].localTransformation = glm::translate(glm::mat4(), glm::vec3(0.0f, 15.0f, -5.0f));
+	systems[4].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.3f));
 	
 
 
@@ -91,28 +98,28 @@ void Scene::update(float dt) {
 
 	Body * temp;
 
-	temp = &systems[1];
-	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 60.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
-	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
-
-	temp = &systems[1].subBodies[0];
-	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
-	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
-
 	temp = &systems[2];
 	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 60.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
 	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
 
-
 	temp = &systems[2].subBodies[0];
-	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 10.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
+	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
 	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
 
 	temp = &systems[3];
+	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 60.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
+	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
+
+
+	temp = &systems[3].subBodies[0];
+	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 10.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
+	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
+
+	temp = &systems[4];
 //	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 70.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
 	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 30.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
 
-	systems[3].ambient = glm::vec3(0.7f + 0.2f*cos(lighttimer), 0.4f, 0.4f);
+	systems[4].ambient = glm::vec3(0.7f + 0.2f*cos(lighttimer), 0.4f, 0.4f);
 }
 
 //shareddata
@@ -143,15 +150,15 @@ void Scene::render() const {
 	glUniform1i(sceneshader.s_tex_loc, 2);
 	glUniformMatrix4fv(sceneshader.MVP_loc, 1, GL_FALSE, &MVP[0][0]);
 
+	glm::mat4 origin;
+
+
 	for (int i = 0; i < N_LIGHTS; i++) {
 		glm::vec3 lightpos = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
 		glUniform3fv(sceneshader.light_pos_loc[i], 1, &lightpos[0]);
 		glUniform3fv(sceneshader.light_color_loc[i], 1, &lightpos[0]);
 	}
-
-	glm::mat4 origin;
-
 	systems[0].render(origin);
 	
 
@@ -169,12 +176,30 @@ void Scene::render() const {
 	glUniform3fv(sceneshader.light_color_loc[1], 1, &color[0]);
 
 
-
-	for (int i = 1; i < systems.size(); i++) {
+	for (int i = 2; i < systems.size(); i++) {
 		systems[i].render(origin);
 	}
-	sgct::ShaderManager::instance()->unBindShaderProgram();
 
+}
+
+void Scene::renderDangerzone() const {
+		sgct::ShaderManager::instance()->bindShaderProgram("scene");
+		glUniform1i(sceneshader.d_tex_loc, 0);
+		glUniform1i(sceneshader.b_tex_loc, 1);
+		glUniform1i(sceneshader.s_tex_loc, 2);
+		glUniformMatrix4fv(sceneshader.MVP_loc, 1, GL_FALSE, &MVP[0][0]);
+
+		glm::mat4 origin;
+
+		for (int i = 0; i < N_LIGHTS; i++) {
+			glm::vec3 lightpos = glm::vec3(0.0f, 0.0f, 0.0f);
+			glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
+			glUniform3fv(sceneshader.light_pos_loc[i], 1, &lightpos[0]);
+			glUniform3fv(sceneshader.light_color_loc[i], 1, &lightpos[0]);
+		}
+		systems[1].render(origin);
+
+		sgct::ShaderManager::instance()->unBindShaderProgram();
 }
 
 //bodies

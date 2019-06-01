@@ -14,7 +14,7 @@ public:
 	: playerName(name), DomeMovable(tex, pos)
 	{
 		weapon = nullptr;
-		slowdown = 0.2f;
+		slowdown = 0.3f;
 		scale = 0.1f;
 		bumpTexture = "playerbump";
 	};
@@ -28,6 +28,8 @@ public:
 	glm::vec4 getAmbient();
     
 	void update(float dt);
+
+	void applyWeaponKnockback(float knock);
 
 	bool isAlive();
     void takeDamage(float dmg);

@@ -47,12 +47,14 @@ protected:
 	float lifetime = 1.0f; // total seconds to live
 
     // Deathtime
-	float deathtime = 0.2f;
-	float deathtimeLeft = deathtime;
+	float hitDeathTime = 0.0f;
+	float missDeathTime = 0.0f;
+	float deathtimeLeft = 0.0f;
 
     //Colors
 	glm::vec3 color = glm::vec3(1, 1, 1);
-	glm::vec3 deathColor = glm::vec3(1, 1, 1);
+	glm::vec3 hitColor = glm::vec3(1, 1, 1);
+	glm::vec3 lightColor = glm::vec3(1, 1, 1);
 	float alpha = 1;
 
     //Player who fired the projectile

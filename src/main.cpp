@@ -80,6 +80,11 @@ void getServerMsg(const char * msg, size_t len)
 		strm >> id;
 		strm >> weapon;
 		domeGame->players[id]->setWeapon(Weapon::makeWeapon(weapon, domeGame->players[id]), weapon);
+
+		DomeGame::weaponInfo wp_inf;
+		wp_inf.id = id;
+		wp_inf.weaponType = weapon;
+		domeGame->changed_weapons.addVal(wp_inf);
 	}
 }
 
@@ -156,9 +161,11 @@ void myInitOGLFun() {
 		std::cout << "Master node attemping connection to server.\n";;
 		ServerHandler::setMessageCallback(getServerMsg);
 		ServerHandler::connect();
+
+		PlaySound("../DOMEMUSICtest.wav", NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 	}
 	//boxtest::init();
-	PlaySound("../DOMEMUSICtest.wav", NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+	
 }
 
 
@@ -269,6 +276,8 @@ void myEncodeFun()
 	sgct::SharedData::instance()->writeVector(&domeGame->removed_projectiles);
 	domeGame->removed_projectiles.clear();
 
+	sgct::SharedData::instance()->writeVector(&domeGame->changed_weapons);
+	domeGame->changed_weapons.clear();
 
 	for (int i = 0; i < domeGame->players.size(); i++) {
 		domeGame->players[i]->writeData();
@@ -318,6 +327,11 @@ void myDecodeFun()
 		domeGame->projectiles.erase(domeGame->projectiles.begin() + rem_indices[i]);
 	}
 
+	sgct::SharedData::instance()->readVector(&domeGame->changed_weapons);
+	std::vector<DomeGame::weaponInfo> changed = domeGame->changed_weapons.getVal();
+	for (int i = 0; i < changed.size(); i++) {
+		domeGame->players[changed[i].id]->setWeapon(Weapon::makeWeapon(changed[i].weaponType, domeGame->players[changed[i].id]), changed[i].weaponType);
+	}
 		
 	//std::cout << "\n0-3 READPLAYERS:\n";
 

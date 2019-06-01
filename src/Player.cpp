@@ -41,6 +41,13 @@ void Player::update(float dt) {
 	DomeMovable::update(dt);
 }
 
+
+void Player::applyWeaponKnockback(float knock) {
+	up_vel -= knock * cos(direction);
+	right_vel -= knock * sin(direction);
+}
+
+
 void Player::takeDamage(float dmg){
 	health -= dmg;
 

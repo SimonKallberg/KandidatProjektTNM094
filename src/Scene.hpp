@@ -16,7 +16,8 @@ public:
 	void writeData();
     //Shared data for the slaves
 	void readData();
-    void render() const;
+	void render() const;
+	void renderDangerzone() const;
 
     //Public member variables
 	glm::mat4 MVP;

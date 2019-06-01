@@ -40,8 +40,6 @@ void Weapon::update(float dt, int c_shoot) {
 		if (visualRecoilRecovery > 0.0001f)
 			currentRecoil = fmax(currentRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
 
-		std::cout << currentRecoil << "\n";
-
 		scale = weaponSize + weaponBloatSize * (1 - fmax(reloadTimeLeft / reloadTime,0));
 
 		if (reloadTimeLeft < 0.0f && c_shoot == 1) {

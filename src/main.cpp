@@ -49,9 +49,9 @@ void getServerMsg(const char * msg, size_t len)
 		strm >> control; // L, R
 		int value;
 		strm >> value; // 1 0, on off
-		std::cout << "INDEX:" << playerIndex;
-		std::cout << " CONTROL:" << control;
-		std::cout << " VALUE:" << value << "\n";
+		//std::cout << "INDEX:" << playerIndex;
+		//std::cout << " CONTROL:" << control;
+		//std::cout << " VALUE:" << value << "\n";
 		switch (control)
 		{
 			case 'L':
@@ -164,7 +164,7 @@ void myInitOGLFun() {
 void myDrawFun()
 {
     
-	domeGame->MVP = gEngine->getCurrentModelViewProjectionMatrix();// *glm::rotate(glm::mat4(), 1.0f, glm::vec3(1, 0, 0));
+	domeGame->MVP = gEngine->getCurrentModelViewProjectionMatrix();
     domeGame->render();
 	//s_box.getVal().draw();
 }
@@ -183,6 +183,7 @@ void myPreSyncFun()
 		//std::cout << 1/delta_time << "FPS\n";
 		ServerHandler::service();
 		domeGame->update(delta_time);
+		
 		
     }
 }

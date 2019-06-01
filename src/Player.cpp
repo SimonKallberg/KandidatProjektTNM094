@@ -49,7 +49,6 @@ void Player::takeDamage(float dmg){
 		deathtimer = 0.0f;
 		score -= 100;
 	}
-	std::cout << "health: " << health << "  alive:" << alive << "\n";
 }
 
 bool Player::isAlive() {
@@ -58,7 +57,6 @@ bool Player::isAlive() {
 
 void Player::increaseScore(int points){
     score += points;
-    std::cout << "The player" << playerName << " has score " <<  score << std::endl;
 }
 
 

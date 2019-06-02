@@ -29,6 +29,7 @@ public:
     
     // Constructor
     DomeGame(sgct::Engine * gEngine, std::string in_rootDir);
+	~DomeGame();
     
     void init();
     void render() const;
@@ -36,6 +37,7 @@ public:
     void addPlayer(std::string &name, std::string weaponType, glm::quat pos = glm::quat());
 	void renderPlayer(Player *p) const;
 	void renderWeapon(Player *p) const;
+	void renderPlayerName(Player *p) const;
 	void update(float dt);
     
     std::string getScoreboard();
@@ -62,7 +64,7 @@ public:
     std::string scoreboard = "";
     
 private:
-	const float DOME_RADIUS = 5.4f; // where domedrawables are rendered
+	const float DOME_DRAWABLES_RADIUS = 5.4f; // where domedrawables are rendered
     std::string rootDir = "";
 
 	const static int N_LIGHTS = 8; // needs to be consistent with playershader(f and v)

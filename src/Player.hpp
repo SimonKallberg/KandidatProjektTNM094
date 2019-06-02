@@ -15,7 +15,11 @@ public:
 	{
 		weapon = nullptr;
 		slowdown = 0.3f;
-		scale = 0.1f;
+		scale = 0.2f;
+
+		turn_speed = 3.0f;
+		acceleration = scale;
+
 		bumpTexture = "playerbump";
 	};
 
@@ -60,8 +64,8 @@ private:
 
 	Weapon* weapon;
 	
-	float acceleration = 0.1f; // unit/s^2
-	float turn_speed = 3.0f; // radians/s
+	float acceleration = 0.0f; // unit/s^2
+	float turn_speed = 0.0f; // radians/s
 
 	float deathSpeedFactor = 2.0f;
    

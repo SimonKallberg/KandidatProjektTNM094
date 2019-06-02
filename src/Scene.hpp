@@ -9,6 +9,7 @@ class Scene{
 public:
     // Constructor
     Scene(std::string rootDir_in);
+	~Scene();
     
     //Public member functions
     void initScene();
@@ -23,6 +24,17 @@ public:
 	glm::mat4 MVP;
 
 private:
+
+	struct Models {
+		ModelLoader * earth;
+		ModelLoader * venus;
+		ModelLoader * background;
+		ModelLoader * lava;
+		ModelLoader * pink;
+		ModelLoader * dark;
+		ModelLoader * moon;
+		ModelLoader * dangerzone;
+	} models;
 
 	float lighttimer = 0;
 

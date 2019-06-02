@@ -7,7 +7,19 @@ DomeGame::DomeGame(sgct::Engine * gEngine, std::string rootDir_in) {		//Construc
 	std::cout << "DomeGame gjord" << std::endl;
 };
 
-void DomeGame::render() const{
+DomeGame::~DomeGame() {
+	delete myScene;
+	for (int i = 0; i < players.size(); i++)
+		delete players[i];
+	players.clear();
+
+	projectiles.clear();
+	added_players.clear();
+	added_projectiles.clear();
+	changed_weapons.clear();
+}
+
+void DomeGame::render() const {
 
 	float projectile_light_reach = 0.8f;
 
@@ -16,6 +28,12 @@ void DomeGame::render() const{
 	myScene->MVP = MVP;
 	//myScene->render();
 
+	//myScene->renderDangerzone();
+
+	for (int i = 0; i < players.size(); i++) {
+		//renderPlayerName(players[i]);
+	}
+
 	sgct::ShaderManager::instance()->bindShaderProgram("player");
 	glUniform1i(playershader.d_tex_loc, 0);
 	glUniform1i(playershader.b_tex_loc, 1);
@@ -23,27 +41,27 @@ void DomeGame::render() const{
 	
 	DomeDrawable::bindSprite();
 
-	//std::cout << "x: " << a.x << "  y: " << a.y << "  z: " << a.z << std::endl;
+	// reset projectile lighting
 	for (int i = 0; i < N_LIGHTS; i++) {
 		glm::vec3 lightpos = glm::vec3(0.0f, 0.0f, 0.0f);
 		glUniform3fv(playershader.light_pos_loc[i], 1, &lightpos[0]);
 		glm::vec3 color(0, 0, 0);
 		glUniform3fv(playershader.light_color_loc[i], 1, &color[0]);
 	}
-		
 
+	// render the players
 	for (int i = 0; i < players.size(); i++) {
-		glm::vec3 i_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+		glm::vec3 i_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_DRAWABLES_RADIUS);
 
 		//glm::vec3 lightpos = players[i]->getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.2f));
 		//glUniform3fv(light_pos_loc[0], 1, &lightpos[0]);
 
 		int lightindex = 0;
 		for (int j = 0; lightindex < N_LIGHTS && j < projectiles.size(); j++) {
-			glm::vec3 j_pos = projectiles[j].getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+			glm::vec3 j_pos = projectiles[j].getQuat() * glm::vec3(0, 0, -DOME_DRAWABLES_RADIUS);
 
 			if (glm::length(i_pos - j_pos) < projectile_light_reach) { // render if light is close enough
-				glm::vec3 lightpos = projectiles[j].getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.1f));
+				glm::vec3 lightpos = projectiles[j].getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_DRAWABLES_RADIUS - 0.1f));
 				glUniform3fv(playershader.light_pos_loc[lightindex], 1, &lightpos[0]);
 
 				glm::vec3 color = projectiles[j].getLightColor();
@@ -59,6 +77,7 @@ void DomeGame::render() const{
 		renderPlayer(players[i]);
 	}
 
+	// reset projectile lighting
 	for (int i = 0; i < N_LIGHTS; i++) {
 		glm::vec3 lightpos = glm::vec3(0.0f, 0.0f, 0.0f);
 		glUniform3fv(playershader.light_pos_loc[i], 1, &lightpos[0]);
@@ -66,18 +85,19 @@ void DomeGame::render() const{
 		glUniform3fv(playershader.light_color_loc[i], 1, &color[0]);
 	}
 
+	// render the players weapons (separate loop because transparency draw order) 
 	for (int i = 0; i < players.size(); i++) {
-		glm::vec3 i_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+		glm::vec3 i_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_DRAWABLES_RADIUS);
 
 		//glm::vec3 lightpos = players[i]->getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.2f));
 		//glUniform3fv(light_pos_loc[0], 1, &lightpos[0]);
 
 		int lightindex = 0;
 		for (int j = 0; lightindex < N_LIGHTS && j < projectiles.size(); j++) {
-			glm::vec3 j_pos = projectiles[j].getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+			glm::vec3 j_pos = projectiles[j].getQuat() * glm::vec3(0, 0, -DOME_DRAWABLES_RADIUS);
 
 			if (glm::length(i_pos - j_pos) < projectile_light_reach) { // render if light is close enough
-				glm::vec3 lightpos = projectiles[j].getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_RADIUS - 0.2f));
+				glm::vec3 lightpos = projectiles[j].getQuat() * glm::vec3(0.0f, 0.0f, -(DOME_DRAWABLES_RADIUS - 0.2f));
 				glUniform3fv(playershader.light_pos_loc[lightindex], 1, &lightpos[0]);
 
 				glm::vec3 color = projectiles[j].getLightColor();
@@ -98,8 +118,9 @@ void DomeGame::render() const{
 	glUniform1i(projectileshader.d_tex_loc, 0);
 	glUniformMatrix4fv(projectileshader.MVP_loc, 1, GL_FALSE, &MVP[0][0]);
 
+	// render the projectiles
 	for (int i = 0; i < projectiles.size(); i++) {
-		glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -(DOME_RADIUS - 0.2f)));
+		glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -(DOME_DRAWABLES_RADIUS - 0.2f)));
 		glm::mat4 rot = projectiles[i].getRotationMatrix();
 		glm::mat4 scale = glm::scale(glm::mat4(), projectiles[i].getScale()*glm::vec3(1, 1, 1));
 
@@ -113,7 +134,6 @@ void DomeGame::render() const{
 	glBindVertexArray(0);
 	sgct::ShaderManager::instance()->unBindShaderProgram();
 
-	//myScene->renderDangerzone();
 }
 
 void DomeGame::printScoreboard() const {
@@ -152,19 +172,23 @@ void DomeGame::init() {
 
 
 	
-	for (int i = 0; i <= 29; i++)
+	for (int i = 0; i <= 9; i++)
 		sgct::TextureManager::instance()->loadTexture("player" + std::to_string(i), rootDir + "/Images/avatar" + std::to_string(i) + ".png", true);
 	sgct::TextureManager::instance()->loadTexture("playerbump", rootDir + "/Images/avatarbump2.png", true);
 
 	sgct::TextureManager::instance()->loadTexture("weapon1", rootDir + "/Images/Weapon_1.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon1_fire", rootDir + "/Images/Weapon_1_fire.png", true);
 	sgct::TextureManager::instance()->loadTexture("weapon1normal", rootDir + "/Images/Weapon1_normalmap.png", true);
 
 	sgct::TextureManager::instance()->loadTexture("weapon2_left", rootDir + "/Images/weapon2_left.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon2_left_fire", rootDir + "/Images/weapon2_fire_left.png", true);
 	sgct::TextureManager::instance()->loadTexture("weapon2normal_left", rootDir + "/Images/Weapon2_normalmap_left.png", true);
 	sgct::TextureManager::instance()->loadTexture("weapon2_right", rootDir + "/Images/weapon2_right.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon2_right_fire", rootDir + "/Images/weapon2_fire_right.png", true);
 	sgct::TextureManager::instance()->loadTexture("weapon2normal_right", rootDir + "/Images/Weapon2_normalmap_right.png", true);
 
 	sgct::TextureManager::instance()->loadTexture("weapon3", rootDir + "/Images/Weapon3.png", true);
+	sgct::TextureManager::instance()->loadTexture("weapon3_fire", rootDir + "/Images/Weapon3_fire.png", true);
 	sgct::TextureManager::instance()->loadTexture("weapon3normal", rootDir + "/Images/Weapon3_normalmap.png", true);
 
 	// PlayerShader
@@ -232,10 +256,8 @@ void DomeGame::addPlayer(std::string &name, std::string weaponType, glm::quat po
 	added_players.addVal(*newPlayer);
 }
 
-
-
 void DomeGame::renderPlayer(Player *p) const {
-	glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -DOME_RADIUS));
+	glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -DOME_DRAWABLES_RADIUS));
 	glm::mat4 rot = p->getRotationMatrix();
 	glm::mat4 scale = glm::scale(glm::mat4(), p->getScale()*glm::vec3(1, 1, 1));
 
@@ -243,28 +265,53 @@ void DomeGame::renderPlayer(Player *p) const {
 	glUniformMatrix4fv(playershader.model_loc, 1, GL_FALSE, &playerMat[0][0]);
 	p->render();
 
+	
+
+}
+
+void DomeGame::renderPlayerName(Player *p) const {
+	glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -DOME_DRAWABLES_RADIUS));
+	glm::mat4 rot = p->getRotationMatrix();
+	glm::mat4 scale = glm::scale(glm::mat4(), p->getScale()*glm::vec3(1, 1, 1));
+
+	glm::mat4 playerMat = rot * trans * scale;
+	glm::mat4 nameMat = MVP * playerMat * glm::rotate(glm::translate(glm::scale(glm::mat4(), glm::vec3(0.35f)), glm::vec3(0.0f, -4.0f, -2.0f)), 0.0f * 3.14f, glm::vec3(0.0f, 0.0f, 1.0f));
+	sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 16), sgct_text::TOP_CENTER, nameMat, p->playerName.c_str());
 }
 
 void DomeGame::renderWeapon(Player *p) const {
 	Weapon* wp = p->getWeapon();
 	float pScale = p->getScale();
 
-	glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -(DOME_RADIUS - 0.1f)));
+	glm::mat4 trans = glm::translate(glm::mat4(), glm::vec3(0, 0, -(DOME_DRAWABLES_RADIUS - 0.1f)));
 	glm::mat4 rot = p->getRotationMatrix() * wp->getRotationMatrix();
 	glm::mat4 scale = glm::scale(glm::mat4(), pScale * wp->getScale()*glm::vec3(1, 1, 1));
 
 	glm::mat4 weaponMat = rot * trans * scale;
 	glUniformMatrix4fv(playershader.model_loc, 1, GL_FALSE, &weaponMat[0][0]);
-	wp->render();
+	
 
-	if (wp->doubleWeapon) {
-		glm::mat4 rot = p->getRotationMatrix() * wp->getSecondWeaponRotationMatrix();
+	if (!wp->doubleWeapon) {
+		wp->render();
+	}
+	else {
+		// switch one extra time to refresh the texture in case weapon was fired
+
+		// LEFTWEAPON
+		wp->switchWeaponTexture();
+		rot = p->getRotationMatrix() * wp->getSecondWeaponRotationMatrix();
+		scale = glm::scale(glm::mat4(), pScale * wp->getScale()*glm::vec3(1, 1, 1));
+		glm::mat4 leftWeaponMat = rot * trans * scale;
+		glUniformMatrix4fv(playershader.model_loc, 1, GL_FALSE, &leftWeaponMat[0][0]);
+		wp->render();
+
+		// RIGHTWEAPON
+		wp->switchWeaponTexture();
+		rot = p->getRotationMatrix() * wp->getRotationMatrix();
+		scale = glm::scale(glm::mat4(), pScale * wp->getScale()*glm::vec3(1, 1, 1));
 		glm::mat4 weaponMat = rot * trans * scale;
 		glUniformMatrix4fv(playershader.model_loc, 1, GL_FALSE, &weaponMat[0][0]);
-
-		wp->switchWeaponTexture();
 		wp->render();
-		wp->switchWeaponTexture();
 	}
 
 }
@@ -296,8 +343,8 @@ void DomeGame::update(float dt) {
 	for (int i = 0; i < players.size(); i++) {
 		for (int k = i + 1; k < players.size(); k++)
 		{
-			glm::vec3 p1_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
-			glm::vec3 p2_pos = players[k]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+			glm::vec3 p1_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_DRAWABLES_RADIUS);
+			glm::vec3 p2_pos = players[k]->getQuat() * glm::vec3(0, 0, -DOME_DRAWABLES_RADIUS);
 			glm::vec3 diff = p2_pos - p1_pos;
 
 			//If the players collide: apply knockbacks and place them outside eachothers radius
@@ -321,7 +368,7 @@ void DomeGame::update(float dt) {
 				players[k]->addWorldVelocity(p1_w_rel_vel);
 
 				// move players away from each others radius
-				glm::vec3 trans = n_diff *((players[i]->getScale() + players[k]->getScale())/2.4f - glm::length(diff)) / DOME_RADIUS * 0.50f ; // 0.55f for extra margin
+				glm::vec3 trans = n_diff *((players[i]->getScale() + players[k]->getScale())/2.4f - glm::length(diff)) / DOME_DRAWABLES_RADIUS * 0.50f ; // 0.55f for extra margin
 				players[i]->addWorldTranslation(-trans);
 				players[k]->addWorldTranslation(trans);
 			}
@@ -332,8 +379,8 @@ void DomeGame::update(float dt) {
         for(int k = 0; k < projectiles.size(); k++)
         {
 			if (projectiles[k].alive()) {
-				glm::vec3 p_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
-				glm::vec3 b_pos = projectiles[k].getQuat() * glm::vec3(0, 0, -DOME_RADIUS);
+				glm::vec3 p_pos = players[i]->getQuat() * glm::vec3(0, 0, -DOME_DRAWABLES_RADIUS);
+				glm::vec3 b_pos = projectiles[k].getQuat() * glm::vec3(0, 0, -DOME_DRAWABLES_RADIUS);
 				glm::vec3 diff = p_pos - b_pos;
 				//If the bullet hits: decrease & increase score
 				if (projectiles[k].getOwner() != players[i] && glm::length(diff) < (projectiles[k].getScale() + players[i]->getScale()) / 2.2f)

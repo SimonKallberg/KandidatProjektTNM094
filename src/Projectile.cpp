@@ -14,6 +14,11 @@ void Projectile::init() {
 	// size spread
 	scale += ((float)rand() / RAND_MAX - 0.5f) * sizeSpread;
 
+	float o_scale = owner->getScale();
+	scale *= o_scale;
+	propulsionSpeed *= owner->getScale();
+
+
 	//add weapon propulsion
 	up_vel += propulsionSpeed * cos(direction);
 	right_vel += propulsionSpeed * sin(direction);
@@ -79,21 +84,21 @@ ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner, float diradd)
 {
 	texture = "projectile";
 	lifetime = 0.5f;
-	scale = 0.04f;
-	propulsionSpeed = 0.6f;
+	scale = 0.4f;
+	propulsionSpeed = 6.0f;
 	sizeSpread = 0.005f;
 	directionSpread = 0.05f;
-	propulsionSpread = 0.1f;
+	propulsionSpread = 1.0f;
 	slowdown = 0.05f;
 
 	direction = diradd;
 
 	damage = 30.0f;
-	knockback = 0.2f;
+	knockback = 0.15f;
 
 	color = glm::vec3(0.9f, 0.3f, 0.3f);
 	hitColor = glm::vec3(1.2f, 1.0f, 0.6f);
-	lightColor = glm::vec3(0.7f, 0.3f, 0.3f);
+	lightColor = glm::vec3(0.6f, 0.2f, 0.1f);
 
 	missDeathTime = 0.4f;
 	hitDeathTime = 0.8f;
@@ -107,16 +112,16 @@ PopBall::PopBall(glm::quat pos, Player * in_owner)
 	: Projectile(empty_string, pos, in_owner)
 {
 	texture = "projectile";
-	lifetime = 1.0f;
-	scale = 0.03f;
-	propulsionSpeed = 0.4f;
+	lifetime = 1.4f;
+	scale = 0.4f;
+	propulsionSpeed = 5.0f;
 	sizeSpread = 0.001f;
 	directionSpread = 0.14f;
-	propulsionSpread = 0.05f;
-	slowdown = 0.3f;
+	propulsionSpread = 0.4f;
+	slowdown = 0.4f;
 
 	damage = 20.0f;
-	knockback = 0.1f;
+	knockback = 0.06f;
 
 	color = glm::vec3(0.3f, 0.9f, 0.6f);
 	hitColor = glm::vec3(0.6f, 1.2f, 0.6f);
@@ -133,16 +138,16 @@ RifleBullet::RifleBullet(glm::quat pos, Player * in_owner)
 	: Projectile(empty_string, pos, in_owner)
 {
 	texture = "projectile";
-	lifetime = 2.0f;
-	scale = 0.1f;
-	propulsionSpeed = 0.4f;
+	lifetime = 1.4f;
+	scale = 0.8f;
+	propulsionSpeed = 4.0f;
 	sizeSpread = 0.0f;
 	directionSpread = 0.0f;
 	propulsionSpread = 0.0f;
 	slowdown = 0.8f;
 
 	damage = 80.0f;
-	knockback = 0.5f;
+	knockback = 0.4f;
 
 	color = glm::vec3(0.4f, 0.4f, 1.0f);
 	hitColor = glm::vec3(0.7f, 0.7f, 1.2f);

@@ -71,7 +71,17 @@ void getServerMsg(const char * msg, size_t len)
 		std::string weapon;
 		strm >> name;
 		strm >> weapon;
-		domeGame->addPlayer(name, weapon);
+
+		float angle = ((float)rand() / RAND_MAX) * 6.28f;
+		float dist_from_center = ((float)rand() / RAND_MAX) * 0.4f + 0.2f;
+		
+		glm::quat randPos = glm::quat();
+		randPos *= glm::quat(glm::vec3(0.6f, 0.0f, 0.0f));
+		randPos *= glm::quat(glm::vec3(0.0f, 0.0f, angle));
+		randPos *= glm::quat(glm::vec3(-dist_from_center, 0.0f, 0.0f));
+		randPos = glm::normalize(randPos);
+
+		domeGame->addPlayer(name, weapon, randPos);
 	}
 	else if (msgType == 'U') // Update Weapon 
 	{
@@ -141,7 +151,8 @@ int main(int argc, char* argv[])
     
     // Clean up (de-allocate)
     delete gEngine;
-    
+	delete domeGame;
+
     // Exit program
     exit(EXIT_SUCCESS);
 }
@@ -191,7 +202,6 @@ void myPreSyncFun()
 		//std::cout << 1/delta_time << "FPS\n";
 		ServerHandler::service();
 		domeGame->update(delta_time);
-		
 		
     }
 }
@@ -307,7 +317,7 @@ void myDecodeFun()
 		//std::cout << "0";
         std::string player_name = add_players[i].getName();
 		domeGame->addPlayer(player_name, add_players[i].weaponType, add_players[i].getQuat());
-
+		std::cout << player_name << "\n";
 	}
 
 	//std::cout << "\n0-1 ADDPROJECTILES:\n";

@@ -34,17 +34,25 @@ void Weapon::update(float dt, int c_shoot) {
 
 	if(owner->isAlive()){
 		
-		if (visualRecoilRecovery > 0.0001f)
-			currentRecoil = fmax(currentRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
+		if (visualRecoilRecovery > 0.000001f) {
+			if(visualRecoil > 0.0f)
+				currentRecoil = fmax(currentRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
+			else
+				currentRecoil = fmin(currentRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
+		}
+			
+		scale = weaponSize + weaponBloatSize * (fmax(reloadTimeLeft / reloadTime, 0)); 
+		
 
-		scale = weaponSize + weaponBloatSize * (1 - fmax(reloadTimeLeft / reloadTime,0));
-
-		if (reloadTimeLeft < 0.0f && c_shoot == 1) {
-			shoot();
-			reloadTimeLeft = reloadTime;
-			scale = weaponSize;
-			currentRecoil = visualRecoil;
-			owner->applyWeaponKnockback(selfKnockback);
+		if (reloadTimeLeft < 0.0f) {
+			texture = readyTexture;
+			if (c_shoot == 1) {
+				shoot();
+				reloadTimeLeft = reloadTime;
+				scale = weaponSize;
+				currentRecoil = visualRecoil;
+				owner->applyWeaponKnockback(selfKnockback);
+			}
 		}
 	} else {
 		currentRecoil = 0;
@@ -77,24 +85,31 @@ PopGuns::PopGuns(Player * in_owner)
 {
 	doubleWeapon = true;
 
-	texture = "weapon2_right";
-	leftWeaponTexture = "weapon2_left";
-	rightWeaponTexture = "weapon2_right";
-
-	bumpTexture = "weapon2normal_right";
+	readyTexture = "weapon2_right";
+	coolDownTexture = "weapon2_right_fire";
+	leftReadyTexture = "weapon2_left";
+	leftCoolDownTexture = "weapon2_left_fire";
+	
 	leftWeaponBumpTexture = "weapon2normal_left";
 	rightWeaponBumpTexture = "weapon2normal_right";
 
-	weaponSize = 1.5f;
-	weaponBloatSize = 0.1f;
+	texture = readyTexture;
+	bumpTexture = rightWeaponBumpTexture;
+	
+	rightWeaponTexture = readyTexture;
+	leftWeaponTexture = leftReadyTexture;
 
-	visualRecoil = 0.0f;
-	visualRecoilRecovery = 0.0f;
 
-	float weaponOffsetUp = 0.01f;
-	float weaponOffsetRight = 0.08f;
-	float projectileOffsetUp = 0.03f;
-	float projectileOffsetRight = 0.11f;
+	weaponSize = 1.2f;
+	weaponBloatSize = 0.3f;
+
+	visualRecoil = -0.01f * owner->getScale();
+	visualRecoilRecovery = 0.2f;
+
+	float weaponOffsetUp = -0.02f;
+	float weaponOffsetRight = 0.07f;
+	float projectileOffsetUp = 0.02f;
+	float projectileOffsetRight = 0.10f;
 
 	//offset
 	position *= glm::quat(owner->getScale() * weaponOffsetUp * glm::vec3(1.0f, 0.0f, 0.0f));
@@ -112,15 +127,21 @@ PopGuns::PopGuns(Player * in_owner)
 	scale = weaponSize; // relative to player
 
 	reloadTime = 0.1f;
-	selfKnockback = 0.01f;
+	selfKnockback = 0.12f * owner->getScale();
 }
 
 void PopGuns::shoot() {
 	glm::quat p_pos;
-	if(shootRight)
+	if (shootRight) {
 		p_pos = owner->getQuat() * projectileOffset;
-	else
+		rightWeaponTexture = coolDownTexture;
+		rightRecoil = visualRecoil;
+	}
+	else {
 		p_pos = owner->getQuat() * leftProjectileOffset;
+		leftWeaponTexture = leftCoolDownTexture;
+		leftRecoil = visualRecoil;
+	}
 
 	projectiles->push_back(PopBall(p_pos, owner));
 	added_projectiles->addVal(PopBall(p_pos, owner));
@@ -130,7 +151,36 @@ void PopGuns::shoot() {
 
 
 void PopGuns::update(float dt, int c_shoot) {
-	Weapon::update(dt, c_shoot);
+	reloadTimeLeft -= dt;
+
+	if (owner->isAlive()) {
+
+		if (visualRecoilRecovery > 0.000001f) {
+			if (visualRecoil > 0.0f) {
+				leftRecoil = fmax(leftRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
+				rightRecoil = fmax(rightRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
+			} else {
+				leftRecoil = fmin(leftRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
+				rightRecoil = fmin(rightRecoil - dt * visualRecoil / visualRecoilRecovery, 0.0f);
+			}		
+		}
+
+		if (reloadTimeLeft < 0.0f) {
+			rightWeaponTexture = readyTexture;
+			leftWeaponTexture = leftReadyTexture;
+
+			if (c_shoot == 1) {
+				shoot();
+				reloadTimeLeft = reloadTime;
+				scale = weaponSize;
+				owner->applyWeaponKnockback(selfKnockback);
+			}
+		}
+	}
+	else {
+		currentRecoil = 0;
+		scale = weaponSize;
+	}
 }
 
 glm::mat4 PopGuns::getSecondWeaponRotationMatrix() {
@@ -138,14 +188,20 @@ glm::mat4 PopGuns::getSecondWeaponRotationMatrix() {
 }
 
 void PopGuns::switchWeaponTexture() {
+	scale = weaponSize;
 	if (texture == leftWeaponTexture) {
 		texture = rightWeaponTexture;
 		bumpTexture = rightWeaponBumpTexture;
+		currentRecoil = leftRecoil;
+		if (!shootRight)
+			scale = weaponSize + weaponBloatSize * (fmax(reloadTimeLeft / reloadTime, 0));
 	} else {
 		texture = leftWeaponTexture;
 		bumpTexture = leftWeaponBumpTexture;
+		currentRecoil = rightRecoil;
+		if (shootRight)
+			scale = weaponSize + weaponBloatSize * (fmax(reloadTimeLeft / reloadTime, 0));
 	}
-		
 }
 
 
@@ -155,17 +211,21 @@ void PopGuns::switchWeaponTexture() {
 Shotgun::Shotgun(Player * in_owner)
 	: Weapon(empty_string1, in_owner)
 {
-	texture = "weapon1";
+	readyTexture = "weapon1";
+	coolDownTexture = "weapon1_fire";
 	bumpTexture = "weapon1normal";
+
+	texture = readyTexture;
+
 	weaponSize = 0.8f;
-	weaponBloatSize = 0.1f;
+	weaponBloatSize = 0.12f;
 
-	visualRecoil = 0.01f;
-	visualRecoilRecovery = 0.1f;
+	visualRecoil = -0.02f * owner->getScale();
+	visualRecoilRecovery = 0.8f;
 
-	float weaponOffsetUp = 0.00f;
+	float weaponOffsetUp = -0.03f;
 	float weaponOffsetRight = 0.08f;
-	float projectileOffsetUp = 0.06f;
+	float projectileOffsetUp = 0.03f;
 	float projectileOffsetRight = 0.08f;
 
 	//offset
@@ -178,7 +238,7 @@ Shotgun::Shotgun(Player * in_owner)
 	scale = weaponSize; // relative to player
 
 	reloadTime = 1.5f;
-	selfKnockback = 0.1f;
+	selfKnockback = 1.4f * owner->getScale();
 
 }
 
@@ -188,6 +248,8 @@ void Shotgun::shoot() {
 		projectiles->push_back(ShotgunPellet(p_pos, owner, i*0.06f));
 		added_projectiles->addVal(ShotgunPellet(p_pos, owner, i*0.06f));
 	}
+
+	texture = coolDownTexture;
 }
 
 void Shotgun::update(float dt, int c_shoot) {
@@ -201,17 +263,20 @@ void Shotgun::update(float dt, int c_shoot) {
 Rifle::Rifle(Player * in_owner)
 	: Weapon(empty_string1, in_owner)
 {
-	texture = "weapon3";
+	readyTexture = "weapon3";
+	coolDownTexture = "weapon3_fire";
 	bumpTexture = "weapon3normal";
-	weaponSize = 0.7f;
-	weaponBloatSize = 0.1f;
+	texture = readyTexture;
 
-	visualRecoil = 0.005f;
-	visualRecoilRecovery = 1.0f;
+	weaponSize = 0.8f;
+	weaponBloatSize = 0.2f;
 
-	float weaponOffsetUp = 0.14f;
+	visualRecoil = -0.012f * owner->getScale();
+	visualRecoilRecovery = 1.9f;
+
+	float weaponOffsetUp = 0.125f;
 	float weaponOffsetRight = 0.00f;
-	float projectileOffsetUp = 0.18f;
+	float projectileOffsetUp = 0.135f;
 	float projectileOffsetRight = 0.00f;
 
 	//offset
@@ -221,16 +286,18 @@ Rifle::Rifle(Player * in_owner)
 	projectileOffset *= glm::quat(owner->getScale() * projectileOffsetUp * glm::vec3(1.0f, 0.0f, 0.0f));
 	projectileOffset *= glm::quat(owner->getScale() * projectileOffsetRight * glm::vec3(0.0f, -1.0f, 0.0f));
 
-	scale = weaponSize; // relative to player
+	scale = weaponSize;
 
 	reloadTime = 2.0f;
-	selfKnockback = 0.2f;
+	selfKnockback = 1.0f * owner->getScale();
 }
 
 void Rifle::shoot() {
 	glm::quat p_pos = owner->getQuat() * projectileOffset;
 	projectiles->push_back(RifleBullet(p_pos, owner));
 	added_projectiles->addVal(RifleBullet(p_pos, owner));
+
+	texture = coolDownTexture;
 }
 
 

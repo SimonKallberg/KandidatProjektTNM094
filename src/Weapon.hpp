@@ -41,6 +41,9 @@ protected:
 
 	Player* owner;
 
+	std::string readyTexture;
+	std::string coolDownTexture;
+
     //Reload time
 	float reloadTimeLeft = 0.0f; // time left until weapon can shoot again
 	float reloadTime = 1.0f; // reload time between shots
@@ -102,10 +105,16 @@ public:
 	glm::mat4 getSecondWeaponRotationMatrix();
 	void switchWeaponTexture();
 
+	std::string leftReadyTexture;
+	std::string leftCoolDownTexture;
+
 	std::string leftWeaponTexture;
 	std::string rightWeaponTexture;
 	std::string leftWeaponBumpTexture;
 	std::string rightWeaponBumpTexture;
+
+	float leftRecoil = 0.0f;
+	float rightRecoil = 0.0f;
 
 	glm::quat leftPosition;
 	glm::quat leftProjectileOffset;

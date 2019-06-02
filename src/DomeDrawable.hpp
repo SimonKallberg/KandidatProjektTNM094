@@ -45,7 +45,7 @@ protected:
 	std::string bumpTexture = "NOBUMP";
     
     //Position, direction and scale
-	glm::quat position = glm::quat(1, 0, 0, 0);
+	glm::quat position;
 	float direction = 0; //angle(radians)  0 = straight up, 90 = right
 	float scale = 1.0f;
 

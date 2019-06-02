@@ -11,6 +11,17 @@ Scene::Scene(std::string rootDir_in)
 
 }
 
+Scene::~Scene() {
+	delete models.background;
+	delete models.dangerzone;
+	delete models.dark;
+	delete models.earth;
+	delete models.lava;
+	delete models.moon;
+	delete models.pink;
+	delete models.venus;
+}
+
 void Scene::initScene() {
 	sgct::ShaderManager::instance()->addShaderProgram(
 		"scene", rootDir + "/scene.vert", rootDir + "/scene.frag");
@@ -32,55 +43,56 @@ void Scene::initScene() {
 
 	sceneshader.s_tex_loc = sgct::ShaderManager::instance()->getShaderProgram("scene").getUniformLocation("s_tex");
 
-	ModelLoader * earth = new ModelLoader( rootDir + "/Objects/lowpoly_earth", "earth");		
-	ModelLoader * venus = new ModelLoader(rootDir + "/Objects/sharednormalsphere", "venus");
-	ModelLoader * background = new ModelLoader(rootDir + "/Objects/sphere", "venus");
-	ModelLoader * lava = new ModelLoader(rootDir + "/Objects/lowpoly_lavaplanet", "lava");		
-	ModelLoader * pink = new ModelLoader(rootDir + "/Objects/lowpoly_pinkplanet", "pink");		
-	ModelLoader * dark = new ModelLoader(rootDir + "/Objects/lowpoly_darkplanet", "dark");		
-	ModelLoader * moon = new ModelLoader(rootDir + "/Objects/lowpoly_moon", "moon");
+	models.earth = new ModelLoader( rootDir + "/Objects/lowpoly_earth", "earth");		
+	models.venus = new ModelLoader(rootDir + "/Objects/sharednormalsphere", "venus");
+	models.background = new ModelLoader(rootDir + "/Objects/sphere", "venus");
+	models.lava = new ModelLoader(rootDir + "/Objects/lowpoly_lavaplanet", "lava");
+	models.pink = new ModelLoader(rootDir + "/Objects/lowpoly_pinkplanet", "pink");
+	models.dark = new ModelLoader(rootDir + "/Objects/lowpoly_darkplanet", "dark");
+	models.moon = new ModelLoader(rootDir + "/Objects/lowpoly_moon", "moon");
 
-	ModelLoader * dangerzone = new ModelLoader(rootDir + "/Objects/sphere", "dangerzone");
+	models.dangerzone = new ModelLoader(rootDir + "/Objects/sphere", "NOBUMP");
 
-	earth->specularTextureName = "earthlava_spec";
-	lava->specularTextureName = "earthlava_spec";
-	pink->specularTextureName = "darkpink_spec";
-	dark->specularTextureName = "darkpink_spec";
+	models.earth->specularTextureName = "earthlava_spec";
+	models.lava->specularTextureName = "earthlava_spec";
+	models.pink->specularTextureName = "darkpink_spec";
+	models.dark->specularTextureName = "darkpink_spec";
 
 	//lava->bumpTextureName = "spherebump";
 
 	Body * temp;
 
 	// place background first for the render loop not to apply light from sources
-	systems.push_back(Body(background));
+	systems.push_back(Body(models.background));
 	systems[0].selfTransformation = glm::scale(glm::mat4(), 80.0f * glm::vec3(1.0f, 1.0f, 1.0f));
 	systems[0].ambient = glm::vec3(0.1f, 0.0f, 0.4f);
 
 	// and dangerzone
-	systems.push_back(Body(dangerzone));
-	systems[1].selfTransformation = glm::scale(glm::mat4(), 4.0f * glm::vec3(1.0f, 1.0f, 1.0f))
+	systems.push_back(Body(models.dangerzone));
+	systems[1].selfTransformation = glm::scale(glm::mat4(), 6.0f * glm::vec3(1.0f, 1.0f, 1.0f))
 								  * glm::rotate(glm::mat4(), 0.8f, glm::vec3(-1.0f, 0.0f, 0.0f));
+	systems[1].ambient = glm::vec3(1.0f);
 
-	systems.push_back(Body(earth));
+	systems.push_back(Body(models.earth));
 	temp = &systems[2];
 	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(30.0f, 20.0f, -60.0f));
 	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(1.0f));
 
-	temp->subBodies.push_back(Body(moon));
+	temp->subBodies.push_back(Body(models.moon));
 	temp = &temp->subBodies[0];
 	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(-20.0f, 0.0f, 0.0f));
 	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(3.0f));
 
-	systems.push_back(Body(pink));
+	systems.push_back(Body(models.pink));
 	temp = &systems[3];
 	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(-30.0f, 20.0f, 60.0f));
 	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.8f));
 
-	temp->subBodies.push_back(Body(dark));
+	temp->subBodies.push_back(Body(models.dark));
 	temp->subBodies[0].localTransformation = glm::translate(glm::mat4(), glm::vec3(-10.0f, 0.0f, -3.0f));
 	temp->subBodies[0].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.6f));
 
-	systems.push_back(Body(lava));
+	systems.push_back(Body(models.lava));
 	systems[4].localTransformation = glm::translate(glm::mat4(), glm::vec3(0.0f, 15.0f, -5.0f));
 	systems[4].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.3f));
 	

@@ -127,7 +127,7 @@ PopGuns::PopGuns(Player * in_owner)
 	scale = weaponSize; // relative to player
 
 	reloadTime = 0.1f;
-	selfKnockback = 0.12f * owner->getScale();
+	selfKnockback = 0.1f * owner->getScale();
 }
 
 void PopGuns::shoot() {

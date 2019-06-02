@@ -317,7 +317,6 @@ void myDecodeFun()
 		//std::cout << "0";
         std::string player_name = add_players[i].getName();
 		domeGame->addPlayer(player_name, add_players[i].weaponType, add_players[i].getQuat());
-		std::cout << player_name << "\n";
 	}
 
 	//std::cout << "\n0-1 ADDPROJECTILES:\n";

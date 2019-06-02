@@ -31,7 +31,7 @@ void DomeGame::render() const {
 	//myScene->renderDangerzone();
 
 	for (int i = 0; i < players.size(); i++) {
-		//renderPlayerName(players[i]);
+		renderPlayerName(players[i]);
 	}
 
 	sgct::ShaderManager::instance()->bindShaderProgram("player");

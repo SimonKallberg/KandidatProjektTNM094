@@ -85,7 +85,7 @@ ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner, float diradd)
 	texture = "projectile";
 	lifetime = 0.5f;
 	scale = 0.4f;
-	propulsionSpeed = 6.0f;
+	propulsionSpeed = 5.0f;
 	sizeSpread = 0.005f;
 	directionSpread = 0.05f;
 	propulsionSpread = 1.0f;
@@ -93,8 +93,8 @@ ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner, float diradd)
 
 	direction = diradd;
 
-	damage = 30.0f;
-	knockback = 0.15f;
+	damage = 28.0f;
+	knockback = 0.14f;
 
 	color = glm::vec3(0.9f, 0.3f, 0.3f);
 	hitColor = glm::vec3(1.2f, 1.0f, 0.6f);
@@ -112,16 +112,16 @@ PopBall::PopBall(glm::quat pos, Player * in_owner)
 	: Projectile(empty_string, pos, in_owner)
 {
 	texture = "projectile";
-	lifetime = 1.4f;
-	scale = 0.4f;
-	propulsionSpeed = 5.0f;
-	sizeSpread = 0.001f;
+	lifetime = 0.8f;
+	scale = 0.46f;
+	propulsionSpeed = 6.0f;
+	sizeSpread = 0.04f;
 	directionSpread = 0.14f;
-	propulsionSpread = 0.4f;
-	slowdown = 0.4f;
+	propulsionSpread = 0.5f;
+	slowdown = 0.2f;
 
 	damage = 20.0f;
-	knockback = 0.06f;
+	knockback = 0.08f;
 
 	color = glm::vec3(0.3f, 0.9f, 0.6f);
 	hitColor = glm::vec3(0.6f, 1.2f, 0.6f);
@@ -138,16 +138,16 @@ RifleBullet::RifleBullet(glm::quat pos, Player * in_owner)
 	: Projectile(empty_string, pos, in_owner)
 {
 	texture = "projectile";
-	lifetime = 1.4f;
+	lifetime = 0.8f;
 	scale = 0.8f;
-	propulsionSpeed = 4.0f;
+	propulsionSpeed = 3.0f;
 	sizeSpread = 0.0f;
 	directionSpread = 0.0f;
 	propulsionSpread = 0.0f;
-	slowdown = 0.8f;
+	slowdown = 0.6f;
 
 	damage = 80.0f;
-	knockback = 0.4f;
+	knockback = 0.5f;
 
 	color = glm::vec3(0.4f, 0.4f, 1.0f);
 	hitColor = glm::vec3(0.7f, 0.7f, 1.2f);

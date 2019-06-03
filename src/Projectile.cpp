@@ -84,7 +84,7 @@ ShotgunPellet::ShotgunPellet(glm::quat pos, Player * in_owner, float diradd)
 {
 	texture = "projectile";
 	lifetime = 0.5f;
-	scale = 0.4f;
+	scale = 0.3f;
 	propulsionSpeed = 5.0f;
 	sizeSpread = 0.005f;
 	directionSpread = 0.05f;
@@ -112,22 +112,22 @@ PopBall::PopBall(glm::quat pos, Player * in_owner)
 	: Projectile(empty_string, pos, in_owner)
 {
 	texture = "projectile";
-	lifetime = 0.8f;
-	scale = 0.46f;
-	propulsionSpeed = 6.0f;
+	lifetime = 0.4f;
+	scale = 0.36f;
+	propulsionSpeed = 3.8f;
 	sizeSpread = 0.04f;
-	directionSpread = 0.14f;
+	directionSpread = 0.16f;
 	propulsionSpread = 0.5f;
 	slowdown = 0.2f;
 
-	damage = 20.0f;
-	knockback = 0.08f;
+	damage = 16.0f;
+	knockback = 0.06f;
 
-	color = glm::vec3(0.3f, 0.9f, 0.6f);
-	hitColor = glm::vec3(0.6f, 1.2f, 0.6f);
-	lightColor = glm::vec3(0.2f, 0.6f, 0.3f);
+	color = glm::vec3(0.5f, 0.9f, 0.3f);
+	hitColor = glm::vec3(0.6f, 1.2f, 0.2f);
+	lightColor = glm::vec3(0.2f, 0.6f, 0.1f);
 
-	missDeathTime = 0.4f;
+	missDeathTime = 0.2f;
 	hitDeathTime = 0.8f;
 
 	Projectile::init();

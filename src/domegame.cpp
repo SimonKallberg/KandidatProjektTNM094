@@ -26,7 +26,7 @@ void DomeGame::render() const {
 	printScoreboard();
 
 	myScene->MVP = MVP;
-	//myScene->render();
+	myScene->render();
 
 	//myScene->renderDangerzone();
 
@@ -150,6 +150,7 @@ void DomeGame::init() {
 	sgct::TextureManager::instance()->loadTexture("background", rootDir + "/Images/background.png", true);
 	sgct::TextureManager::instance()->loadTexture("bullet", rootDir + "/Images/WEAPON.png", true);
 	sgct::TextureManager::instance()->loadTexture("venus", rootDir + "/Images/venus.jpg", true);
+
 
 
 	sgct::TextureManager::instance()->loadTexture("earth", rootDir + "/Images/earth_texture.png", true);

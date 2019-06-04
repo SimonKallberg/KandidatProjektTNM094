@@ -34,6 +34,7 @@ private:
 		ModelLoader * dark;
 		ModelLoader * moon;
 		ModelLoader * dangerzone;
+		ModelLoader * pinkmoon;
 	} models;
 
 	float lighttimer = 0;

@@ -50,6 +50,7 @@ void Scene::initScene() {
 	models.pink = new ModelLoader(rootDir + "/Objects/lowpoly_pinkplanet", "pink");
 	models.dark = new ModelLoader(rootDir + "/Objects/lowpoly_darkplanet", "dark");
 	models.moon = new ModelLoader(rootDir + "/Objects/lowpoly_moon", "moon");
+	models.pinkmoon = new ModelLoader(rootDir + "/Objects/lowpoly_moon", "pink");
 
 	models.dangerzone = new ModelLoader(rootDir + "/Objects/sphere", "NOBUMP");
 
@@ -64,8 +65,9 @@ void Scene::initScene() {
 
 	// place background first for the render loop not to apply light from sources
 	systems.push_back(Body(models.background));
-	systems[0].selfTransformation = glm::scale(glm::mat4(), 80.0f * glm::vec3(1.0f, 1.0f, 1.0f));
-	systems[0].ambient = glm::vec3(0.1f, 0.0f, 0.4f);
+	//systems[0].localTransformation = glm::translate(glm::mat4(), glm::vec3(30.0f, 20.0f, -50.0f));
+	systems[0].selfTransformation = glm::scale(glm::mat4(), 100.0f * glm::vec3(1.0f, 1.0f, 1.0f));
+	systems[0].ambient = glm::vec3(0.1f, 0.1f, 0.4f);
 
 	// and dangerzone
 	systems.push_back(Body(models.dangerzone));
@@ -73,31 +75,33 @@ void Scene::initScene() {
 								  * glm::rotate(glm::mat4(), 0.8f, glm::vec3(-1.0f, 0.0f, 0.0f));
 	systems[1].ambient = glm::vec3(1.0f);
 
-	systems.push_back(Body(models.earth));
+	systems.push_back(Body(models.pink));
 	temp = &systems[2];
-	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(30.0f, 20.0f, -60.0f));
-	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(1.0f));
+	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(30.0f, 20.0f, -50.0f));
+	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(1.9f));
+
+	temp->subBodies.push_back(Body(models.pinkmoon));
+	temp = &temp->subBodies[0];
+	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(-18.0f, 0.0f, 0.0f));
+	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(3.5f));
+
+	systems.push_back(Body(models.earth));
+	temp = &systems[3];
+	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(-5.0f, 5.0f, -9.0f));
+	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.5f));
 
 	temp->subBodies.push_back(Body(models.moon));
-	temp = &temp->subBodies[0];
-	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(-20.0f, 0.0f, 0.0f));
-	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(3.0f));
-
-	systems.push_back(Body(models.pink));
-	temp = &systems[3];
-	temp->localTransformation = glm::translate(glm::mat4(), glm::vec3(-30.0f, 20.0f, 60.0f));
-	temp->selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.8f));
-
-	temp->subBodies.push_back(Body(models.dark));
-	temp->subBodies[0].localTransformation = glm::translate(glm::mat4(), glm::vec3(-10.0f, 0.0f, -3.0f));
-	temp->subBodies[0].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.6f));
+	temp->subBodies[0].localTransformation = glm::translate(glm::mat4(), glm::vec3(-20.0f, 0.0f, -3.0f));
+	temp->subBodies[0].selfTransformation = glm::scale(glm::mat4(), glm::vec3(3.5f));
 
 	systems.push_back(Body(models.lava));
 	systems[4].localTransformation = glm::translate(glm::mat4(), glm::vec3(0.0f, 15.0f, -5.0f));
-	systems[4].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.3f));
+	systems[4].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.6f));
+
+	systems.push_back(Body(models.dark));
+	systems[5].localTransformation = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -8.0f));
+	systems[5].selfTransformation = glm::scale(glm::mat4(), glm::vec3(0.2f));
 	
-
-
 	for (int i = 0; i < systems.size(); i++) {
 		systems[i].initParents();
 	}
@@ -124,7 +128,7 @@ void Scene::update(float dt) {
 
 
 	temp = &systems[3].subBodies[0];
-	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 10.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
+	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 40.0f, glm::vec3(0, 1, 0)) * temp->localTransformation;
 	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 20.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
 
 	temp = &systems[4];
@@ -132,6 +136,13 @@ void Scene::update(float dt) {
 	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 30.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
 
 	systems[4].ambient = glm::vec3(0.7f + 0.2f*cos(lighttimer), 0.4f, 0.4f);
+
+	temp = &systems[5];
+	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 50.0f, glm::vec3(1, 0.3f, 0)) * temp->localTransformation;
+	temp->localTransformation = glm::rotate(glm::mat4(), dt * 3.14f / 73.0f, glm::vec3(0, 0.6f, 0)) * temp->localTransformation;
+	temp->selfTransformation = glm::rotate(glm::mat4(), -dt * 3.14f / 30.0f, glm::vec3(0, 1, 0)) * temp->selfTransformation;
+
+	//std::cout << glm::length(systems[3].subBodies[0].getCentre()) << std::endl;
 }
 
 //shareddata

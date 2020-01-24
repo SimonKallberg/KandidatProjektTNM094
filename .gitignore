@@ -1,10 +1,4 @@
 .DS_Store
 /build/
 /sgct/
-
-libwebsockets/
-<<<<<<< HEAD
-=======
-
-libwebsockets_build/
->>>>>>> Libwebsockets
+libwebsockets

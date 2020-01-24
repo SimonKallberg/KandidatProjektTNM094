@@ -12,15 +12,18 @@ in struct PointLight {
 
 uniform sampler2D d_tex;
 uniform sampler2D b_tex;
+uniform vec4 ambient;
 
 // constants
 vec3 viewPosition = vec3(0.0, 0.0, 0.0); //dome centre
-vec3 ambient = vec3(0.5, 0.5, 0.5);
+
 
 // attenuation constants
 float const_Att = 1.0;
-float lin_Att = 0.0;
-float quadr_Att = 100;
+float lin_Att = 1;
+float quadr_Att = 8;
+
+out vec4 out_fragColor;
 
 void main()
 {
@@ -28,7 +31,7 @@ void main()
 	vec3 norm = texture(b_tex,uv.st).rgb;
 	norm = normalize(norm * 2.0 - 1.0);
 	vec4 texColor = texture(d_tex, uv.st); //rgba = vec4(.05,0.5,0.5,rgba.a);
-	vec3 fragColor = ambient * texColor.rgb;
+	vec3 fragColor = ambient.rgb * texColor.rgb;
 
 
 	for(int i = 0; i < NR_POINT_LIGHTS; i++){
@@ -37,12 +40,12 @@ void main()
 		vec3 lightDir = normalize(tangentLights[i].position - tangentFragPos);
 		float lightDist = length(tangentLights[i].position - tangentFragPos);
 
-		float attenuation = 1.0/(const_Att + quadr_Att*pow(lightDist/3.0, 6.0));
+		float attenuation = 1.0/(const_Att + quadr_Att*pow(lightDist, 2.0));
 
 		float diffuse = max(dot(norm, lightDir), 0.0);
 
 		fragColor += tangentLights[i].color * attenuation * (texColor.rgb *  diffuse);
 
 	}
-	gl_FragColor = vec4(fragColor, texColor.a);
+	out_fragColor = vec4(fragColor, texColor.a * ambient.a);
 }

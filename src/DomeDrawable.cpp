@@ -1,4 +1,6 @@
 #include "DomeDrawable.hpp"
+//Initializing static variable
+Quad* DomeDrawable::sprite = nullptr;
 
 void DomeDrawable::addWorldTranslation(glm::vec3 w_trans) {
 	glm::vec3 local_trans = glm::inverse(position) * w_trans;
@@ -11,43 +13,37 @@ void DomeDrawable::setPosition(glm::quat pos) {
 	position = pos;
 }
 
-glm::quat DomeDrawable::getQuat() const {
-	return position * glm::quat(glm::vec3(0, 0, -direction));
-}
-
-glm::mat4 DomeDrawable::getRotationMatrix() const {
-	return glm::toMat4(getQuat());
-}
-
-float DomeDrawable::getScale() const {
-	return scale;
-}
-
-float DomeDrawable::getDirection() const {
-	return direction;
+void DomeDrawable::setTexture(std::string tex) {
+    texture = tex;
 }
 
 void DomeDrawable::render() const {
-	sprite->bindVAO();
-	sprite->setTexture(texture, bumpTexture);
-	sprite->render();
-};
+    sprite->bindVAO();
+    sprite->setTexture(texture, bumpTexture);
+    sprite->render();
+}
 
-Quad* DomeDrawable::sprite = nullptr;
+float DomeDrawable::getScale() const {
+    return scale;
+}
+
+float DomeDrawable::getDirection() const {
+    return direction;
+}
+
+glm::quat DomeDrawable::getQuat() const {
+    return position * glm::quat(glm::vec3(0, 0, -direction));
+}
+
+//Static functions
 void DomeDrawable::initSprite() {
-	sprite = new Quad("venus", 1.0f);
+    sprite = new Quad("venus", 1.0f);
 }
 
 void DomeDrawable::bindSprite() {
-	sprite->bindVAO();
+    sprite->bindVAO();
 }
-
-void DomeDrawable::setTexture(std::string tex) {
-	texture = tex;
-}
-
-
-
+//Virtual functions
 
 void DomeDrawable::writeData() {
     
@@ -84,3 +80,8 @@ void DomeDrawable::readData() {
 	texture = s_tex.getVal();
 
 }
+
+glm::mat4 DomeDrawable::getRotationMatrix() const {
+    return glm::toMat4(getQuat());
+}
+

@@ -23,6 +23,52 @@ ModelLoader::~ModelLoader() {
 	uvs.clear();
 }
 
+void ModelLoader::draw(float scale, glm::vec3 pos) const {
+    
+    // bind diffuse texture to slot 0
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(textureName));
+    
+    // bind bumpmap texture to texture slot 1
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(bumpTextureName));
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(specularTextureName));
+    
+    for (unsigned int i = 0; i < vertices.size() - 2; i += 3) {
+        
+        glBegin(GL_TRIANGLES);
+        
+        //Vertex 1
+        glVertexAttrib3f(4, bitangents[i].x, bitangents[i].y, bitangents[i].z);
+        glVertexAttrib3f(3, tangents[i].x, tangents[i].y, tangents[i].z);
+        glVertexAttrib3f(2, normals[i].x, normals[i].y, normals[i].z);
+        glVertexAttrib2f(1, uvs[i].x, uvs[i].y);
+        glVertexAttrib3f(0, pos.x + scale * vertices[i].x, pos.y + scale * vertices[i].y, pos.z + scale * vertices[i].z);
+        
+        //Vertex 2
+        glVertexAttrib3f(4, bitangents[i + 1].x, bitangents[i + 1].y, bitangents[i + 1].z);
+        glVertexAttrib3f(3, tangents[i + 1].x, tangents[i + 1].y, tangents[i + 1].z);
+        glVertexAttrib3f(2, normals[i + 1].x, normals[i + 1].y, normals[i + 1].z);
+        glVertexAttrib2f(1, uvs[i + 1].x, uvs[i + 1].y);
+        glVertexAttrib3f(0, pos.x + scale * vertices[i + 1].x, pos.y + scale * vertices[i + 1].y, pos.z + scale *  vertices[i + 1].z);
+        
+        //Vertex 3
+        glVertexAttrib3f(4, bitangents[i + 2].x, bitangents[i + 2].y, bitangents[i + 2].z);
+        glVertexAttrib3f(3, tangents[i + 2].x, tangents[i + 2].y, tangents[i + 2].z);
+        glVertexAttrib3f(2, normals[i + 2].x, normals[i + 2].y, normals[i + 2].z);
+        glVertexAttrib2f(1, uvs[i + 2].x, uvs[i + 2].y);
+        glVertexAttrib3f(0, pos.x + scale * vertices[i + 2].x, pos.y + scale * vertices[i + 2].y, pos.z + scale * vertices[i + 2].z);
+        
+        //std::cout << "tan: x:" << tangents[i].x << "  y: " << tangents[i].y << "  z: " << tangents[i].z << "\n";
+        //std::cout << "bitan: x:" << bitangents[i].x << "  y: " << bitangents[i].y << "  z: " << bitangents[i].z << "\n";
+        //std::cout << "norm: x:" << normals[i].x << "  y: " << normals[i].y << "  z: " << normals[i].z << "\n\n";
+        
+        glEnd();
+    }
+}
+
 glm::vec3 ModelLoader::getMaxVertexValues() {
 	glm::vec3 maxValues = vertices[0];
 	for (int i = 1; i < vertices.size(); ++i) {
@@ -41,51 +87,6 @@ glm::vec3 ModelLoader::getMinVertexValues() {
 		if (vertices[i].z < minValues.z) minValues.z = vertices[i].z;
 	}
 	return minValues;
-}
-
-void ModelLoader::draw(float scale, glm::vec3 pos) const {
-
-
-	// bind diffuse texture to slot 0
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(textureName));
-
-	// bind bumpmap texture to texture slot 1
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, sgct::TextureManager::instance()->getTextureId(bumpTextureName));
-
-	for (unsigned int i = 0; i < vertices.size() - 2; i += 3) {
-
-		glBegin(GL_TRIANGLES);
-
-		//Vertex 1
-		glVertexAttrib3f(4, bitangents[i].x, bitangents[i].y, bitangents[i].z);
-		glVertexAttrib3f(3, tangents[i].x, tangents[i].y, tangents[i].z);
-		glVertexAttrib3f(2, normals[i].x, normals[i].y, normals[i].z);
-		glVertexAttrib2f(1, uvs[i].x, uvs[i].y);
-		glVertexAttrib3f(0, pos.x + scale * vertices[i].x, pos.y + scale * vertices[i].y, pos.z + scale * vertices[i].z);
-		
-		//Vertex 2
-		glVertexAttrib3f(4, bitangents[i + 1].x, bitangents[i + 1].y, bitangents[i + 1].z);
-		glVertexAttrib3f(3, tangents[i + 1].x, tangents[i + 1].y, tangents[i + 1].z);
-		glVertexAttrib3f(2, normals[i + 1].x, normals[i + 1].y, normals[i + 1].z);
-		glVertexAttrib2f(1, uvs[i + 1].x, uvs[i + 1].y);
-		glVertexAttrib3f(0, pos.x + scale * vertices[i + 1].x, pos.y + scale * vertices[i + 1].y, pos.z + scale *  vertices[i + 1].z);
-		
-		//Vertex 3
-		glVertexAttrib3f(4, bitangents[i + 2].x, bitangents[i + 2].y, bitangents[i + 2].z);
-		glVertexAttrib3f(3, tangents[i + 2].x, tangents[i + 2].y, tangents[i + 2].z);
-		glVertexAttrib3f(2, normals[i + 2].x, normals[i + 2].y, normals[i + 2].z);
-		glVertexAttrib2f(1, uvs[i + 2].x, uvs[i + 2].y);
-		glVertexAttrib3f(0, pos.x + scale * vertices[i + 2].x, pos.y + scale * vertices[i + 2].y, pos.z + scale * vertices[i + 2].z);
-		
-		//std::cout << "tan: x:" << tangents[i].x << "  y: " << tangents[i].y << "  z: " << tangents[i].z << "\n";
-		//std::cout << "bitan: x:" << bitangents[i].x << "  y: " << bitangents[i].y << "  z: " << bitangents[i].z << "\n";
-		//std::cout << "norm: x:" << normals[i].x << "  y: " << normals[i].y << "  z: " << normals[i].z << "\n\n";
-
-		glEnd();
-	}
-
 }
 
 void ModelLoader::initTangents() {

@@ -31,29 +31,17 @@ target_compile_features("${PROJECT_NAME}" PUBLIC cxx_std_11)
 install(TARGETS "${PROJECT_NAME}" DESTINATION bin)
 install(FILES "main.cpp" DESTINATION src)
 
-find_library(LIBWEBSOCKETS_LIBRARY
-	NAMES websockets REQUIRED)
-find_path(LIBWEBSOCKETS_INCLUDE_DIRECTORY
-		NAMES libwebsockets
-		REQUIRED)
-
-if(NOT LIBWEBSOCKETS_INCLUDE_DIRECTORY)
-find_path(LIBWEBSOCKETS_INCLUDE_DIRECTORY
-		libwebsockets.h
-		REQUIRED)
-endif()
-
-
-include_directories(${SGCT_INCLUDE_DIRECTORY} ${LIBWEBSOCKETS_INCLUDE_DIRECTORY})
-
+include_directories(${SGCT_INCLUDE_DIRECTORY} libwebsockets/include)
+add_subdirectory(libwebsockets)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/sgct)
+
 target_include_directories("${PROJECT_NAME}" SYSTEM PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/sgct/include)
 target_link_libraries(
     "${PROJECT_NAME}"
     sgct_light glew glfw png16_static quat tinyxml2static turbojpeg-static zlibstatic miniziplibstatic
     vrpn freetype
     ${GLFW_LIBRARIES}
-	${LIBWEBSOCKETS_LIBRARY}
+    websockets
 )
 
 
@@ -61,14 +49,14 @@ if( MSVC )
 	set(LIBS
 		${SGCT_LIBS}
 		${OPENGL_gl_LIBRARY}
-		${LIBWEBSOCKETS_LIBRARY}
+		websockets
 		ws2_32
 	)
 elseif( WIN32 ) #MINGW or similar
 	set(LIBS
 		${SGCT_LIBS}
 		${OPENGL_gl_LIBRARY}
-		${LIBWEBSOCKETS_LIBRARY}
+		websockets
 		ws2_32
 	)
 elseif( APPLE )
@@ -82,7 +70,7 @@ elseif( APPLE )
 		${COCOA_LIBRARY}
 		${IOKIT_LIBRARY}
 		${COREVIDEO_LIBRARY}
-		${LIBWEBSOCKETS_LIBRARY}
+		websockets
 	)
 	else() #linux
 		find_package(X11 REQUIRED)
@@ -98,6 +86,6 @@ elseif( APPLE )
 			${X11_Xxf86vm_LIB}
 			${X11_Xcursor_LIB}
 			${CMAKE_THREAD_LIBS_INIT}
-			${LIBWEBSOCKETS_LIBRARY}
+			websockets
 		)
 	endif()

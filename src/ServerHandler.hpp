@@ -8,7 +8,7 @@
 namespace ServerHandler
 {
 	const int MAX_PLAYERS = 100;
-	const int CONTROLS_SIZE = 8;
+	const int CONTROLS_SIZE = 100;
 
 	#define EXAMPLE_RX_BUFFER_BYTES (MAX_PLAYERS*CONTROLS_SIZE+10)
 

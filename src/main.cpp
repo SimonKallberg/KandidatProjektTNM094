@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
-
+#include <mmsystem.h>
 #include "./ServerHandler.hpp"
-#include "./boxtest.hpp"
+//#include "./boxtest.hpp"
 #include "./Quad.hpp"
 #include "./Scene.hpp"
 #include "./Player.hpp"
@@ -19,8 +19,8 @@
 sgct::Engine * gEngine;
 DomeGame * domeGame;
 
-boxtest * box;
-sgct::SharedObject<boxtest> s_box;
+//boxtest * box;
+//sgct::SharedObject<boxtest> s_box;
 
 void myDrawFun();
 void myPreSyncFun();
@@ -41,16 +41,7 @@ void getServerMsg(const char * msg, size_t len)
 	std::istringstream strm(msg);
 	char msgType = 'N';
 	strm >> msgType;
-	if (msgType == 'P') // player added P 
-	{
-		std::string name;
-		std::string weapon;
-		strm >> name;
-		strm >> weapon;
-		std::cout << "Player " + name + " added:\n";
-		domeGame->addPlayer(name, weapon);
-	}
-	else if (msgType == 'C') // controls were sent for one player, structure: CIBV, for: [ *CONTROLS*, playerindex, button, value ]
+	if (msgType == 'C') // controls were sent for one player, structure: CIBV, for: [ *CONTROLS*, playerindex, button, value ]
 	{
 		int playerIndex;
 		strm >> playerIndex;
@@ -58,9 +49,9 @@ void getServerMsg(const char * msg, size_t len)
 		strm >> control; // L, R
 		int value;
 		strm >> value; // 1 0, on off
-		std::cout << "INDEX:" << playerIndex;
-		std::cout << " CONTROL:" << control;
-		std::cout << " VALUE:" << value << "\n";
+		//std::cout << "INDEX:" << playerIndex;
+		//std::cout << " CONTROL:" << control;
+		//std::cout << " VALUE:" << value << "\n";
 		switch (control)
 		{
 			case 'L':
@@ -74,15 +65,71 @@ void getServerMsg(const char * msg, size_t len)
 				break;
 		}
 	}
+	else if (msgType == 'P') // player added P 
+	{
+		std::string name;
+		std::string weapon;
+		strm >> name;
+		strm >> weapon;
+
+		float angle = ((float)rand() / RAND_MAX) * 6.28f;
+		float dist_from_center = ((float)rand() / RAND_MAX) * 0.4f + 0.2f;
+		
+		glm::quat randPos = glm::quat();
+		randPos *= glm::quat(glm::vec3(0.6f, 0.0f, 0.0f));
+		randPos *= glm::quat(glm::vec3(0.0f, 0.0f, angle));
+		randPos *= glm::quat(glm::vec3(-dist_from_center, 0.0f, 0.0f));
+		randPos = glm::normalize(randPos);
+
+		domeGame->addPlayer(name, weapon, randPos);
+	}
+	else if (msgType == 'U') // Update Weapon 
+	{
+		int id;
+		std::string weapon;
+		strm >> id;
+		strm >> weapon;
+		domeGame->players[id]->setWeapon(Weapon::makeWeapon(weapon, domeGame->players[id]), weapon);
+
+		DomeGame::weaponInfo wp_inf;
+		wp_inf.id = id;
+		wp_inf.weaponType = weapon;
+		domeGame->changed_weapons.addVal(wp_inf);
+	}
+}
+
+//Ensures compability for file paths on both mac and windows
+std::string findRootDir(std::string rootDir)
+{
+    std::ifstream ifs;
+    ifs.open(rootDir + "/config.h");
+    std::cout << rootDir << std::endl;
+    
+    while( (ifs.rdstate() & std::ifstream::failbit ) != 0 )
+    {
+        rootDir = rootDir.substr(0, rootDir.find_last_of("\\/"));
+        ifs.open(rootDir + "/config.h");
+        std::cout << rootDir << std::endl;
+        if(rootDir == "")
+        {
+            std::cout << "Couldn't find root directory!" << std::endl;
+            break;
+        }
+        
+    }
+    return rootDir;
 }
 
 int main(int argc, char* argv[])
 {
+    //Find root directory for the project
+    std::string rootDir = findRootDir(argv[0]);
+    
     // Allocate
     gEngine = new sgct::Engine(argc, argv);
-	domeGame = new DomeGame(gEngine);
+	domeGame = new DomeGame(gEngine, rootDir);
 
-	box = new boxtest();
+	//box = new boxtest();
 
     // Bind your functions
 	gEngine->setInitOGLFunction(myInitOGLFun);
@@ -104,7 +151,8 @@ int main(int argc, char* argv[])
     
     // Clean up (de-allocate)
     delete gEngine;
-    
+	delete domeGame;
+
     // Exit program
     exit(EXIT_SUCCESS);
 }
@@ -124,18 +172,18 @@ void myInitOGLFun() {
 		std::cout << "Master node attemping connection to server.\n";;
 		ServerHandler::setMessageCallback(getServerMsg);
 		ServerHandler::connect();
+
+		PlaySound("../DOMEMUSICtest.wav", NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
 	}
-
-
-	boxtest::init();
+	//boxtest::init();
+	
 }
 
 
 void myDrawFun()
 {
-	sgct_text::print3d(sgct_text::FontManager::instance()->getFont("Verdana", 10), sgct_text::TOP_LEFT, gEngine->getCurrentModelViewProjectionMatrix() * glm::translate(glm::mat4(), glm::vec3(0,0,-10.0f)), "hej");
-	domeGame->MVP = gEngine->getCurrentModelViewProjectionMatrix();// *glm::rotate(glm::mat4(), 1.0f, glm::vec3(1, 0, 0));
-	domeGame->render();
+	domeGame->MVP = gEngine->getCurrentModelViewProjectionMatrix();
+    domeGame->render();
 	//s_box.getVal().draw();
 }
 
@@ -169,36 +217,36 @@ void keyCallback(int key, int action)
 						domeGame->players[0]->c_left = 1;
 					if (action == SGCT_RELEASE)
 						domeGame->players[0]->c_left = 0;
-					box->Box_x -= 0.2f;
+					//box->Box_x -= 0.2f;
                 break;
             case 'D':
                 if(action == SGCT_PRESS)
                     domeGame->players[0]->c_right = 1;
                 if (action == SGCT_RELEASE)
                     domeGame->players[0]->c_right = 0;
-					box->Box_x += 0.2f;
+					//box->Box_x += 0.2f;
                 break;
             case 'W':
                     //domeGame->players[0]->setPosition(0.0f, STEPLENGTH);
-					box->Box_z -= 0.2f;
+					//box->Box_z -= 0.2f;
 				break;
             case 'S':
                     //domeGame->players[0]->setPosition(0.0f, -STEPLENGTH);
-					box->Box_z += 0.2f;
+					//box->Box_z += 0.2f;
                 break;
 			case SGCT_KEY_SPACE:
-					box->Box_y += 0.2f;
+					//box->Box_y += 0.2f;
 				break;
 			case SGCT_KEY_LCTRL:
-					box->Box_y -= 0.2f;
+					//box->Box_y -= 0.2f;
 				break;
 			case 'Z':
-					box->Box_scale += 0.1f;
+					//box->Box_scale += 0.1f;
 					if (action == SGCT_PRESS)
-						domeGame->addPlayer(playerName, "smg");
+						domeGame->addPlayer(playerName, "rifle");
 				break;
 			case 'X':
-					box->Box_scale -= 0.1f;
+					//box->Box_scale -= 0.1f;
 					if (action == SGCT_PRESS)
 						domeGame->addPlayer(playerName, "shotgun");
 				break;
@@ -206,8 +254,12 @@ void keyCallback(int key, int action)
 					if (action == SGCT_PRESS)
 						domeGame->addPlayer(playerName, "light");
 				break;
+			case 'V':
+				if (action == SGCT_PRESS)
+					domeGame->addPlayer(playerName, "popgun");
+				break;
 			case 'L':
-					std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << box->Box_scale << "\n";
+					//std::cout << "X: " << box->Box_x << " Y: " << box->Box_y << " Z: " << box->Box_z << " SCALE: " << //box->Box_scale << "\n";
 				break;
             case 'K':
 				if (action == SGCT_PRESS)
@@ -221,6 +273,9 @@ void keyCallback(int key, int action)
 
 void myEncodeFun()
 {
+    sgct::SharedString s_score = domeGame->scoreboard;
+    sgct::SharedData::instance()->writeString(&s_score);
+    
 	sgct::SharedData::instance()->writeVector(&domeGame->added_players);
 	domeGame->added_players.clear();
 
@@ -230,6 +285,8 @@ void myEncodeFun()
 	sgct::SharedData::instance()->writeVector(&domeGame->removed_projectiles);
 	domeGame->removed_projectiles.clear();
 
+	sgct::SharedData::instance()->writeVector(&domeGame->changed_weapons);
+	domeGame->changed_weapons.clear();
 
 	for (int i = 0; i < domeGame->players.size(); i++) {
 		domeGame->players[i]->writeData();
@@ -246,14 +303,19 @@ void myEncodeFun()
 
 void myDecodeFun()
 {
+    sgct::SharedString s_score;
+    sgct::SharedData::instance()->readString(&s_score);
+    
+    domeGame->scoreboard = s_score.getVal();
+    
 	//std::cout << "\n0 ADDPLAYER:\n";
 
 	sgct::SharedData::instance()->readVector(&domeGame->added_players);
 	std::vector<Player> add_players = domeGame->added_players.getVal();
 	for (int i = 0; i < add_players.size(); i++) {
 		//std::cout << "0";
-		domeGame->addPlayer(add_players[i].getName(), add_players[i].weaponType, add_players[i].getQuat());
-
+        std::string player_name = add_players[i].getName();
+		domeGame->addPlayer(player_name, add_players[i].weaponType, add_players[i].getQuat());
 	}
 
 	//std::cout << "\n0-1 ADDPROJECTILES:\n";
@@ -273,6 +335,11 @@ void myDecodeFun()
 		domeGame->projectiles.erase(domeGame->projectiles.begin() + rem_indices[i]);
 	}
 
+	sgct::SharedData::instance()->readVector(&domeGame->changed_weapons);
+	std::vector<DomeGame::weaponInfo> changed = domeGame->changed_weapons.getVal();
+	for (int i = 0; i < changed.size(); i++) {
+		domeGame->players[changed[i].id]->setWeapon(Weapon::makeWeapon(changed[i].weaponType, domeGame->players[changed[i].id]), changed[i].weaponType);
+	}
 		
 	//std::cout << "\n0-3 READPLAYERS:\n";
 
